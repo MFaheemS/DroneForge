@@ -1,0 +1,50 @@
+<nav class="navbar">
+  <a href="/" class="navbar-brand">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14" r="3" fill="#00f5ff"/>
+      <rect x="4" y="12.5" width="7" height="3" rx="1.5" fill="#00f5ff" opacity="0.7"/>
+      <rect x="17" y="12.5" width="7" height="3" rx="1.5" fill="#00f5ff" opacity="0.7"/>
+      <rect x="12.5" y="4" width="3" height="7" rx="1.5" fill="#00f5ff" opacity="0.7"/>
+      <rect x="12.5" y="17" width="3" height="7" rx="1.5" fill="#00f5ff" opacity="0.7"/>
+      <circle cx="5" cy="5" r="3" fill="#00f5ff" opacity="0.5"/>
+      <circle cx="23" cy="5" r="3" fill="#00f5ff" opacity="0.5"/>
+      <circle cx="5" cy="23" r="3" fill="#00f5ff" opacity="0.5"/>
+      <circle cx="23" cy="23" r="3" fill="#00f5ff" opacity="0.5"/>
+    </svg>
+    DroneForge
+  </a>
+
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <ul class="navbar-links" id="navLinks">
+    <li><a href="/">Home</a></li>
+
+    <% if (!user) { %>
+      <li><a href="/auth/login" class="btn-nav">Login</a></li>
+      <li><a href="/auth/register" class="btn-nav" style="background:var(--cyan);color:var(--bg-primary);">Register</a></li>
+    <% } else { %>
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/build">Build a Drone</a></li>
+      <li><a href="/orders">My Orders</a></li>
+      <% if (user.role === 'admin') { %>
+        <li><a href="/admin" style="color:var(--yellow);">
+          Admin Panel <span class="role-badge admin">ADMIN</span>
+        </a></li>
+      <% } %>
+      <li class="dropdown">
+        <a href="#" style="gap:0.5rem;">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <%= user.name.split(' ')[0] %>
+          <% if (user.role === 'admin') { %><span class="role-badge admin">ADMIN</span><% } else { %><span class="role-badge">USER</span><% } %>
+        </a>
+        <div class="dropdown-menu">
+          <a href="/profile">My Profile</a>
+          <div class="dropdown-divider"></div>
+          <a href="/auth/logout" style="color:var(--red);">Logout</a>
+        </div>
+      </li>
+    <% } %>
+  </ul>
+</nav>

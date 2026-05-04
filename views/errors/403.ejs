@@ -1,0 +1,35 @@
+<%- include('../partials/head', { title: '403 — Access Denied | DroneForge' }) %>
+<%- include('../partials/navbar') %>
+
+<main>
+  <div class="error-page">
+    <div>
+      <div class="error-code glitch" style="background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">403</div>
+      <h1 class="error-title">Access Restricted</h1>
+      <p class="error-sub">You don't have clearance to enter this zone. Admins only. <br/>Unauthorized access attempts are logged.</p>
+      <div style="margin:2rem 0;">
+        <svg viewBox="0 0 120 80" width="120" style="opacity:0.3;animation:dronFloat 4s ease-in-out infinite;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="40" r="12" fill="#ff3366"/>
+          <rect x="20" y="37" width="28" height="6" rx="3" fill="#ff3366" opacity="0.6"/>
+          <rect x="72" y="37" width="28" height="6" rx="3" fill="#ff3366" opacity="0.6"/>
+          <rect x="57" y="8" width="6" height="22" rx="3" fill="#ff3366" opacity="0.6"/>
+          <rect x="57" y="50" width="6" height="22" rx="3" fill="#ff3366" opacity="0.6"/>
+          <line x1="25" y1="25" x2="25" y2="15" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
+          <line x1="95" y1="25" x2="95" y2="15" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
+          <line x1="25" y1="55" x2="25" y2="65" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
+          <line x1="95" y1="55" x2="95" y2="65" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
+          <text x="45" y="45" fill="#ff3366" font-size="14" font-family="monospace">🚫</text>
+        </svg>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/" class="btn btn-primary">← Return to Base</a>
+        <% if (!user) { %>
+          <a href="/auth/login" class="btn btn-outline">Log In</a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>

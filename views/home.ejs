@@ -1,0 +1,107 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
+
+    <svg class="hero-drone" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="150" cy="150" r="30" fill="#00f5ff" opacity="0.4"/>
+      <circle cx="150" cy="150" r="15" fill="#00f5ff" opacity="0.7"/>
+      <rect x="50" y="143" width="70" height="14" rx="7" fill="#00f5ff" opacity="0.3"/>
+      <rect x="180" y="143" width="70" height="14" rx="7" fill="#00f5ff" opacity="0.3"/>
+      <rect x="143" y="50" width="14" height="70" rx="7" fill="#00f5ff" opacity="0.3"/>
+      <rect x="143" y="180" width="14" height="70" rx="7" fill="#00f5ff" opacity="0.3"/>
+      <circle cx="55" cy="55" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
+      <circle cx="55" cy="55" r="15" fill="#00f5ff" opacity="0.2"/>
+      <circle cx="245" cy="55" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
+      <circle cx="245" cy="55" r="15" fill="#00f5ff" opacity="0.2"/>
+      <circle cx="55" cy="245" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
+      <circle cx="55" cy="245" r="15" fill="#00f5ff" opacity="0.2"/>
+      <circle cx="245" cy="245" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
+      <circle cx="245" cy="245" r="15" fill="#00f5ff" opacity="0.2"/>
+    </svg>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Next-Gen Drone Builder Platform</p>
+      <h1>
+        BUILD YOUR
+        <span class="line-cyan">BEAST.</span>
+      </h1>
+      <p class="hero-sub">Design, configure, and order custom drones built exactly to your specs. Part by part. Piece by piece.</p>
+      <div class="hero-actions">
+        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary">
+          🚀 Start Building
+        </a>
+        <a href="/parts" class="btn btn-outline">Browse Parts</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stats-grid">
+      <div>
+        <span class="stat-value" data-target="4200" data-suffix="+">0</span>
+        <span class="stat-label">Drones Built</span>
+      </div>
+      <div>
+        <span class="stat-value" data-target="120" data-suffix="+">0</span>
+        <span class="stat-label">Parts Available</span>
+      </div>
+      <div>
+        <span class="stat-value" data-target="3800" data-suffix="+">0</span>
+        <span class="stat-label">Happy Pilots</span>
+      </div>
+      <div>
+        <span class="stat-value" data-target="99" data-suffix="%">0</span>
+        <span class="stat-label">Satisfaction Rate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container">
+      <p class="section-label reveal">How It Works</p>
+      <h2 class="section-title reveal">Three Steps to <span>Liftoff</span></h2>
+
+      <div class="grid-3" style="margin-top:2.5rem;">
+        <div class="step-card reveal">
+          <span class="step-number">01</span>
+          <div class="step-icon">⚙️</div>
+          <div class="step-title">Pick Your Parts</div>
+          <p class="step-desc">Browse our catalog of motors, frames, batteries, cameras, and more. Filter by category, price, and specs.</p>
+        </div>
+        <div class="step-card reveal" style="transition-delay:0.1s">
+          <span class="step-number">02</span>
+          <div class="step-icon">🔧</div>
+          <div class="step-title">Build Your Drone</div>
+          <p class="step-desc">Use our visual builder to slot in each component. Get real-time compatibility checks and flight time estimates.</p>
+        </div>
+        <div class="step-card reveal" style="transition-delay:0.2s">
+          <span class="step-number">03</span>
+          <div class="step-icon">🚁</div>
+          <div class="step-title">Order & Fly</div>
+          <p class="step-desc">Checkout securely, track your order, and get your custom-built machine delivered ready to fly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section class="section-sm" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container" style="text-align:center;">
+      <h2 class="section-title reveal">Ready to build your <span>custom drone?</span></h2>
+      <p style="color:var(--text-muted);margin-bottom:2rem;" class="reveal">Join thousands of pilots who've already taken flight with DroneForge.</p>
+      <div class="hero-actions reveal">
+        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary">Get Started Free</a>
+        <a href="/about" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

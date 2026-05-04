@@ -1,0 +1,19 @@
+<%- include('../partials/head', { title: '404 — Page Not Found | DroneForge' }) %>
+<%- include('../partials/navbar') %>
+
+<main>
+  <div class="error-page">
+    <div>
+      <div class="error-code glitch">404</div>
+      <h1 class="error-title">Signal Lost</h1>
+      <p class="error-sub">The page you're looking for flew off the radar. It may have been moved or doesn't exist.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/" class="btn btn-primary">← Return to Base</a>
+        <a href="/parts" class="btn btn-outline">Browse Parts</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
