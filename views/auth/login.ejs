@@ -4,20 +4,22 @@
 <main>
   <div class="auth-wrapper">
     <div class="auth-card">
-      <div class="auth-logo">🚁 DroneForge</div>
-      <h1 class="auth-title">Welcome back, Pilot</h1>
-      <p class="auth-sub">Log in to continue building.</p>
+
+      <div class="auth-logo">DRONEFORGE</div>
+      <h1 class="auth-title">Pilot Login</h1>
+      <p class="auth-sub">Authenticate to Continue</p>
 
       <% if (query && query.reset === 'success') { %>
-        <div class="alert alert-success">✅ Password reset successful. Log in with your new password.</div>
+        <div class="alert alert-success">
+          <span class="material-symbols-outlined" style="font-size:1rem;flex-shrink:0;">check_circle</span>
+          Password reset successful. Log in with your new credentials.
+        </div>
       <% } %>
 
       <% if (errors && errors.length) { %>
         <div class="alert alert-error">
-          <span>⚠</span>
-          <div>
-            <% errors.forEach(e => { %><div><%= e.msg %></div><% }) %>
-          </div>
+          <span class="material-symbols-outlined" style="font-size:1rem;flex-shrink:0;">error</span>
+          <div><% errors.forEach(e => { %><div><%= e.msg %></div><% }) %></div>
         </div>
       <% } %>
 
@@ -25,42 +27,40 @@
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>
           <input
-            type="email"
-            id="email"
-            name="email"
+            type="email" id="email" name="email"
             class="form-input"
             value="<%= old && old.email ? old.email : '' %>"
             placeholder="pilot@droneforge.io"
-            autocomplete="email"
-            required
+            autocomplete="email" required
           />
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="password">Password</label>
+          <label class="form-label" for="password" style="display:flex;justify-content:space-between;align-items:center;">
+            Password
+            <a href="/auth/forgot-password" style="font-size:.65rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600;">Forgot?</a>
+          </label>
           <div class="input-wrapper">
             <input
-              type="password"
-              id="password"
-              name="password"
+              type="password" id="password" name="password"
               class="form-input"
               placeholder="••••••••"
-              autocomplete="current-password"
-              required
+              autocomplete="current-password" required
             />
-            <button type="button" class="input-toggle" aria-label="Toggle password visibility">👁</button>
+            <button type="button" class="input-toggle" aria-label="Toggle password visibility">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
+            </button>
           </div>
         </div>
 
-        <div style="text-align:right;margin-bottom:1.25rem;">
-          <a href="/auth/forgot-password" style="font-size:0.8rem;color:var(--text-muted);">Forgot password?</a>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-full">Login →</button>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:.75rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">login</span>
+          Authenticate
+        </button>
       </form>
 
       <div class="auth-footer">
-        Don't have an account? <a href="/auth/register">Create one</a>
+        No account? <a href="/auth/register" style="color:var(--cyan);font-weight:700;">Register Now</a>
       </div>
     </div>
   </div>

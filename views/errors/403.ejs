@@ -3,33 +3,62 @@
 
 <main>
   <div class="error-page">
-    <div>
-      <div class="error-code glitch" style="background:linear-gradient(135deg,var(--red),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">403</div>
-      <h1 class="error-title">Access Restricted</h1>
-      <p class="error-sub">You don't have clearance to enter this zone. Admins only. <br/>Unauthorized access attempts are logged.</p>
-      <div style="margin:2rem 0;">
-        <svg viewBox="0 0 120 80" width="120" style="opacity:0.3;animation:dronFloat 4s ease-in-out infinite;" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="60" cy="40" r="12" fill="#ff3366"/>
-          <rect x="20" y="37" width="28" height="6" rx="3" fill="#ff3366" opacity="0.6"/>
-          <rect x="72" y="37" width="28" height="6" rx="3" fill="#ff3366" opacity="0.6"/>
-          <rect x="57" y="8" width="6" height="22" rx="3" fill="#ff3366" opacity="0.6"/>
-          <rect x="57" y="50" width="6" height="22" rx="3" fill="#ff3366" opacity="0.6"/>
-          <line x1="25" y1="25" x2="25" y2="15" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
-          <line x1="95" y1="25" x2="95" y2="15" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
-          <line x1="25" y1="55" x2="25" y2="65" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
-          <line x1="95" y1="55" x2="95" y2="65" stroke="#ff3366" stroke-width="2" opacity="0.4"/>
-          <text x="45" y="45" fill="#ff3366" font-size="14" font-family="monospace">🚫</text>
+    <div style="position:relative;z-index:1;text-align:center;">
+      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;letter-spacing:.2em;color:var(--error);margin-bottom:.75rem;text-transform:uppercase;">Clearance Denied</p>
+      <div class="error-code red-grad">403</div>
+      <h1 class="error-title" style="color:var(--error);">Access Restricted</h1>
+      <p class="error-sub">
+        You don't have clearance to enter this zone.<br/>
+        Admin credentials required. Unauthorized access is logged.
+      </p>
+
+      <div style="margin:1.5rem auto;width:100px;animation:warningFloat 3s ease-in-out infinite;opacity:.4;">
+        <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="38" y="30" width="24" height="10" rx="2" stroke="#ffb4ab" stroke-width="1.5"/>
+          <line x1="38" y1="35" x2="15" y2="35" stroke="#ffb4ab" stroke-width="1.5"/>
+          <line x1="62" y1="35" x2="85" y2="35" stroke="#ffb4ab" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="50" y2="12" stroke="#ffb4ab" stroke-width="1.5"/>
+          <line x1="50" y1="40" x2="50" y2="58" stroke="#ffb4ab" stroke-width="1.5"/>
+          <circle cx="15" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="85" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="50" cy="12" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="50" cy="58" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <line x1="44" y1="31" x2="56" y2="39" stroke="#ffb4ab" stroke-width="2"/>
+          <line x1="56" y1="31" x2="44" y2="39" stroke="#ffb4ab" stroke-width="2"/>
         </svg>
       </div>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="/" class="btn btn-primary">← Return to Base</a>
+
+      <div style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--error);letter-spacing:.15em;margin-bottom:2rem;animation:warningBlink 1.2s step-end infinite;text-transform:uppercase;">
+        Unauthorized Access Attempt Logged
+      </div>
+
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:1rem;">arrow_back</span>
+          Return to Safety
+        </a>
         <% if (!user) { %>
           <a href="/auth/login" class="btn btn-outline">Log In</a>
         <% } %>
       </div>
+
+      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--muted);margin-top:2rem;opacity:.4;letter-spacing:.08em;">
+        ERR_FORBIDDEN @ <%= new Date().toISOString() %> — IP Logged
+      </p>
     </div>
   </div>
 </main>
+
+<style>
+@keyframes warningFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes warningBlink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+</style>
 
 <%- include('../partials/footer') %>
 <%- include('../partials/scripts') %>

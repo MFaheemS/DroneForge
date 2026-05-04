@@ -1,19 +1,52 @@
-<%- include('../partials/head', { title: '404 — Page Not Found | DroneForge' }) %>
+<%- include('../partials/head', { title: '404 — Signal Lost | DroneForge' }) %>
 <%- include('../partials/navbar') %>
 
 <main>
   <div class="error-page">
-    <div>
-      <div class="error-code glitch">404</div>
+    <div style="position:relative;z-index:1;">
+      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;letter-spacing:.2em;color:var(--muted);margin-bottom:.75rem;text-transform:uppercase;">Error Code</p>
+      <div class="error-code">404</div>
       <h1 class="error-title">Signal Lost</h1>
-      <p class="error-sub">The page you're looking for flew off the radar. It may have been moved or doesn't exist.</p>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="/" class="btn btn-primary">← Return to Base</a>
+      <p class="error-sub">
+        The drone you're tracking flew off the radar.<br/>
+        This page doesn't exist or was moved.
+      </p>
+
+      <div style="margin:1.5rem auto;width:100px;animation:droneFloat 4s ease-in-out infinite;opacity:.35;">
+        <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="38" y="30" width="24" height="10" rx="2" stroke="#00f2ff" stroke-width="1.5"/>
+          <line x1="38" y1="35" x2="15" y2="35" stroke="#00f2ff" stroke-width="1.5"/>
+          <line x1="62" y1="35" x2="85" y2="35" stroke="#00f2ff" stroke-width="1.5"/>
+          <line x1="50" y1="30" x2="50" y2="12" stroke="#00f2ff" stroke-width="1.5"/>
+          <line x1="50" y1="40" x2="50" y2="58" stroke="#00f2ff" stroke-width="1.5"/>
+          <circle cx="15" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="85" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="50" cy="12" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+          <circle cx="50" cy="58" r="8" stroke="#ff8a00" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:1rem;">arrow_back</span>
+          Return to Base
+        </a>
         <a href="/parts" class="btn btn-outline">Browse Parts</a>
       </div>
+
+      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--muted);margin-top:2rem;opacity:.4;letter-spacing:.08em;">
+        ERR_ROUTE_NOT_FOUND @ <%= new Date().toISOString() %>
+      </p>
     </div>
   </div>
 </main>
+
+<style>
+@keyframes droneFloat {
+  0%,100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-12px) rotate(4deg); }
+}
+</style>
 
 <%- include('../partials/footer') %>
 <%- include('../partials/scripts') %>

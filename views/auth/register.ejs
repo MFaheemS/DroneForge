@@ -4,45 +4,38 @@
 <main>
   <div class="auth-wrapper">
     <div class="auth-card">
-      <div class="auth-logo">🚁 DroneForge</div>
+
+      <div class="auth-logo">DRONEFORGE</div>
       <h1 class="auth-title">Join the Fleet</h1>
-      <p class="auth-sub">Create your account and start building.</p>
+      <p class="auth-sub">Create Your Pilot Profile</p>
 
       <% if (errors && errors.length) { %>
         <div class="alert alert-error">
-          <span>⚠</span>
-          <div>
-            <% errors.forEach(e => { %><div><%= e.msg %></div><% }) %>
-          </div>
+          <span class="material-symbols-outlined" style="font-size:1rem;flex-shrink:0;">error</span>
+          <div><% errors.forEach(e => { %><div><%= e.msg %></div><% }) %></div>
         </div>
       <% } %>
 
       <form action="/auth/register" method="POST" novalidate>
         <div class="form-group">
-          <label class="form-label" for="name">Full Name</label>
+          <label class="form-label" for="name">Pilot Name</label>
           <input
-            type="text"
-            id="name"
-            name="name"
+            type="text" id="name" name="name"
             class="form-input"
             value="<%= old && old.name ? old.name : '' %>"
-            placeholder="Your Name"
-            autocomplete="name"
-            required
+            placeholder="Your full name"
+            autocomplete="name" required
           />
         </div>
 
         <div class="form-group">
           <label class="form-label" for="email">Email Address</label>
           <input
-            type="email"
-            id="email"
-            name="email"
+            type="email" id="email" name="email"
             class="form-input"
             value="<%= old && old.email ? old.email : '' %>"
             placeholder="pilot@droneforge.io"
-            autocomplete="email"
-            required
+            autocomplete="email" required
           />
         </div>
 
@@ -50,16 +43,14 @@
           <label class="form-label" for="password">Password</label>
           <div class="input-wrapper">
             <input
-              type="password"
-              id="password"
-              name="password"
+              type="password" id="password" name="password"
               class="form-input"
               placeholder="Min. 8 characters"
-              autocomplete="new-password"
-              required
-              minlength="8"
+              autocomplete="new-password" required minlength="8"
             />
-            <button type="button" class="input-toggle" aria-label="Toggle password visibility">👁</button>
+            <button type="button" class="input-toggle" aria-label="Toggle">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
+            </button>
           </div>
           <div class="password-strength">
             <div class="password-strength-bar"></div>
@@ -70,23 +61,25 @@
           <label class="form-label" for="confirmPassword">Confirm Password</label>
           <div class="input-wrapper">
             <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
+              type="password" id="confirmPassword" name="confirmPassword"
               class="form-input"
-              placeholder="Repeat password"
-              autocomplete="new-password"
-              required
+              placeholder="Repeat your password"
+              autocomplete="new-password" required
             />
-            <button type="button" class="input-toggle" aria-label="Toggle password visibility">👁</button>
+            <button type="button" class="input-toggle" aria-label="Toggle">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
+            </button>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full">Create Account →</button>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:.75rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">person_add</span>
+          Create Account
+        </button>
       </form>
 
       <div class="auth-footer">
-        Already have an account? <a href="/auth/login">Log in</a>
+        Already enlisted? <a href="/auth/login" style="color:var(--cyan);font-weight:700;">Log In</a>
       </div>
     </div>
   </div>

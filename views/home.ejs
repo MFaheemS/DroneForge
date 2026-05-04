@@ -1,45 +1,57 @@
-<%- include('partials/head') %>
+<%- include('partials/head', { title: 'DroneForge — Build. Fly. Dominate the Sky.' }) %>
 <%- include('partials/navbar') %>
 
 <main>
-  <!-- Hero -->
-  <section class="hero">
-    <canvas class="hero-canvas" id="heroCanvas"></canvas>
 
-    <svg class="hero-drone" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="150" cy="150" r="30" fill="#00f5ff" opacity="0.4"/>
-      <circle cx="150" cy="150" r="15" fill="#00f5ff" opacity="0.7"/>
-      <rect x="50" y="143" width="70" height="14" rx="7" fill="#00f5ff" opacity="0.3"/>
-      <rect x="180" y="143" width="70" height="14" rx="7" fill="#00f5ff" opacity="0.3"/>
-      <rect x="143" y="50" width="14" height="70" rx="7" fill="#00f5ff" opacity="0.3"/>
-      <rect x="143" y="180" width="14" height="70" rx="7" fill="#00f5ff" opacity="0.3"/>
-      <circle cx="55" cy="55" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
-      <circle cx="55" cy="55" r="15" fill="#00f5ff" opacity="0.2"/>
-      <circle cx="245" cy="55" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
-      <circle cx="245" cy="55" r="15" fill="#00f5ff" opacity="0.2"/>
-      <circle cx="55" cy="245" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
-      <circle cx="55" cy="245" r="15" fill="#00f5ff" opacity="0.2"/>
-      <circle cx="245" cy="245" r="25" fill="none" stroke="#00f5ff" stroke-width="3" opacity="0.5"/>
-      <circle cx="245" cy="245" r="15" fill="#00f5ff" opacity="0.2"/>
-    </svg>
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <!-- Background image -->
+    <img
+      class="hero-bg-img"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPlhLP2lVC5f3KQ9mfYG2wHdDT45PCbiVdSlr65xm1w6Sly2rfSqiTZd0bNkm_RAoQMg0gyGRGKcIrIz_tZzY3ka7etqyCfzCTUHXWq7ymvC_C6Tw1H96OLkRF4Km9Wzw8a0_jlebZR1n89m1lknYx2afzsGUHqRcQTGun14EtDn1vlLj6JYd6o77UXl6mPZYXB3ffm8vQcdW_oKbSwUa9DBk9mbmbI8T-rFsipSgjyXodQ2MT_Sg8xmu-rUpiUhlBJpr_B6AUr0s"
+      alt="DroneForge futuristic drone in hangar"
+    />
+    <div class="hero-bg-fade"></div>
 
     <div class="hero-content">
       <p class="hero-eyebrow">Next-Gen Drone Builder Platform</p>
-      <h1>
-        BUILD YOUR
-        <span class="line-cyan">BEAST.</span>
+
+      <h1 class="hero-h1">
+        Build. Fly.<br/>
+        <span class="accent">Dominate the Sky.</span>
       </h1>
-      <p class="hero-sub">Design, configure, and order custom drones built exactly to your specs. Part by part. Piece by piece.</p>
+
+      <p class="hero-sub">
+        Engineered for precision. Designed for dominance. Experience the pinnacle of aerospace technology with modular drone systems built for extreme performance.
+      </p>
+
       <div class="hero-actions">
-        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary">
-          🚀 Start Building
+        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary btn-lg">
+          <span class="material-symbols-outlined" style="font-size:1rem;">rocket_launch</span>
+          Configure Now
         </a>
-        <a href="/parts" class="btn btn-outline">Browse Parts</a>
+        <a href="/parts" class="btn btn-outline btn-lg">
+          Browse Parts
+        </a>
       </div>
+
+      <% if (user) { %>
+        <div style="margin-top:2rem;">
+          <span class="status-pill online">System Online</span>
+          <span style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--muted);margin-left:.75rem;letter-spacing:.1em;text-transform:uppercase;">
+            Pilot: <%= user.name.toUpperCase() %>
+          </span>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
     </div>
   </section>
 
-  <!-- Stats bar -->
+  <!-- ── STATS ── -->
   <div class="stats-bar">
     <div class="stats-grid">
       <div>
@@ -48,59 +60,155 @@
       </div>
       <div>
         <span class="stat-value" data-target="120" data-suffix="+">0</span>
-        <span class="stat-label">Parts Available</span>
+        <span class="stat-label">Parts in Catalog</span>
       </div>
       <div>
         <span class="stat-value" data-target="3800" data-suffix="+">0</span>
-        <span class="stat-label">Happy Pilots</span>
+        <span class="stat-label">Active Pilots</span>
       </div>
       <div>
         <span class="stat-value" data-target="99" data-suffix="%">0</span>
-        <span class="stat-label">Satisfaction Rate</span>
+        <span class="stat-label">Satisfaction</span>
       </div>
     </div>
   </div>
 
-  <!-- How it works -->
+  <!-- ── SYSTEM CAPABILITIES (Bento Grid) ── -->
   <section class="section">
     <div class="container">
-      <p class="section-label reveal">How It Works</p>
-      <h2 class="section-title reveal">Three Steps to <span>Liftoff</span></h2>
+      <p class="section-label reveal">System Capabilities</p>
+      <h2 class="section-title reveal">
+        What DroneForge <span style="color:var(--cyan)">Delivers</span>
+        <span class="cyan-bar"></span>
+      </h2>
+
+      <div class="bento reveal" style="margin-top:2.5rem;">
+        <!-- Large: Neural Autonomy -->
+        <div class="bento-item bento-col-8 bento-row-2" style="padding:0;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,242,255,0.04),transparent 60%)"></div>
+          <div style="position:absolute;top:0;right:0;bottom:0;left:0;background:url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKFw9ERsWtFKMSOloZZGKhgU3FMXUsghYfc0TYbNBlpTquTZbYuMZ1BSpeHVPaeJyez7W9XZtSR4hYztPjek4aGhjaWkHMebkp10MBx68OOIsEtQ_QUvGYerMXqeYWqGNXlvhsa4Eia6bN2TrDDIiFC_sGY4hs2pQYU7bTU2Fi8XnMKNKwRN6xfsK_Vbhdd_kI_q_ZZDyT8rxMNe8E8HysRXVcSW3ndFd3CkEsEuk6_ranmyFxyZKgigpkj6NOQP5RZ38gF_wWj0M') center/cover no-repeat;opacity:.18;transition:opacity .4s;"></div>
+          <div class="bento-item" style="position:absolute;bottom:0;left:0;right:0;padding:2rem;background:linear-gradient(to top, rgba(25,33,34,0.95) 60%, transparent);border:none;border-radius:0;backdrop-filter:none;">
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+              <span class="material-symbols-outlined" style="color:var(--cyan);font-variation-settings:'FILL' 1;">psychology</span>
+              <h3 style="font-family:var(--font-headline);font-size:1.4rem;font-weight:700;color:var(--text);letter-spacing:-0.01em;">Neural Autonomy Core</h3>
+            </div>
+            <p style="color:var(--text-variant);font-size:.9rem;line-height:1.7;max-width:480px;">
+              Self-learning flight algorithms adapt to atmospheric conditions in real-time, executing complex flight paths with zero manual input required.
+            </p>
+          </div>
+        </div>
+
+        <!-- 8K Optics -->
+        <div class="bento-item bento-col-4" style="display:flex;flex-direction:column;justify-content:flex-end;background:linear-gradient(135deg,rgba(255,138,0,0.06),var(--glass-bg));">
+          <span class="material-symbols-outlined" style="color:var(--orange);font-size:2.5rem;font-variation-settings:'FILL' 1;margin-bottom:1rem;">camera</span>
+          <h3 style="font-family:var(--font-headline);font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.5rem;letter-spacing:-0.01em;">8K Optics</h3>
+          <p style="color:var(--text-variant);font-size:.875rem;line-height:1.65;">Cinematic-grade sensor stabilization with hyper-spectral imaging capabilities.</p>
+        </div>
+
+        <!-- Omni-Radar -->
+        <div class="bento-item bento-col-4" style="background:linear-gradient(135deg,rgba(0,255,65,0.04),var(--glass-bg));">
+          <div style="position:absolute;top:1.5rem;right:1.5rem;width:52px;height:52px;border-radius:50%;border:1px solid rgba(0,255,65,0.4);display:flex;align-items:center;justify-content:center;">
+            <div style="width:38px;height:38px;border-radius:50%;border:1px solid rgba(0,255,65,0.6);display:flex;align-items:center;justify-content:center;animation:pingGreen 1.5s infinite;">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:2rem;left:2rem;">
+            <span class="material-symbols-outlined" style="color:var(--green);font-variation-settings:'FILL' 1;margin-bottom:.5rem;display:block;">radar</span>
+            <h3 style="font-family:var(--font-headline);font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.5rem;letter-spacing:-0.01em;">Omni-Radar</h3>
+            <p style="color:var(--text-variant);font-size:.875rem;line-height:1.65;">360° LiDAR spatial mapping prevents collisions at high speeds.</p>
+          </div>
+        </div>
+
+        <!-- Hot-Swap Architecture -->
+        <div class="bento-item bento-col-8" style="display:flex;align-items:center;gap:2.5rem;">
+          <div style="flex:1;border-right:1px solid var(--glass-border);padding-right:2.5rem;">
+            <span class="material-symbols-outlined" style="color:var(--cyan);font-size:2.5rem;font-variation-settings:'FILL' 1;margin-bottom:1rem;display:block;">precision_manufacturing</span>
+            <h3 style="font-family:var(--font-headline);font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.75rem;letter-spacing:-0.01em;">Hot-Swap Architecture</h3>
+            <p style="color:var(--text-variant);font-size:.875rem;line-height:1.7;">
+              Interchangeable payload bays allow rapid deployment of specialized equipment. Swap sensors, batteries, or propulsion modules in under 60 seconds.
+            </p>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:.6rem;">
+            <div class="hud-row">
+              <span class="hud-row-label">PWR-CELL-X</span>
+              <span class="hud-row-status online">Online</span>
+            </div>
+            <div class="hud-row">
+              <span class="hud-row-label">Thermal-Optic</span>
+              <span class="hud-row-status online">Online</span>
+            </div>
+            <div class="hud-row" style="opacity:.5;">
+              <span class="hud-row-label">Heavy-Lift-Mod</span>
+              <span class="hud-row-status offline">Offline</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="section-sm" style="background:rgba(21,29,30,0.6);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);">
+    <div class="container">
+      <p class="section-label reveal">Mission Briefing</p>
+      <h2 class="section-title reveal">
+        Three Steps to <span style="color:var(--cyan)">Liftoff</span>
+        <span class="cyan-bar"></span>
+      </h2>
 
       <div class="grid-3" style="margin-top:2.5rem;">
         <div class="step-card reveal">
           <span class="step-number">01</span>
-          <div class="step-icon">⚙️</div>
+          <div class="step-icon">
+            <span class="material-symbols-outlined" style="color:var(--cyan);font-size:1.25rem;font-variation-settings:'FILL' 0;">grid_view</span>
+          </div>
           <div class="step-title">Pick Your Parts</div>
-          <p class="step-desc">Browse our catalog of motors, frames, batteries, cameras, and more. Filter by category, price, and specs.</p>
+          <p class="step-desc">Browse 120+ motors, frames, batteries, cameras, and controllers. Filter by category, price range, and weight limits.</p>
         </div>
-        <div class="step-card reveal" style="transition-delay:0.1s">
+
+        <div class="step-card reveal" style="transition-delay:.1s">
           <span class="step-number">02</span>
-          <div class="step-icon">🔧</div>
+          <div class="step-icon">
+            <span class="material-symbols-outlined" style="color:var(--cyan);font-size:1.25rem;font-variation-settings:'FILL' 0;">settings</span>
+          </div>
           <div class="step-title">Build Your Drone</div>
-          <p class="step-desc">Use our visual builder to slot in each component. Get real-time compatibility checks and flight time estimates.</p>
+          <p class="step-desc">Slot parts into our visual builder. Get real-time compatibility checks, weight calculations, and flight time estimates.</p>
         </div>
-        <div class="step-card reveal" style="transition-delay:0.2s">
+
+        <div class="step-card reveal" style="transition-delay:.2s">
           <span class="step-number">03</span>
-          <div class="step-icon">🚁</div>
+          <div class="step-icon">
+            <span class="material-symbols-outlined" style="color:var(--cyan);font-size:1.25rem;font-variation-settings:'FILL' 0;">send</span>
+          </div>
           <div class="step-title">Order & Fly</div>
-          <p class="step-desc">Checkout securely, track your order, and get your custom-built machine delivered ready to fly.</p>
+          <p class="step-desc">Checkout securely, track your build through shipping, and get your custom machine delivered — ready to fly.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Banner -->
-  <section class="section-sm" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-    <div class="container" style="text-align:center;">
-      <h2 class="section-title reveal">Ready to build your <span>custom drone?</span></h2>
-      <p style="color:var(--text-muted);margin-bottom:2rem;" class="reveal">Join thousands of pilots who've already taken flight with DroneForge.</p>
+  <!-- ── CTA ── -->
+  <section class="section" style="text-align:center;position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,242,255,0.04) 0%,transparent 65%);pointer-events:none;"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <p class="section-label reveal" style="justify-content:center;">Launch Sequence</p>
+      <h2 class="section-title reveal" style="max-width:600px;margin-left:auto;margin-right:auto;">
+        Ready to build your <span style="color:var(--cyan)">custom drone?</span>
+        <span class="cyan-bar" style="margin-left:auto;margin-right:auto;"></span>
+      </h2>
+      <p class="reveal" style="color:var(--text-variant);font-size:.95rem;margin:1.5rem auto 2.5rem;max-width:480px;line-height:1.8;">
+        Join 4,200+ pilots who've already taken flight with DroneForge. Your perfect build is waiting.
+      </p>
       <div class="hero-actions reveal">
-        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary">Get Started Free</a>
-        <a href="/about" class="btn btn-outline">Learn More</a>
+        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary btn-lg">
+          <span class="material-symbols-outlined" style="font-size:1rem;">rocket_launch</span>
+          Get Started Free
+        </a>
+        <a href="/parts" class="btn btn-outline btn-lg">Explore Parts</a>
       </div>
     </div>
   </section>
+
 </main>
 
 <%- include('partials/footer') %>
