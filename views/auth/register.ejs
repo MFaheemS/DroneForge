@@ -1,13 +1,39 @@
-<%- include('../partials/head', { title: 'Register — DroneForge' }) %>
-<%- include('../partials/navbar') %>
+<%- include('../partials/head', { title: 'Register — DroneForge OS' }) %>
 
-<main>
-  <div class="auth-wrapper">
-    <div class="auth-card">
+<div class="auth-page-wrap">
 
-      <div class="auth-logo">DRONEFORGE</div>
-      <h1 class="auth-title">Join the Fleet</h1>
-      <p class="auth-sub">Create Your Pilot Profile</p>
+  <!-- Cinematic background -->
+  <div class="auth-cinematic-bg">
+    <img src="https://lh3.googleusercontent.com/aida/ADBb0uiquZ-tThBP5rKXPxqG3GmjujSv_IQqaFkaz_7_UY2hS8kt-UygvWquUMaPd-urKbNkSAaThab1CIDe9_BwBWZ07SYpkvZzrAr6y3RmD-3KBwjxOVh7dqznIRlKwNqZVV8RIQxLpaABC3FGNC0pk34PrxALK6LKSKuxpizgIjmxa3dTEO_5xS4OR_L1UACvlgR5YoboOpnVSBydFq_EWEPPNk9g9vCx6SmvSg5-GDy8iUJ6qoqVruP29II" alt="" aria-hidden="true" />
+    <div class="auth-cinematic-bg-fade"></div>
+    <div class="auth-cinematic-bg-mesh"></div>
+  </div>
+
+  <!-- HUD corners -->
+  <div class="hud-corner hud-corner-tl"></div>
+  <div class="hud-corner hud-corner-tr"></div>
+  <div class="hud-corner hud-corner-bl"></div>
+  <div class="hud-corner hud-corner-br"></div>
+
+  <!-- Standalone header -->
+  <header class="auth-standalone-header">
+    <a href="/" class="auth-brand-mark">DroneForge</a>
+    <div class="auth-sys-status">
+      Secure Onboarding Channel
+      <div class="auth-sys-dot"></div>
+    </div>
+  </header>
+
+  <!-- Main form area -->
+  <main class="auth-main-area">
+    <div class="auth-card-stitch">
+
+      <!-- Icon header -->
+      <div class="auth-icon-header">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">flight_takeoff</span>
+        <h1>DRONEFORGE</h1>
+        <p>Initialize Operator Account</p>
+      </div>
 
       <% if (errors && errors.length) { %>
         <div class="alert alert-error">
@@ -17,73 +43,122 @@
       <% } %>
 
       <form action="/auth/register" method="POST" novalidate>
-        <div class="form-group">
-          <label class="form-label" for="name">Pilot Name</label>
-          <input
-            type="text" id="name" name="name"
-            class="form-input"
-            value="<%= old && old.name ? old.name : '' %>"
-            placeholder="Your full name"
-            autocomplete="name" required
-          />
+
+        <!-- Name -->
+        <div class="si-group">
+          <label class="si-label" for="name">
+            <span class="material-symbols-outlined">badge</span>
+            Operator Designation
+          </label>
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">badge</span>
+            <input
+              type="text" id="name" name="name"
+              value="<%= old && old.name ? old.name : '' %>"
+              placeholder="John Doe"
+              autocomplete="name" required
+            />
+            <div class="si-bar"></div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="email">Email Address</label>
-          <input
-            type="email" id="email" name="email"
-            class="form-input"
-            value="<%= old && old.email ? old.email : '' %>"
-            placeholder="pilot@droneforge.io"
-            autocomplete="email" required
-          />
+        <!-- Email -->
+        <div class="si-group">
+          <label class="si-label" for="email">
+            <span class="material-symbols-outlined">mail</span>
+            Secure Comm Link
+          </label>
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">mail</span>
+            <input
+              type="email" id="email" name="email"
+              value="<%= old && old.email ? old.email : '' %>"
+              placeholder="operator@droneforge.os"
+              autocomplete="email" required
+            />
+            <div class="si-bar"></div>
+          </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="password">Password</label>
-          <div class="input-wrapper">
+        <!-- Password -->
+        <div class="si-group">
+          <label class="si-label" for="password">
+            <span class="material-symbols-outlined">lock</span>
+            Access Cipher
+          </label>
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">lock</span>
             <input
               type="password" id="password" name="password"
-              class="form-input"
               placeholder="Min. 8 characters"
               autocomplete="new-password" required minlength="8"
             />
-            <button type="button" class="input-toggle" aria-label="Toggle">
+            <button type="button" class="si-toggle" aria-label="Toggle">
               <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
             </button>
+            <div class="si-bar"></div>
           </div>
-          <div class="password-strength">
-            <div class="password-strength-bar"></div>
-          </div>
+          <div class="password-strength" style="margin-top:.35rem;"><div class="password-strength-bar"></div></div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="confirmPassword">Confirm Password</label>
-          <div class="input-wrapper">
+        <!-- Confirm Password -->
+        <div class="si-group">
+          <label class="si-label" for="confirmPassword">
+            <span class="material-symbols-outlined">gpp_good</span>
+            Verify Cipher
+          </label>
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">gpp_good</span>
             <input
               type="password" id="confirmPassword" name="confirmPassword"
-              class="form-input"
               placeholder="Repeat your password"
               autocomplete="new-password" required
             />
-            <button type="button" class="input-toggle" aria-label="Toggle">
+            <button type="button" class="si-toggle" aria-label="Toggle">
               <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
             </button>
+            <div class="si-bar"></div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full" style="margin-top:.75rem;">
-          <span class="material-symbols-outlined" style="font-size:1rem;">person_add</span>
-          Create Account
+        <button type="submit" class="auth-btn-stitch">
+          <span class="material-symbols-outlined" style="font-size:1rem;">arrow_forward</span>
+          Initialize Account
         </button>
       </form>
 
-      <div class="auth-footer">
-        Already enlisted? <a href="/auth/login" style="color:var(--cyan);font-weight:700;">Log In</a>
+      <hr class="auth-divider" />
+      <div class="auth-footer-link">
+        Existing operator? <a href="/auth/login">Establish Uplink</a>
       </div>
-    </div>
-  </div>
-</main>
 
-<%- include('../partials/footer') %>
+    </div>
+  </main>
+
+</div>
+
 <%- include('../partials/scripts') %>
+<script>
+  document.querySelectorAll('.si-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.closest('.si-wrap').querySelector('input');
+      const icon  = btn.querySelector('.material-symbols-outlined');
+      if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; }
+      else { input.type = 'password'; icon.textContent = 'visibility'; }
+    });
+  });
+
+  const pwInput = document.getElementById('password');
+  const bar = document.querySelector('.password-strength-bar');
+  if (pwInput && bar) {
+    pwInput.addEventListener('input', () => {
+      const v = pwInput.value;
+      bar.className = 'password-strength-bar';
+      if (v.length === 0) return;
+      if (v.length < 6) bar.classList.add('strength-weak');
+      else if (v.length < 8) bar.classList.add('strength-fair');
+      else if (v.length < 12) bar.classList.add('strength-good');
+      else bar.classList.add('strength-strong');
+    });
+  }
+</script>

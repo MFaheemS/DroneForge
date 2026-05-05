@@ -1,13 +1,38 @@
-<%- include('../partials/head', { title: 'Login — DroneForge' }) %>
-<%- include('../partials/navbar') %>
+<%- include('../partials/head', { title: 'Login — DroneForge OS' }) %>
 
-<main>
-  <div class="auth-wrapper">
-    <div class="auth-card">
+<div class="auth-page-wrap">
 
-      <div class="auth-logo">DRONEFORGE</div>
-      <h1 class="auth-title">Pilot Login</h1>
-      <p class="auth-sub">Authenticate to Continue</p>
+  <!-- Cinematic background -->
+  <div class="auth-cinematic-bg">
+    <img src="https://lh3.googleusercontent.com/aida/ADBb0ujcragCVjKsuTRhOU7Ugi7oA0-LnL4t_MhLNgahMWjsxTvUkvqWcZvPHzyUpRMe-iL2d2I3d87qBRUAqEaKgFx_V0HI03rVlgLcRcX2k9hYnfpb9BohvbN_zRhoRo1yMwXgt-Lgfja0oNqrGCitWaJ4uIlsJTaraqDDICA8TpPZTFtTtDaBZJmAvG07alnwM3-oaXy3j-0d6x-yA5DSXSMZ93C_rGG6zCxfqWj8K0oFlVazOZ00ScaWDEQ" alt="" aria-hidden="true" />
+    <div class="auth-cinematic-bg-fade"></div>
+    <div class="auth-cinematic-bg-mesh"></div>
+  </div>
+
+  <!-- HUD corners -->
+  <div class="hud-corner hud-corner-tl"></div>
+  <div class="hud-corner hud-corner-tr"></div>
+  <div class="hud-corner hud-corner-bl"></div>
+  <div class="hud-corner hud-corner-br"></div>
+
+  <!-- Standalone header -->
+  <header class="auth-standalone-header">
+    <a href="/" class="auth-brand-mark">DroneForge</a>
+    <div class="auth-sys-status">
+      System Status: Secure
+      <div class="auth-sys-dot"></div>
+    </div>
+  </header>
+
+  <!-- Main form area -->
+  <main class="auth-main-area">
+    <div class="auth-card-stitch">
+
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:2rem;">
+        <h1 style="font-family:var(--font-headline);font-size:1.4rem;font-weight:900;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem;">Authorization</h1>
+        <p style="font-family:var(--font-mono);font-size:.8rem;color:var(--muted);letter-spacing:.04em;">Initialize clandestine flight protocols.</p>
+      </div>
 
       <% if (query && query.reset === 'success') { %>
         <div class="alert alert-success">
@@ -24,47 +49,88 @@
       <% } %>
 
       <form action="/auth/login" method="POST" novalidate>
-        <div class="form-group">
-          <label class="form-label" for="email">Email Address</label>
-          <input
-            type="email" id="email" name="email"
-            class="form-input"
-            value="<%= old && old.email ? old.email : '' %>"
-            placeholder="pilot@droneforge.io"
-            autocomplete="email" required
-          />
-        </div>
 
-        <div class="form-group">
-          <label class="form-label" for="password" style="display:flex;justify-content:space-between;align-items:center;">
-            Password
-            <a href="/auth/forgot-password" style="font-size:.65rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600;">Forgot?</a>
+        <!-- Email -->
+        <div class="si-group">
+          <label class="si-label" for="email">
+            <span class="material-symbols-outlined">alternate_email</span>
+            Operator ID / Email
           </label>
-          <div class="input-wrapper">
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">alternate_email</span>
             <input
-              type="password" id="password" name="password"
-              class="form-input"
-              placeholder="••••••••"
-              autocomplete="current-password" required
+              type="email" id="email" name="email"
+              value="<%= old && old.email ? old.email : '' %>"
+              placeholder="OPERATOR@DRONEFORGE.OPS"
+              autocomplete="email" required
             />
-            <button type="button" class="input-toggle" aria-label="Toggle password visibility">
-              <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
-            </button>
+            <div class="si-bar"></div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-full" style="margin-top:.75rem;">
+        <!-- Password -->
+        <div class="si-group">
+          <div class="si-label-row">
+            <label class="si-label" for="password">
+              <span class="material-symbols-outlined">lock</span>
+              Security Cipher
+            </label>
+            <a href="/auth/forgot-password" class="si-forgot">Recover Cipher</a>
+          </div>
+          <div class="si-wrap">
+            <span class="material-symbols-outlined si-icon">lock</span>
+            <input
+              type="password" id="password" name="password"
+              placeholder="••••••••••••"
+              autocomplete="current-password" required
+            />
+            <button type="button" class="si-toggle" aria-label="Toggle visibility">
+              <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 0;">visibility</span>
+            </button>
+            <div class="si-bar"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn-stitch">
           <span class="material-symbols-outlined" style="font-size:1rem;">login</span>
-          Authenticate
+          Access Command Center
         </button>
       </form>
 
-      <div class="auth-footer">
-        No account? <a href="/auth/register" style="color:var(--cyan);font-weight:700;">Register Now</a>
+      <hr class="auth-divider" />
+      <div class="auth-footer-link">
+        No account? <a href="/auth/register">Request Clearance</a>
       </div>
+
+    </div>
+  </main>
+
+  <!-- Status bar -->
+  <div class="auth-status-bar">
+    <div class="auth-status-item">
+      <div class="ast-dot-green"></div>
+      Global Uplink: Active
+    </div>
+    <div class="auth-status-item">
+      <div class="ast-dot-gray"></div>
+      Lat: 40.7128° N
+    </div>
+    <div class="auth-status-item">
+      <div class="ast-dot-gray"></div>
+      AES-256 Encrypted
     </div>
   </div>
-</main>
 
-<%- include('../partials/footer') %>
+</div>
+
 <%- include('../partials/scripts') %>
+<script>
+  document.querySelectorAll('.si-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.closest('.si-wrap').querySelector('input');
+      const icon  = btn.querySelector('.material-symbols-outlined');
+      if (input.type === 'password') { input.type = 'text'; icon.textContent = 'visibility_off'; }
+      else { input.type = 'password'; icon.textContent = 'visibility'; }
+    });
+  });
+</script>

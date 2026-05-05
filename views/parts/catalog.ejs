@@ -13,11 +13,11 @@
             <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">inventory_2</span>
             Parts Catalog
           </p>
-          <h1 class="catalog-title">
-            Forge Your <span style="color:var(--cyan)">Arsenal</span>
+          <h1 class="catalog-title" style="font-style:italic;">
+            Parts <span style="color:var(--cyan)">Catalog</span>
           </h1>
-          <p class="catalog-subtitle">
-            <%= parts.length %> parts available across 8 categories. Filter, search, and add to your build.
+          <p class="catalog-subtitle" style="font-family:var(--font-mono);letter-spacing:.05em;font-size:.85rem;">
+            TOTAL IDENTIFIED COMPONENTS: <%= parts.length %> — Filter, search, and add to your build.
           </p>
         </div>
         <div class="catalog-header-gif">
@@ -52,13 +52,13 @@
     <aside class="filter-sidebar" id="filterSidebar">
       <div class="filter-header">
         <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">tune</span>
-        Filters
+        Operational Filters
         <button class="filter-reset" id="filterReset">Reset All</button>
       </div>
 
       <!-- Category Filter -->
       <div class="filter-group">
-        <div class="filter-group-label">Category</div>
+        <div class="filter-group-label" style="letter-spacing:.15em;">Component Category</div>
         <div class="filter-cat-list">
           <button class="filter-cat-btn <%= !filters.category ? 'active' : '' %>" data-cat="">
             All Parts
@@ -83,8 +83,8 @@
 
       <!-- Price Range -->
       <div class="filter-group">
-        <div class="filter-group-label">
-          Price Range
+        <div class="filter-group-label" style="letter-spacing:.15em;">
+          Credit Range (SCU)
           <span class="filter-range-display" id="priceDisplay">
             $<span id="priceMinDisplay"><%= filters.minPrice || priceMin %></span>
             – $<span id="priceMaxDisplay"><%= filters.maxPrice || priceMax %></span>
@@ -98,8 +98,8 @@
 
       <!-- Weight Filter -->
       <div class="filter-group">
-        <div class="filter-group-label">
-          Max Weight
+        <div class="filter-group-label" style="letter-spacing:.15em;">
+          Max Mass (Grams)
           <span class="filter-range-display" id="weightDisplay">
             ≤ <span id="weightDisplay-val"><%= filters.maxWeight || weightMax %></span>g
           </span>
@@ -128,10 +128,10 @@
         <div class="sort-wrap">
           <label for="sortSelect" class="sr-only">Sort by</label>
           <select id="sortSelect" class="sort-select" aria-label="Sort parts">
-            <option value="price-asc">Price: Low → High</option>
-            <option value="price-desc">Price: High → Low</option>
-            <option value="weight-asc">Weight: Light → Heavy</option>
-            <option value="name-asc">Name: A → Z</option>
+            <option value="price-asc">Sort: Price (Low → High)</option>
+            <option value="price-desc">Sort: Price (High → Low)</option>
+            <option value="weight-asc">Sort: Mass (Light → Heavy)</option>
+            <option value="name-asc">Sort: Mission Critical</option>
           </select>
         </div>
       </div>

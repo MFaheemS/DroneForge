@@ -1,64 +1,65 @@
 <%- include('../partials/head', { title: '403 — Access Denied | DroneForge' }) %>
-<%- include('../partials/navbar') %>
 
-<main>
-  <div class="error-page">
-    <div style="position:relative;z-index:1;text-align:center;">
-      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;letter-spacing:.2em;color:var(--error);margin-bottom:.75rem;text-transform:uppercase;">Clearance Denied</p>
-      <div class="error-code red-grad">403</div>
-      <h1 class="error-title" style="color:var(--error);">Access Restricted</h1>
-      <p class="error-sub">
-        You don't have clearance to enter this zone.<br/>
-        Admin credentials required. Unauthorized access is logged.
-      </p>
+<div class="error-cinematic-wrap">
 
-      <div style="margin:1.5rem auto;width:100px;animation:warningFloat 3s ease-in-out infinite;opacity:.4;">
-        <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="38" y="30" width="24" height="10" rx="2" stroke="#ffb4ab" stroke-width="1.5"/>
-          <line x1="38" y1="35" x2="15" y2="35" stroke="#ffb4ab" stroke-width="1.5"/>
-          <line x1="62" y1="35" x2="85" y2="35" stroke="#ffb4ab" stroke-width="1.5"/>
-          <line x1="50" y1="30" x2="50" y2="12" stroke="#ffb4ab" stroke-width="1.5"/>
-          <line x1="50" y1="40" x2="50" y2="58" stroke="#ffb4ab" stroke-width="1.5"/>
-          <circle cx="15" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
-          <circle cx="85" cy="35" r="8" stroke="#ff8a00" stroke-width="1.5"/>
-          <circle cx="50" cy="12" r="8" stroke="#ff8a00" stroke-width="1.5"/>
-          <circle cx="50" cy="58" r="8" stroke="#ff8a00" stroke-width="1.5"/>
-          <line x1="44" y1="31" x2="56" y2="39" stroke="#ffb4ab" stroke-width="2"/>
-          <line x1="56" y1="31" x2="44" y2="39" stroke="#ffb4ab" stroke-width="2"/>
-        </svg>
-      </div>
+  <!-- Cinematic BG -->
+  <div class="error-cin-bg" style="background-image:url('https://lh3.googleusercontent.com/aida/ADBb0uiquZ-tThBP5rKXPxqG3GmjujSv_IQqaFkaz_7_UY2hS8kt-UygvWquUMaPd-urKbNkSAaThab1CIDe9_BwBWZ07SYpkvZzrAr6y3RmD-3KBwjxOVh7dqznIRlKwNqZVV8RIQxLpaABC3FGNC0pk34PrxALK6LKSKuxpizgIjmxa3dTEO_5xS4OR_L1UACvlgR5YoboOpnVSBydFq_EWEPPNk9g9vCx6SmvSg5-GDy8iUJ6qoqVruP29II');"></div>
+  <div class="error-cin-vignette"></div>
+  <div class="scanlines"></div>
 
-      <div style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--error);letter-spacing:.15em;margin-bottom:2rem;animation:warningBlink 1.2s step-end infinite;text-transform:uppercase;">
-        Unauthorized Access Attempt Logged
-      </div>
+  <!-- HUD text overlays -->
+  <div class="error-hud error-hud-tl">
+    <div>SYS.STAT // RESTRICTED</div>
+    <div>CLEARANCE: DENIED</div>
+    <div>ACCESS: REVOKED</div>
+  </div>
+  <div class="error-hud error-hud-tr">
+    <div>DRONEFORGE CMD</div>
+    <div>AUTH_FAIL</div>
+  </div>
+  <div class="error-hud error-hud-bl glitch">
+    <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">gpp_bad</span>
+    ERR_403_FORBIDDEN
+  </div>
+  <div class="error-hud error-hud-br">IP: LOGGED</div>
 
-      <div class="error-actions">
-        <a href="/" class="btn btn-primary">
-          <span class="material-symbols-outlined" style="font-size:1rem;">arrow_back</span>
-          Return to Safety
-        </a>
-        <% if (!user) { %>
-          <a href="/auth/login" class="btn btn-outline">Log In</a>
-        <% } %>
-      </div>
-
-      <p style="font-family:var(--font-label);font-size:.65rem;font-weight:600;color:var(--muted);margin-top:2rem;opacity:.4;letter-spacing:.08em;">
-        ERR_FORBIDDEN @ <%= new Date().toISOString() %> — IP Logged
-      </p>
+  <!-- Crosshair -->
+  <div class="error-crosshair" aria-hidden="true">
+    <div class="error-crosshair-ring">
+      <div class="ecr-h"></div>
+      <div class="ecr-v"></div>
     </div>
   </div>
-</main>
 
-<style>
-@keyframes warningFloat {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-10px); }
-}
-@keyframes warningBlink {
-  0%,100% { opacity: 1; }
-  50%      { opacity: 0; }
-}
-</style>
+  <!-- Main panel -->
+  <main class="error-cin-panel">
+    <div class="error-icon-ring">
+      <span class="material-symbols-outlined">gpp_bad</span>
+      <svg viewBox="0 0 100 100" fill="none">
+        <circle cx="50" cy="50" r="48" stroke="currentColor" stroke-dasharray="10 5" stroke-width="1"/>
+      </svg>
+    </div>
 
-<%- include('../partials/footer') %>
+    <h1 class="error-cin-title" style="color:var(--error);">Access Denied</h1>
+    <p class="error-cin-sub">
+      You don't have clearance to enter this restricted zone. Admin credentials required. Unauthorized access attempts are logged and monitored.
+    </p>
+
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/" class="error-cin-btn" style="background:var(--error);color:#fff;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">arrow_back</span>
+        Return to Safety
+      </a>
+      <% if (!user) { %>
+        <a href="/auth/login" class="btn btn-outline btn-sm">Log In</a>
+      <% } %>
+    </div>
+
+    <p style="font-family:var(--font-mono);font-size:.62rem;color:var(--error);margin-top:2rem;opacity:.5;letter-spacing:.06em;animation:glitchAnim 2s step-end infinite;">
+      UNAUTHORIZED ACCESS ATTEMPT LOGGED @ <%= new Date().toISOString() %>
+    </p>
+  </main>
+
+</div>
+
 <%- include('../partials/scripts') %>
