@@ -1,0 +1,290 @@
+<%- include('partials/head', { title: title }) %>
+<%- include('partials/navbar') %>
+
+<main class="builder-page">
+  <div class="grid-bg"></div>
+
+  <!-- ── BUILDER HEADER ── -->
+  <div class="builder-header">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <div>
+          <p class="section-label" style="margin-bottom:.4rem;">
+            <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">build</span>
+            Drone Builder
+          </p>
+          <h1 class="builder-title">Configure Your <span style="color:var(--cyan)">Machine</span></h1>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-outline btn-sm" id="resetBuildBtn" aria-label="Reset build">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">restart_alt</span>
+            Reset Build
+          </button>
+          <button class="btn btn-primary btn-sm" id="saveOrderBtn" aria-label="Save and order build">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">shopping_cart</span>
+            Save &amp; Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BUILDER BODY ── -->
+  <div class="container builder-body">
+
+    <!-- SCHEMATIC CENTER -->
+    <div class="builder-schematic-wrap">
+      <div class="schematic-label-top">DRONEFORGE BUILD STATION</div>
+
+      <!-- Compatibility Banner -->
+      <div class="compat-banner" id="compatBanner" style="display:none;">
+        <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:middle;" id="compatIcon">warning</span>
+        <span id="compatMsg">Incompatible configuration detected.</span>
+      </div>
+
+      <!-- SVG Schematic -->
+      <div class="schematic-canvas" id="schematicCanvas">
+        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" class="drone-svg" aria-label="Drone configuration schematic">
+
+          <!-- Grid lines -->
+          <defs>
+            <pattern id="sgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,242,255,0.05)" stroke-width="1"/>
+            </pattern>
+            <filter id="glow-cyan">
+              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glow-orange">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="500" height="500" fill="url(#sgrid)"/>
+
+          <!-- ── ARMS ── -->
+          <line x1="250" y1="250" x2="120" y2="120" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="380" y2="120" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="120" y2="380" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="380" y2="380" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+
+          <!-- ── BODY ── -->
+          <rect x="215" y="215" width="70" height="70" rx="12" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.5)" stroke-width="1.5"/>
+
+          <!-- ── SLOTS ── -->
+
+          <!-- Frame (body center overlay indicator) -->
+          <g class="slot-group" data-slot="frame" tabindex="0" role="button" aria-label="Frame slot">
+            <rect x="215" y="215" width="70" height="70" rx="12" fill="transparent" class="slot-hit"/>
+          </g>
+
+          <!-- Motor TL -->
+          <g class="slot-group motor-slot" data-slot="motors" data-index="0" tabindex="0" role="button" aria-label="Motor top-left slot">
+            <circle cx="105" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="105" cy="105" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
+            <text x="105" y="109" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+          </g>
+
+          <!-- Motor TR -->
+          <g class="slot-group motor-slot" data-slot="motors" data-index="1" tabindex="0" role="button" aria-label="Motor top-right slot">
+            <circle cx="395" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="395" cy="105" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
+            <text x="395" y="109" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+          </g>
+
+          <!-- Motor BL -->
+          <g class="slot-group motor-slot" data-slot="motors" data-index="2" tabindex="0" role="button" aria-label="Motor bottom-left slot">
+            <circle cx="105" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="105" cy="395" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
+            <text x="105" y="399" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+          </g>
+
+          <!-- Motor BR -->
+          <g class="slot-group motor-slot" data-slot="motors" data-index="3" tabindex="0" role="button" aria-label="Motor bottom-right slot">
+            <circle cx="395" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="395" cy="395" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
+            <text x="395" y="399" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+          </g>
+
+          <!-- Flight Controller (body top) -->
+          <g class="slot-group" data-slot="flightController" tabindex="0" role="button" aria-label="Flight Controller slot">
+            <rect x="225" y="192" width="50" height="20" rx="4" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-rect"/>
+            <text x="250" y="206" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">FC</text>
+          </g>
+
+          <!-- ESC (body right) -->
+          <g class="slot-group" data-slot="ESC" tabindex="0" role="button" aria-label="ESC slot">
+            <rect x="289" y="225" width="20" height="50" rx="4" fill="rgba(25,33,34,0.9)" stroke="rgba(255,138,0,0.4)" stroke-width="1.5" class="slot-rect"/>
+            <text x="299" y="254" text-anchor="middle" fill="rgba(255,138,0,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">ESC</text>
+          </g>
+
+          <!-- Battery (body left) -->
+          <g class="slot-group" data-slot="battery" tabindex="0" role="button" aria-label="Battery slot">
+            <rect x="160" y="225" width="52" height="50" rx="6" fill="rgba(25,33,34,0.9)" stroke="rgba(0,255,65,0.4)" stroke-width="1.5" class="slot-rect"/>
+            <text x="186" y="254" text-anchor="middle" fill="rgba(0,255,65,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">BATT</text>
+          </g>
+
+          <!-- Camera (front) -->
+          <g class="slot-group" data-slot="camera" tabindex="0" role="button" aria-label="Camera slot">
+            <rect x="225" y="288" width="50" height="25" rx="4" fill="rgba(25,33,34,0.9)" stroke="rgba(255,138,0,0.4)" stroke-width="1.5" class="slot-rect"/>
+            <text x="250" y="305" text-anchor="middle" fill="rgba(255,138,0,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">CAM</text>
+          </g>
+
+          <!-- Propellers indicator (on motor circles outer ring) -->
+          <g class="slot-group" data-slot="propellers" tabindex="0" role="button" aria-label="Propellers slot" style="cursor:pointer;">
+            <circle cx="105" cy="105" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="395" cy="105" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="105" cy="395" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="395" cy="395" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+          </g>
+
+          <!-- Transmitter (far right label) -->
+          <g class="slot-group" data-slot="transmitter" tabindex="0" role="button" aria-label="Transmitter slot">
+            <rect x="416" y="225" width="52" height="50" rx="6" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.35)" stroke-width="1.5" class="slot-rect"/>
+            <text x="442" y="254" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">TX</text>
+          </g>
+
+        </svg>
+
+        <!-- Slot Labels overlaid -->
+        <div class="slot-labels-overlay">
+          <div class="slot-label-item" style="top:2%;left:15%;">Frame</div>
+          <div class="slot-label-item" style="top:2%;right:15%;">Motors ×4</div>
+          <div class="slot-label-item" style="top:35%;left:2%;">Battery</div>
+          <div class="slot-label-item" style="top:35%;right:2%;">Transmitter</div>
+          <div class="slot-label-item" style="bottom:2%;left:15%;">Camera</div>
+          <div class="slot-label-item" style="bottom:2%;right:15%;">Propellers</div>
+        </div>
+      </div>
+
+      <!-- Slot Status Bar -->
+      <div class="slot-status-bar">
+        <% const slotDefs = [
+          { key: 'frame', label: 'Frame', icon: 'grid_view' },
+          { key: 'motors', label: 'Motors', icon: 'settings' },
+          { key: 'propellers', label: 'Props', icon: 'autorenew' },
+          { key: 'battery', label: 'Battery', icon: 'battery_charging_full' },
+          { key: 'flightController', label: 'FC', icon: 'memory' },
+          { key: 'camera', label: 'Camera', icon: 'camera_alt' },
+          { key: 'ESC', label: 'ESC', icon: 'electrical_services' },
+          { key: 'transmitter', label: 'TX', icon: 'settings_remote' }
+        ]; %>
+        <% slotDefs.forEach(s => { %>
+          <div class="slot-pill" id="pill-<%= s.key %>" data-slot="<%= s.key %>">
+            <span class="material-symbols-outlined" style="font-size:.75rem;font-variation-settings:'FILL' 0;"><%= s.icon %></span>
+            <%= s.label %>
+            <span class="pill-status empty" id="pill-status-<%= s.key %>">—</span>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- BUILD SUMMARY SIDEBAR -->
+    <aside class="build-summary" id="buildSummary">
+      <div class="summary-header">
+        <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">summarize</span>
+        Build Summary
+        <span class="summary-badge" id="summaryPartCount">0/8</span>
+      </div>
+
+      <!-- Parts list -->
+      <div class="summary-parts" id="summaryParts">
+        <div class="summary-empty">
+          <img src="/images/dji-small.gif" alt="Empty build" width="80" loading="lazy" />
+          <p>No parts selected yet.</p>
+          <p style="font-size:.8rem;color:var(--muted);">Click a slot on the schematic to add parts.</p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="summary-stats">
+        <div class="summary-stat">
+          <span class="stat-label-sm">Total Price</span>
+          <span class="stat-val-lg" id="totalPrice">$0.00</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-label-sm">Total Weight</span>
+          <span class="stat-val-lg" id="totalWeight">0g</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-label-sm">Est. Flight Time</span>
+          <span class="stat-val-lg" id="flightTime">—</span>
+        </div>
+        <div class="summary-stat">
+          <span class="stat-label-sm">Compatibility</span>
+          <span class="stat-val-lg compat-indicator" id="compatIndicator">
+            <span class="compat-dot" id="compatDot"></span>
+            <span id="compatText">—</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn btn-primary" id="orderBuildBtn" style="width:100%;" disabled>
+          <span class="material-symbols-outlined" style="font-size:.9rem;">shopping_cart</span>
+          Add to Cart
+        </button>
+        <button class="btn btn-outline btn-sm" id="resetBuildBtn2" style="width:100%;margin-top:.5rem;">
+          <span class="material-symbols-outlined" style="font-size:.9rem;">restart_alt</span>
+          Reset Build
+        </button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ── PART SELECTION MODAL ── -->
+<div class="modal-overlay" id="slotModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div>
+        <span class="section-label" style="margin-bottom:.25rem;font-size:.65rem;" id="modalCategory">Category</span>
+        <h2 class="modal-title" id="modalTitle">Select Part</h2>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-search-wrap">
+      <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--muted);">search</span>
+      <input type="text" id="modalSearch" class="modal-search-input" placeholder="Filter parts..." aria-label="Filter parts in modal" />
+    </div>
+
+    <div class="modal-parts-list" id="modalPartsList">
+      <div class="modal-loading">
+        <div class="spinner"></div>
+        Loading parts...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESET CONFIRM MODAL ── -->
+<div class="modal-overlay" id="resetModal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+  <div class="modal-panel" style="max-width:420px;">
+    <div class="modal-header">
+      <h2 class="modal-title" id="resetModalTitle" style="color:var(--error);">Reset Build?</h2>
+      <button class="modal-close" id="resetModalClose" aria-label="Close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <p style="color:var(--text-variant);font-size:.9rem;padding:1rem 1.5rem;line-height:1.7;">
+      This will remove all selected parts and clear your saved build. Are you sure?
+    </p>
+    <div style="display:flex;gap:.75rem;padding:0 1.5rem 1.5rem;">
+      <button class="btn btn-outline" id="resetCancelBtn" style="flex:1;">Cancel</button>
+      <button class="btn" id="resetConfirmBtn" style="flex:1;background:var(--error-container);color:var(--error);border-color:var(--error);">
+        <span class="material-symbols-outlined" style="font-size:.9rem;">delete_forever</span>
+        Reset
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST CONTAINER ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script src="/js/builder.js"></script>

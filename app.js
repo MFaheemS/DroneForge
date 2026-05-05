@@ -45,6 +45,8 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', require('./routes/home'));
 app.use('/auth', require('./routes/auth'));
+app.use('/parts', require('./routes/parts'));
+app.use('/build', require('./routes/build'));
 
 // 404
 app.use((req, res) => {

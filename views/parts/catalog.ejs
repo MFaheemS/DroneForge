@@ -1,0 +1,253 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="catalog-page">
+  <div class="grid-bg"></div>
+
+  <!-- ── PAGE HEADER ── -->
+  <div class="catalog-header">
+    <div class="container">
+      <div class="catalog-header-inner">
+        <div>
+          <p class="section-label" style="margin-bottom:.5rem;">
+            <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">inventory_2</span>
+            Parts Catalog
+          </p>
+          <h1 class="catalog-title">
+            Forge Your <span style="color:var(--cyan)">Arsenal</span>
+          </h1>
+          <p class="catalog-subtitle">
+            <%= parts.length %> parts available across 8 categories. Filter, search, and add to your build.
+          </p>
+        </div>
+        <div class="catalog-header-gif">
+          <img src="/images/drone-lineal.gif" alt="Drone animation" loading="lazy" width="120" height="120" />
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar-wrap">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-bar"
+          placeholder="Search parts — motors, frames, cameras..."
+          value="<%= filters.search || '' %>"
+          autocomplete="off"
+          aria-label="Search parts"
+        />
+        <button class="search-clear" id="searchClear" aria-label="Clear search" style="display:none;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">close</span>
+        </button>
+        <span class="search-validation-msg" id="searchValidation" role="alert"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BODY: SIDEBAR + GRID ── -->
+  <div class="container catalog-body">
+
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar" id="filterSidebar">
+      <div class="filter-header">
+        <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">tune</span>
+        Filters
+        <button class="filter-reset" id="filterReset">Reset All</button>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <div class="filter-group-label">Category</div>
+        <div class="filter-cat-list">
+          <button class="filter-cat-btn <%= !filters.category ? 'active' : '' %>" data-cat="">
+            All Parts
+          </button>
+          <% const catLabels = {
+            frame: 'Frames',
+            motors: 'Motors',
+            propellers: 'Propellers',
+            battery: 'Batteries',
+            flightController: 'Flight Controllers',
+            camera: 'Cameras',
+            ESC: 'ESCs',
+            transmitter: 'Transmitters'
+          }; %>
+          <% categories.forEach(cat => { %>
+            <button class="filter-cat-btn <%= filters.category === cat ? 'active' : '' %>" data-cat="<%= cat %>">
+              <%= catLabels[cat] %>
+            </button>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Price Range -->
+      <div class="filter-group">
+        <div class="filter-group-label">
+          Price Range
+          <span class="filter-range-display" id="priceDisplay">
+            $<span id="priceMinDisplay"><%= filters.minPrice || priceMin %></span>
+            – $<span id="priceMaxDisplay"><%= filters.maxPrice || priceMax %></span>
+          </span>
+        </div>
+        <div class="range-track-wrap">
+          <input type="range" class="range-input" id="priceMin" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.minPrice || priceMin %>" step="1" aria-label="Minimum price" />
+          <input type="range" class="range-input" id="priceMax" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.maxPrice || priceMax %>" step="1" aria-label="Maximum price" />
+        </div>
+      </div>
+
+      <!-- Weight Filter -->
+      <div class="filter-group">
+        <div class="filter-group-label">
+          Max Weight
+          <span class="filter-range-display" id="weightDisplay">
+            ≤ <span id="weightDisplay-val"><%= filters.maxWeight || weightMax %></span>g
+          </span>
+        </div>
+        <input type="range" class="range-input single" id="weightMax" min="0" max="<%= weightMax %>" value="<%= filters.maxWeight || weightMax %>" step="10" aria-label="Maximum weight in grams" />
+      </div>
+
+      <!-- Mobile apply -->
+      <button class="btn btn-primary" id="applyFiltersMobile" style="width:100%;display:none;">Apply Filters</button>
+    </aside>
+
+    <!-- Mobile Filter Toggle -->
+    <button class="filter-toggle-mobile" id="filterToggleMobile">
+      <span class="material-symbols-outlined" style="font-size:1rem;">tune</span>
+      Filters
+      <span class="filter-badge" id="filterBadge" style="display:none;">!</span>
+    </button>
+
+    <!-- Parts Grid -->
+    <div class="catalog-main">
+      <!-- Results count -->
+      <div class="catalog-toolbar">
+        <span class="results-count" id="resultsCount">
+          <span id="countNum"><%= parts.length %></span> parts found
+        </span>
+        <div class="sort-wrap">
+          <label for="sortSelect" class="sr-only">Sort by</label>
+          <select id="sortSelect" class="sort-select" aria-label="Sort parts">
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="weight-asc">Weight: Light → Heavy</option>
+            <option value="name-asc">Name: A → Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="parts-grid" id="partsGrid">
+        <% parts.forEach((part, i) => { %>
+          <article
+            class="part-card reveal"
+            style="animation-delay: <%= (i % 12) * 50 %>ms"
+            data-name="<%= part.name.toLowerCase() %>"
+            data-category="<%= part.category %>"
+            data-price="<%= part.price %>"
+            data-weight="<%= part.weight %>"
+            data-id="<%= part._id %>"
+          >
+            <!-- Image -->
+            <div class="part-card-img-wrap">
+              <% if (part.imageUrl) { %>
+                <img src="<%= part.imageUrl %>" alt="<%= part.name %>" loading="lazy" class="part-card-img" />
+              <% } else { %>
+                <div class="part-card-img-placeholder">
+                  <span class="material-symbols-outlined" style="font-size:3rem;color:var(--cyan);opacity:.3;">precision_manufacturing</span>
+                </div>
+              <% } %>
+              <span class="part-cat-badge <%= part.category %>"><%= catLabels[part.category] %></span>
+              <% if (part.stock <= 3) { %>
+                <span class="part-stock-badge low">Only <%= part.stock %> left</span>
+              <% } %>
+            </div>
+
+            <!-- Body -->
+            <div class="part-card-body">
+              <h3 class="part-name"><%= part.name %></h3>
+              <p class="part-desc"><%= part.description.substring(0, 90) %><%= part.description.length > 90 ? '…' : '' %></p>
+
+              <!-- Quick Specs -->
+              <div class="part-specs">
+                <span class="spec-chip">
+                  <span class="material-symbols-outlined" style="font-size:.75rem;">scale</span>
+                  <%= part.weight %>g
+                </span>
+                <% if (part.specs && part.specs.size) { %>
+                  <span class="spec-chip"><%= part.specs.size %></span>
+                <% } %>
+                <% if (part.specs && part.specs.cells) { %>
+                  <span class="spec-chip"><%= part.specs.cells %></span>
+                <% } %>
+                <% if (part.specs && part.specs.kv) { %>
+                  <span class="spec-chip"><%= part.specs.kv %></span>
+                <% } %>
+              </div>
+
+              <!-- Footer -->
+              <div class="part-card-footer">
+                <span class="part-price">$<%= part.price.toFixed(2) %></span>
+                <div class="part-actions">
+                  <button class="btn-spec-toggle" data-id="<%= part._id %>" aria-label="View specs for <%= part.name %>">
+                    <span class="material-symbols-outlined" style="font-size:.9rem;">info</span>
+                  </button>
+                  <% if (part.stock > 0) { %>
+                    <button
+                      class="btn btn-primary btn-sm add-to-build-btn"
+                      data-id="<%= part._id %>"
+                      data-name="<%= part.name %>"
+                      data-category="<%= part.category %>"
+                      data-price="<%= part.price %>"
+                      data-weight="<%= part.weight %>"
+                      data-image="<%= part.imageUrl %>"
+                    >
+                      <span class="material-symbols-outlined" style="font-size:.85rem;">add</span>
+                      Add to Build
+                    </button>
+                  <% } else { %>
+                    <button class="btn btn-sm" disabled style="opacity:.4;cursor:not-allowed;">Out of Stock</button>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Spec Popup -->
+            <div class="spec-popup" id="spec-<%= part._id %>" role="tooltip" aria-hidden="true">
+              <div class="spec-popup-header">
+                <span style="font-weight:700;font-family:var(--font-headline);font-size:.9rem;"><%= part.name %></span>
+                <button class="spec-popup-close" aria-label="Close specs">&times;</button>
+              </div>
+              <div class="spec-popup-body">
+                <% if (part.specs) {
+                     const specEntries = (part.specs instanceof Map)
+                       ? Array.from(part.specs.entries())
+                       : Object.entries(part.specs);
+                     specEntries.forEach(([k, v]) => { %>
+                  <div class="spec-row">
+                    <span class="spec-key"><%= k.replace(/([A-Z])/g,' $1').replace(/^./,s=>s.toUpperCase()) %></span>
+                    <span class="spec-val"><%= v %></span>
+                  </div>
+                <% }); } %>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+
+        <!-- Empty State -->
+        <div class="parts-empty" id="partsEmpty" style="display:none;">
+          <img src="/images/drone-fly.gif" alt="No results" width="120" loading="lazy" />
+          <p>No parts match your filters.</p>
+          <button class="btn btn-outline" id="clearFiltersEmpty">Clear All Filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── ADD TO BUILD TOAST ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script src="/js/catalog.js"></script>
