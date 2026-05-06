@@ -144,8 +144,10 @@ img { max-width: 100%; height: auto; display: block; }
   color: var(--text);
   background: rgba(255,255,255,0.05);
 }
-.navbar-links a.active {
+.navbar-links a.active,
+.navbar-links a.nav-active {
   color: var(--cyan);
+  background: rgba(0,242,255,0.07);
   border-bottom: 2px solid var(--cyan);
   padding-bottom: calc(0.4rem - 2px);
 }
@@ -467,6 +469,16 @@ main { flex: 1; position: relative; z-index: 1; }
 /* ───────────────────────────────────────
    GLASS CARDS
    ─────────────────────────────────────── */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-inner);
+  transition: border-color var(--t) var(--ease);
+}
+
 .card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
@@ -1344,6 +1356,47 @@ footer::before {
 .part-card {
   background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 0);
   background-size: 4px 4px;
+}
+
+/* ───────────────────────────────────────
+   DEMO CREDENTIALS (Login Page)
+   ─────────────────────────────────────── */
+.demo-creds-section {
+  margin-top: 1.25rem;
+}
+.demo-creds-label {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--muted);
+  margin-bottom: .75rem;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+.demo-creds-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+}
+.demo-cred-btn {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .65rem .85rem;
+  background: var(--surface-container);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--t), background var(--t), box-shadow var(--t);
+  width: 100%;
+}
+.demo-cred-btn:hover {
+  border-color: rgba(0,242,255,.35);
+  background: rgba(0,242,255,.05);
+  box-shadow: 0 0 12px rgba(0,242,255,.08);
 }
 
 /* ───────────────────────────────────────

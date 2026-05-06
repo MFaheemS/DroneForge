@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DroneForge - User Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e5e2e3",
+                        "primary-fixed-dim": "#ecb2ff",
+                        "on-primary-fixed-variant": "#74009f",
+                        "on-secondary-fixed": "#290055",
+                        "tertiary-fixed": "#e2e0fc",
+                        "tertiary-fixed-dim": "#c6c4df",
+                        "primary-container": "#bd00ff",
+                        "inverse-on-surface": "#313031",
+                        "primary": "#ecb2ff",
+                        "on-primary": "#520071",
+                        "on-background": "#e5e2e3",
+                        "outline": "#9d8ba0",
+                        "surface-container-highest": "#353436",
+                        "background": "#131314",
+                        "on-tertiary-fixed": "#1a1a2e",
+                        "surface-tint": "#ecb2ff",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-tertiary-fixed-variant": "#45455b",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1c1b1c",
+                        "secondary": "#d7baff",
+                        "tertiary-container": "#75748c",
+                        "secondary-container": "#611fb0",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-dim": "#131314",
+                        "surface-variant": "#353436",
+                        "secondary-fixed": "#eddcff",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#2f2e43",
+                        "outline-variant": "#514255",
+                        "on-surface-variant": "#d4c0d7",
+                        "surface-container": "#201f20",
+                        "primary-fixed": "#f8d8ff",
+                        "on-tertiary-container": "#ffffff",
+                        "surface": "#131314",
+                        "secondary-fixed-dim": "#d7baff",
+                        "on-primary-fixed": "#320047",
+                        "tertiary": "#c6c4df",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed-variant": "#5e1bad",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#cca8ff",
+                        "inverse-primary": "#9900cf",
+                        "surface-bright": "#3a393a",
+                        "on-secondary": "#440087",
+                        "on-primary-container": "#ffffff",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "48px",
+                        "container-max": "1440px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-lg": ["Space Grotesk"],
+                        "mono-data": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-md": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #131314; color: #e5e2e3; }
+        .glass-panel {
+            background-color: rgba(32, 31, 32, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-active {
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
+        }
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+        }
+        .status-active {
+            background-color: #ecb2ff;
+            box-shadow: 0 0 8px #ecb2ff;
+        }
+        .status-inactive {
+            background-color: #514255;
+        }
+        .terminal-input:focus {
+            outline: none;
+            border-bottom-color: #bd00ff;
+            box-shadow: 0 4px 15px -3px rgba(189, 0, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col bg-background relative overflow-x-hidden selection:bg-primary-container selection:text-white">
+<!-- Ambient Glow Background -->
+<div class="fixed inset-0 pointer-events-none z-0">
+<div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/5 blur-[120px]"></div>
+<div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-secondary-container/5 blur-[120px]"></div>
+</div>
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-2xl sticky top-0 w-full border-b border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-50">
+<div class="flex justify-between items-center px-8 py-4 max-w-[1440px] mx-auto w-full z-50">
+<div class="flex items-center gap-8">
+<div class="text-xl font-black tracking-tighter text-white drop-shadow-[0_0_10px_rgba(189,0,255,0.5)]">
+                    DroneForge
+                </div>
+<!-- Nav Links - Simplified for admin view context -->
+<nav class="hidden md:flex gap-6">
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors duration-200 py-2" href="#">Hangar</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors duration-200 py-2" href="#">Blueprints</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.2em] text-xs font-bold text-zinc-500 hover:text-zinc-200 transition-colors duration-200 py-2" href="#">Fleet</a>
+<a class="font-['Space_Grotesk'] uppercase tracking-[0.2em] text-xs font-bold text-[#BD00FF] border-b-2 border-[#BD00FF] transition-all duration-300 py-2" href="#">Terminal</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-zinc-500 hover:text-zinc-200 transition-colors duration-200 hover:bg-white/5 rounded-md p-2 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-[#BD00FF] hover:bg-white/5 rounded-md p-2 active:scale-95 transition-transform duration-150 glow-active bg-white/5">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="text-zinc-500 hover:text-zinc-200 transition-colors duration-200 hover:bg-white/5 rounded-md p-2 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-margin py-margin z-10 relative">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">User Management</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Manage operator access, roles, and system clearances. Strict protocol enforcement active.</p>
+</div>
+<div class="flex gap-4">
+<button class="glass-panel flex items-center gap-2 px-6 py-3 rounded-DEFAULT text-primary hover:bg-white/5 transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span class="font-label-caps text-label-caps">Export Roster</span>
+</button>
+<button class="bg-gradient-to-r from-secondary-container to-primary-container px-6 py-3 rounded-DEFAULT flex items-center gap-2 text-white border-t border-white/20 hover:shadow-[0_0_20px_rgba(189,0,255,0.4)] transition-shadow">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+<span class="font-label-caps text-label-caps">Provision Operator</span>
+</button>
+</div>
+</div>
+<!-- Terminal Filter Bar -->
+<div class="glass-panel rounded-xl p-6 mb-8 flex flex-col md:flex-row gap-6 items-end">
+<div class="flex-grow w-full">
+<label class="font-mono-data text-mono-data text-tertiary mb-2 block opacity-70">TERMINAL_QUERY //</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-0 top-1/2 -translate-y-1/2 text-primary ml-2">terminal</span>
+<input class="w-full bg-surface-container-highest border-b border-outline-variant text-on-surface font-mono-data text-mono-data py-3 pl-10 pr-4 terminal-input transition-colors rounded-t-DEFAULT" placeholder="SELECT * FROM operators WHERE..." type="text"/>
+</div>
+</div>
+<div class="w-full md:w-48">
+<label class="font-mono-data text-mono-data text-tertiary mb-2 block opacity-70">ROLE_FILTER //</label>
+<select class="w-full bg-surface-container-highest border-b border-outline-variant text-on-surface font-mono-data text-mono-data py-3 px-4 focus:outline-none focus:border-primary transition-colors appearance-none rounded-t-DEFAULT">
+<option>ALL_ROLES</option>
+<option>ADMIN</option>
+<option>OPERATOR</option>
+<option>OBSERVER</option>
+</select>
+</div>
+<div class="w-full md:w-48">
+<label class="font-mono-data text-mono-data text-tertiary mb-2 block opacity-70">STATUS_FILTER //</label>
+<select class="w-full bg-surface-container-highest border-b border-outline-variant text-on-surface font-mono-data text-mono-data py-3 px-4 focus:outline-none focus:border-primary transition-colors appearance-none rounded-t-DEFAULT">
+<option>ALL_STATUS</option>
+<option>ACTIVE</option>
+<option>DEACTIVATED</option>
+<option>SUSPENDED</option>
+</select>
+</div>
+</div>
+<!-- Data Table -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-white/10 bg-surface-container/50">
+<th class="py-4 px-6 font-label-caps text-label-caps text-tertiary">Operator ID</th>
+<th class="py-4 px-6 font-label-caps text-label-caps text-tertiary">Identification / Comm</th>
+<th class="py-4 px-6 font-label-caps text-label-caps text-tertiary">Clearance Role</th>
+<th class="py-4 px-6 font-label-caps text-label-caps text-tertiary">Telemetry Status</th>
+<th class="py-4 px-6 font-label-caps text-label-caps text-tertiary text-right">Directives</th>
+</tr>
+</thead>
+<tbody class="font-mono-data text-mono-data text-on-surface-variant divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<span class="text-primary-fixed-dim">DF-OPR-7734</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="A stark, high-contrast portrait of an elite drone operator in a dark command center. The lighting is moody, with sharp neon purple edge lights illuminating their profile against a pitch-black background. The aesthetic is heavily tech-focused, minimalist, and clandestine, capturing a sense of intense focus and specialized aerospace operation." class="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all" data-alt="A stark, high-contrast portrait of an elite drone operator in a dark command center. The lighting is moody, with sharp neon purple edge lights illuminating their profile against a pitch-black background. The aesthetic is heavily tech-focused, minimalist, and clandestine, capturing a sense of intense focus and specialized aerospace operation." src="https://lh3.googleusercontent.com/aida/ADBb0uiquZ-tThBP5rKXPxqG3GmjujSv_IQqaFkaz_7_UY2hS8kt-UygvWquUMaPd-urKbNkSAaThab1CIDe9_BwBWZ07SYpkvZzrAr6y3RmD-3KBwjxOVh7dqznIRlKwNqZVV8RIQxLpaABC3FGNC0pk34PrxALK6LKSKuxpizgIjmxa3dTEO_5xS4OR_L1UACvlgR5YoboOpnVSBydFq_EWEPPNk9g9vCx6SmvSg5-GDy8iUJ6qoqVruP29II"/>
+</div>
+<div>
+<div class="text-on-surface font-body-md">Kaelen Vance</div>
+<div class="text-[12px] opacity-70">k.vance@droneforge.ops</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="px-2 py-1 bg-secondary-container/20 border border-secondary-container rounded-DEFAULT text-secondary text-[12px]">ADMIN</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-dot status-active"></div>
+<span>ACTIVE</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-outline hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-error transition-colors p-1 ml-2"><span class="material-symbols-outlined text-[20px]">block</span></button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<span class="text-primary-fixed-dim">DF-OPR-8921</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="A stark, high-contrast portrait of a specialized aerospace technician in a low-light environment. The face is partially obscured by shadows, lit only by the reflection of telemetry screens showing complex flight data. The mood is serious, technical, and underground, fitting a highly secure tactical operations team." class="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all" data-alt="A stark, high-contrast portrait of a specialized aerospace technician in a low-light environment. The face is partially obscured by shadows, lit only by the reflection of telemetry screens showing complex flight data. The mood is serious, technical, and underground, fitting a highly secure tactical operations team." src="https://lh3.googleusercontent.com/aida/ADBb0ujmh_-LdCRXmJItCIxWFFrVRWsPG43X6Uv7ZZbDSKf8lwS3gDxXSXgJjILbtuHgM_RTbwicL1LMnwJfiZ0HMHCvnG885fiv8rlnhz5Z3YR1R6SoyKC2gz7VRkFOaSHDgV9PxOyfpQb4s9gLmKNhbEZDb_fsKz8FaVIJE8qvwPS4QZalAOlsbY6LKRikmLWWdWnjCXUg3oW9zjMTMbRdebprVzqsBvJyxEOucdwXERlrWLEemziLzsGPIbI"/>
+</div>
+<div>
+<div class="text-on-surface font-body-md">Sariel Thorne</div>
+<div class="text-[12px] opacity-70">s.thorne@droneforge.ops</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="px-2 py-1 bg-surface-container-highest border border-outline-variant rounded-DEFAULT text-on-surface-variant text-[12px]">OPERATOR</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-dot status-active"></div>
+<span>ACTIVE</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-outline hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-error transition-colors p-1 ml-2"><span class="material-symbols-outlined text-[20px]">block</span></button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/5 transition-colors group opacity-60">
+<td class="py-4 px-6">
+<span class="text-outline">DF-OPR-1104</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[16px] text-outline">person_off</span>
+</div>
+<div>
+<div class="text-on-surface font-body-md line-through">Jaxon Rey</div>
+<div class="text-[12px] opacity-70">j.rey@droneforge.ops</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="px-2 py-1 bg-surface-container-highest border border-outline-variant rounded-DEFAULT text-on-surface-variant text-[12px]">OBSERVER</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-dot status-inactive"></div>
+<span class="text-outline">DEACTIVATED</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-outline hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-primary-fixed transition-colors p-1 ml-2"><span class="material-symbols-outlined text-[20px]">settings_backup_restore</span></button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<span class="text-primary-fixed-dim">DF-OPR-4492</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="A moody, high-contrast close-up of a tactical operator's eye reflecting a glowing HUD interface. The lighting is predominantly deep violet and stark white, creating a sense of intense focus and advanced technological integration. The overall aesthetic is dark, sleek, and highly classified." class="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all" data-alt="A moody, high-contrast close-up of a tactical operator's eye reflecting a glowing HUD interface. The lighting is predominantly deep violet and stark white, creating a sense of intense focus and advanced technological integration. The overall aesthetic is dark, sleek, and highly classified." src="https://lh3.googleusercontent.com/aida/ADBb0uhTzJv9Ah8Cp-LLu4NIwtt0tqJt15kF8qkSSDeXCTYR3Z0A4i0FM7-Nd3jAdzI-CzD8_zDeu5kZRDM_Ab23ruvIu-4LEYNNh0UdUDCBCTjRPjZ-swRsN6Vre8OLuQCezA3GzpjfJ6Ef_9SIzNg8spM88fqcQud_pMFA9WzO654TLm0r1Ne00cAI0nYGGGVARnvz6wPL5g2lsFEFGpkHU7HooBXj_ABOwcnhaqGbG8gsPTA6K0kqK4ix9A"/>
+</div>
+<div>
+<div class="text-on-surface font-body-md">Elara Voss</div>
+<div class="text-[12px] opacity-70">e.voss@droneforge.ops</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="px-2 py-1 bg-surface-container-highest border border-outline-variant rounded-DEFAULT text-on-surface-variant text-[12px]">OPERATOR</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-dot status-active"></div>
+<span>ACTIVE</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-outline hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-error transition-colors p-1 ml-2"><span class="material-symbols-outlined text-[20px]">block</span></button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<span class="text-primary-fixed-dim">DF-OPR-5510</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest border border-outline-variant flex items-center justify-center overflow-hidden">
+<img alt="Abstract representation of digital identity in a dark, tech-noir setting. Glitching geometric forms in neon purple and stark white hint at a facial profile, set against a deep obsidian background. The style is heavily reliant on glassmorphism and tactile minimalism, conveying a sense of encrypted data and clandestine operations." class="w-full h-full object-cover opacity-80 mix-blend-luminosity group-hover:mix-blend-normal transition-all" data-alt="Abstract representation of digital identity in a dark, tech-noir setting. Glitching geometric forms in neon purple and stark white hint at a facial profile, set against a deep obsidian background. The style is heavily reliant on glassmorphism and tactile minimalism, conveying a sense of encrypted data and clandestine operations." src="https://lh3.googleusercontent.com/aida/ADBb0ugz6DvFMVAc0JadbCF0k-XwSzfgEZNFHQc75NaaQGqeoZu4ej6WUHQCEBpc84LP6zPFiB2YPvS7EEE3AXgQm_BXrNxs8eiEngfqH7c2N2tlVLRPuX3QrYlH1j75emiQurMHT9vyqUDJzV6oPDJZ-2wcuKGdiwpQeJ8zUG8WvsgU5yUHwTakQ9YZdUCUlJQtwMKJVlXuvntMoH_FBAlosCwvC1kizNkC84wpSb9PWWg17b-aV5Wo8-G90gw"/>
+</div>
+<div>
+<div class="text-on-surface font-body-md">Marcus Chen</div>
+<div class="text-[12px] opacity-70">m.chen@droneforge.ops</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6">
+<span class="px-2 py-1 bg-secondary-container/20 border border-secondary-container rounded-DEFAULT text-secondary text-[12px]">ADMIN</span>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-dot status-active"></div>
+<span>ACTIVE</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-outline hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-error transition-colors p-1 ml-2"><span class="material-symbols-outlined text-[20px]">block</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="border-t border-white/10 p-4 flex justify-between items-center bg-surface-container/30">
+<div class="font-mono-data text-mono-data text-outline">
+                    Showing 1 to 5 of 42 entries
+                </div>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT bg-primary-container text-white glow-active border border-primary-container">
+                        1
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+                        2
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+                        3
+                    </button>
+<span class="w-8 h-8 flex items-center justify-center text-outline">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+                        9
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-DEFAULT border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-zinc-950 w-full border-t border-white/5 mt-auto z-50">
+<div class="flex flex-col md:flex-row justify-between items-center px-12 py-8 max-w-[1440px] mx-auto w-full gap-4">
+<div class="text-zinc-600 font-bold font-['Space_Grotesk'] text-[10px] tracking-widest uppercase">
+                DroneForge
+            </div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-600 opacity-60 hover:opacity-100 hover:text-white transition-opacity cursor-crosshair uppercase" href="#">Security Protocols</a>
+<a class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-600 opacity-60 hover:opacity-100 hover:text-white transition-opacity cursor-crosshair uppercase" href="#">Telemetry API</a>
+<a class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-600 opacity-60 hover:opacity-100 hover:text-white transition-opacity cursor-crosshair uppercase" href="#">Flight Logs</a>
+<a class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-600 opacity-60 hover:opacity-100 hover:text-white transition-opacity cursor-crosshair uppercase" href="#">System Status</a>
+<a class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-600 opacity-60 hover:opacity-100 hover:text-white transition-opacity cursor-crosshair uppercase" href="#">Terms of Engagement</a>
+</div>
+<div class="font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 uppercase text-center md:text-right">
+                Â© 2024 DroneForge Tactical Operations. Clandestine Clearance Required.
+            </div>
+</div>
+</footer>
+<!-- Hidden image reference to satisfy requirements if not used above -->
+<div class="hidden">
+<img alt="A wide, cinematic shot of a dark, high-tech server room or command center. Rows of metallic hardware are barely visible in the low light, punctuated by rhythmic, glowing neon purple indicator lights. The scene evokes a deep sense of a clandestine, underground data hub, strictly adhering to a tactile minimalist and glassmorphic aesthetic." data-alt="A wide, cinematic shot of a dark, high-tech server room or command center. Rows of metallic hardware are barely visible in the low light, punctuated by rhythmic, glowing neon purple indicator lights. The scene evokes a deep sense of a clandestine, underground data hub, strictly adhering to a tactile minimalist and glassmorphic aesthetic." src="https://lh3.googleusercontent.com/aida/ADBb0ujcragCVjKsuTRhOU7Ugi7oA0-LnL4t_MhLNgahMWjsxTvUkvqWcZvPHzyUpRMe-iL2d2I3d87qBRUAqEaKgFx_V0HI03rVlgLcRcX2k9hYnfpb9BohvbN_zRhoRo1yMwXgt-Lgfja0oNqrGCitWaJ4uIlsJTaraqDDICA8TpPZTFtTtDaBZJmAvG07alnwM3-oaXy3j-0d6x-yA5DSXSMZ93C_rGG6zCxfqWj8K0oFlVazOZ00ScaWDEQ"/>
+</div>
+</body></html>

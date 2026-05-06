@@ -1,0 +1,114 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">manage_accounts</span>
+            Operator Management
+          </p>
+          <h1 class="admin-page-title">User <span style="color:var(--cyan)">Registry</span></h1>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <form method="GET" action="/admin/users" class="admin-filter-bar glass-card">
+        <div class="admin-filter-row">
+          <div class="admin-search-wrap">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--muted);">search</span>
+            <input type="text" name="search" class="admin-search-input" placeholder="Search by name or email…" value="<%= search %>" />
+          </div>
+          <select name="role" class="form-select" style="width:auto;min-width:130px;">
+            <option value="">All Roles</option>
+            <option value="user" <%= role==='user'?'selected':'' %>>User</option>
+            <option value="admin" <%= role==='admin'?'selected':'' %>>Admin</option>
+          </select>
+          <select name="status" class="form-select" style="width:auto;min-width:140px;">
+            <option value="">All Status</option>
+            <option value="active" <%= status==='active'?'selected':'' %>>Active</option>
+            <option value="inactive" <%= status==='inactive'?'selected':'' %>>Inactive</option>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <span class="material-symbols-outlined" style="font-size:.85rem;">filter_list</span>
+            Filter
+          </button>
+        </div>
+      </form>
+
+      <div class="glass-card admin-card" style="margin-top:1.5rem;">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">Operators (<%= total %>)</h2>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Operator</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach(u => { %>
+                <tr id="user-row-<%= u._id %>">
+                  <td>
+                    <div style="display:flex;align-items:center;gap:.75rem;">
+                      <div class="admin-avatar"><%= u.name.charAt(0).toUpperCase() %></div>
+                      <span style="font-size:.9rem;color:var(--text);font-weight:500;"><%= u.name %></span>
+                    </div>
+                  </td>
+                  <td><span style="font-size:.8rem;color:var(--muted);font-family:var(--font-mono);"><%= u.email %></span></td>
+                  <td>
+                    <select class="form-select role-select" data-user-id="<%= u._id %>" style="width:auto;font-size:.75rem;padding:.25rem .5rem;" <%= u._id.toString() === currentUserId.toString() ? 'disabled' : '' %>>
+                      <option value="user"  <%= u.role==='user'  ? 'selected':'' %>>User</option>
+                      <option value="admin" <%= u.role==='admin' ? 'selected':'' %>>Admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="status-badge <%= u.isActive ? 'status-confirmed' : 'status-cancelled' %>">
+                      <%= u.isActive ? 'ACTIVE' : 'INACTIVE' %>
+                    </span>
+                  </td>
+                  <td><span style="font-size:.75rem;color:var(--muted);font-family:var(--font-mono);"><%= new Date(u.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span></td>
+                  <td>
+                    <% if (u._id.toString() !== currentUserId.toString()) { %>
+                      <button class="btn btn-outline btn-sm toggle-status-btn" data-user-id="<%= u._id %>" data-active="<%= u.isActive %>">
+                        <span class="material-symbols-outlined" style="font-size:.8rem;"><%= u.isActive ? 'block' : 'check_circle' %></span>
+                        <%= u.isActive ? 'Deactivate' : 'Activate' %>
+                      </button>
+                    <% } else { %>
+                      <span style="font-size:.75rem;color:var(--muted);">— (you)</span>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (pages > 1) { %>
+          <div class="admin-pagination">
+            <% for (let i = 1; i <= pages; i++) { %>
+              <a href="/admin/users?page=<%= i %>&search=<%= search %>&role=<%= role %>&status=<%= status %>"
+                 class="admin-page-btn <%= page === i ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script src="/js/admin.js"></script>

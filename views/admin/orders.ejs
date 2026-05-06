@@ -1,0 +1,95 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">receipt_long</span>
+            Deployment Logs
+          </p>
+          <h1 class="admin-page-title">Order <span style="color:var(--cyan)">Control</span></h1>
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <form method="GET" action="/admin/orders" class="admin-filter-bar glass-card">
+        <div class="admin-filter-row">
+          <select name="status" class="form-select" style="width:auto;min-width:150px;">
+            <option value="">All Status</option>
+            <% ['pending','confirmed','shipped','delivered','cancelled'].forEach(s => { %>
+              <option value="<%= s %>" <%= status===s?'selected':'' %>><%= s.charAt(0).toUpperCase()+s.slice(1) %></option>
+            <% }) %>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <span class="material-symbols-outlined" style="font-size:.85rem;">filter_list</span>
+            Filter
+          </button>
+        </div>
+      </form>
+
+      <div class="glass-card admin-card" style="margin-top:1.5rem;">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">Orders (<%= total %>)</h2>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Build</th>
+                <th>Operator</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Update</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% orders.forEach(order => { %>
+                <tr id="order-row-<%= order._id %>">
+                  <td><span style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);">DF-<%= order._id.toString().slice(-8).toUpperCase() %></span></td>
+                  <td><span style="font-size:.85rem;color:var(--text);font-weight:600;"><%= order.buildName %></span></td>
+                  <td><span style="font-size:.8rem;color:var(--text-variant);"><%= order.userId?.name || '—' %></span></td>
+                  <td><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">$<%= order.totalPrice.toFixed(2) %></span></td>
+                  <td><span class="status-badge status-<%= order.status %>" id="status-badge-<%= order._id %>"><%= order.status.toUpperCase() %></span></td>
+                  <td><span style="font-size:.75rem;color:var(--muted);font-family:var(--font-mono);"><%= new Date(order.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span></td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:.5rem;">
+                      <select class="form-select order-status-select" data-order-id="<%= order._id %>" style="width:auto;font-size:.75rem;padding:.25rem .5rem;">
+                        <% ['pending','confirmed','shipped','delivered','cancelled'].forEach(s => { %>
+                          <option value="<%= s %>" <%= order.status===s?'selected':'' %>><%= s.charAt(0).toUpperCase()+s.slice(1) %></option>
+                        <% }) %>
+                      </select>
+                      <button class="btn btn-primary btn-sm update-order-status-btn" data-order-id="<%= order._id %>">
+                        <span class="material-symbols-outlined" style="font-size:.8rem;">save</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <% if (pages > 1) { %>
+          <div class="admin-pagination">
+            <% for (let i = 1; i <= pages; i++) { %>
+              <a href="/admin/orders?page=<%= i %>&status=<%= status %>"
+                 class="admin-page-btn <%= page === i ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script src="/js/admin.js"></script>

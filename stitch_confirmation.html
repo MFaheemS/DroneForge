@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Confirmation - DroneForge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e5e2e3",
+                        "primary-fixed-dim": "#ecb2ff",
+                        "on-primary-fixed-variant": "#74009f",
+                        "on-secondary-fixed": "#290055",
+                        "tertiary-fixed": "#e2e0fc",
+                        "tertiary-fixed-dim": "#c6c4df",
+                        "primary-container": "#bd00ff",
+                        "inverse-on-surface": "#313031",
+                        "primary": "#ecb2ff",
+                        "on-primary": "#520071",
+                        "on-background": "#e5e2e3",
+                        "outline": "#9d8ba0",
+                        "surface-container-highest": "#353436",
+                        "background": "#131314",
+                        "on-tertiary-fixed": "#1a1a2e",
+                        "surface-tint": "#ecb2ff",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-tertiary-fixed-variant": "#45455b",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1c1b1c",
+                        "secondary": "#d7baff",
+                        "tertiary-container": "#75748c",
+                        "secondary-container": "#611fb0",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-dim": "#131314",
+                        "surface-variant": "#353436",
+                        "secondary-fixed": "#eddcff",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#2f2e43",
+                        "outline-variant": "#514255",
+                        "on-surface-variant": "#d4c0d7",
+                        "surface-container": "#201f20",
+                        "primary-fixed": "#f8d8ff",
+                        "on-tertiary-container": "#ffffff",
+                        "surface": "#131314",
+                        "secondary-fixed-dim": "#d7baff",
+                        "on-primary-fixed": "#320047",
+                        "tertiary": "#c6c4df",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed-variant": "#5e1bad",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#cca8ff",
+                        "inverse-primary": "#9900cf",
+                        "surface-bright": "#3a393a",
+                        "on-secondary": "#440087",
+                        "on-primary-container": "#ffffff",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "48px",
+                        "container-max": "1440px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-lg": ["Space Grotesk"],
+                        "mono-data": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-md": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400"}],
+                        "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-panel {
+            background-color: rgba(32, 31, 32, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background-color: rgba(53, 52, 54, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(189, 0, 255, 0.2);
+        }
+        
+        .neon-text-glow {
+            text-shadow: 0 0 10px rgba(189, 0, 255, 0.5);
+        }
+
+        .metallic-gradient {
+            background: linear-gradient(135deg, theme('colors.secondary-container') 0%, theme('colors.primary-container') 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar Nav is Suppressed for Success/Confirmation Screen -->
+<main class="flex-grow flex items-center justify-center p-gutter relative overflow-hidden pt-12 md:pt-24 pb-24">
+<!-- Ambient Background Glows -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-container/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 z-10 relative">
+<!-- Left Column: Success Message & Visual -->
+<div class="md:col-span-5 flex flex-col justify-center space-y-8">
+<div class="space-y-4">
+<div class="inline-flex items-center space-x-2 bg-surface-container-high px-3 py-1.5 rounded-full border border-white/10">
+<span class="w-2 h-2 rounded-full bg-[#BD00FF] neon-glow"></span>
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest">SYSTEM STATUS: NOMINAL</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-background">
+                        ORDER <br/>
+<span class="text-primary-container neon-text-glow">CONFIRMED</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                        Clearance granted. Your custom drone configuration has been submitted to the forge. Standby for assembly telemetry.
+                    </p>
+</div>
+<!-- Abstract Visual/Drone Takeoff Stand-in -->
+<div class="relative w-full aspect-square rounded-xl overflow-hidden glass-card flex items-center justify-center p-8 group">
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container/20 to-transparent opacity-50"></div>
+<img alt="Abstract representation of a futuristic drone taking off in a dark, neon-lit environment." class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-40" data-alt="A cinematic, high-contrast digital rendering of an abstract drone taking flight. The setting is a dark, industrial hangar illuminated by intense neon purple and cool blue lighting. The style is hyper-realistic glassmorphism with metallic textures, reflecting a clandestine, experimental aerospace aesthetic. The drone itself is sleek, angular, and glowing with inner telemetry light." src="https://lh3.googleusercontent.com/aida/ADBb0uiquZ-tThBP5rKXPxqG3GmjujSv_IQqaFkaz_7_UY2hS8kt-UygvWquUMaPd-urKbNkSAaThab1CIDe9_BwBWZ07SYpkvZzrAr6y3RmD-3KBwjxOVh7dqznIRlKwNqZVV8RIQxLpaABC3FGNC0pk34PrxALK6LKSKuxpizgIjmxa3dTEO_5xS4OR_L1UACvlgR5YoboOpnVSBydFq_EWEPPNk9g9vCx6SmvSg5-GDy8iUJ6qoqVruP29II"/>
+<!-- HUD Elements overlaying image -->
+<div class="relative z-10 w-full h-full border border-primary-container/30 rounded-full flex items-center justify-center before:absolute before:inset-4 before:border before:border-dashed before:border-primary-container/20 before:rounded-full after:absolute after:inset-12 after:border after:border-primary-container/10 after:rounded-full">
+<div class="absolute w-[1px] h-full bg-primary-container/20"></div>
+<div class="absolute h-[1px] w-full bg-primary-container/20"></div>
+<div class="w-16 h-16 rounded-full bg-primary-container/20 border border-primary-container/50 flex items-center justify-center backdrop-blur-md">
+<span class="material-symbols-outlined text-primary-container text-3xl" style="font-variation-settings: 'FILL' 1;">flight_takeoff</span>
+</div>
+<div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 flex items-center space-x-2">
+<div class="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"></div>
+<span class="font-mono-data text-[10px] text-white/70">ALT: 1200FT</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col space-y-4 pt-4">
+<a class="metallic-gradient text-white font-label-caps text-label-caps uppercase tracking-widest px-8 py-4 rounded-md text-center neon-glow hover:brightness-110 transition-all duration-300" href="#">
+                        RETURN TO HANGAR
+                    </a>
+<a class="border border-white/20 bg-surface-container/50 backdrop-blur-sm text-on-surface hover:text-white hover:bg-white/5 font-label-caps text-label-caps uppercase tracking-widest px-8 py-4 rounded-md text-center transition-all duration-300" href="#">
+                        DOWNLOAD RECEIPT
+                    </a>
+</div>
+</div>
+<!-- Right Column: Order Details Summary -->
+<div class="md:col-span-7 flex items-center">
+<div class="w-full glass-panel rounded-xl p-8 lg:p-12 space-y-8 shadow-[0_8px_32px_rgba(0,0,0,0.8)]">
+<!-- Header -->
+<div class="flex justify-between items-start border-b border-white/10 pb-6">
+<div>
+<p class="font-mono-data text-mono-data text-on-surface-variant uppercase mb-1">Authorization Code</p>
+<p class="font-headline-md text-headline-md text-white tracking-widest">DF-8842-XQ</p>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-mono-data text-on-surface-variant uppercase mb-1">Status</p>
+<p class="font-mono-data text-mono-data text-primary-container neon-text-glow">ASSEMBLY PENDING</p>
+</div>
+</div>
+<!-- Configuration Summary -->
+<div class="space-y-6">
+<div class="flex items-center space-x-4">
+<div class="w-16 h-16 bg-surface-container rounded-lg border border-white/10 flex items-center justify-center overflow-hidden relative">
+<img alt="Drone model thumbnail" class="absolute inset-0 w-full h-full object-cover opacity-60" data-alt="A small, high-contrast close-up shot of a drone motor or sleek carbon-fiber chassis component. Lit with dramatic purple underglow against a pitch-black background, emphasizing premium tactile minimalism and high-end hardware." src="https://lh3.googleusercontent.com/aida/ADBb0ujmh_-LdCRXmJItCIxWFFrVRWsPG43X6Uv7ZZbDSKf8lwS3gDxXSXgJjILbtuHgM_RTbwicL1LMnwJfiZ0HMHCvnG885fiv8rlnhz5Z3YR1R6SoyKC2gz7VRkFOaSHDgV9PxOyfpQb4s9gLmKNhbEZDb_fsKz8FaVIJE8qvwPS4QZalAOlsbY6LKRikmLWWdWnjCXUg3oW9zjMTMbRdebprVzqsBvJyxEOucdwXERlrWLEemziLzsGPIbI"/>
+</div>
+<div>
+<h3 class="font-headline-md text-xl text-white">NIGHTHAWK X-7</h3>
+<p class="font-mono-data text-mono-data text-on-surface-variant">Class: Reconnaissance Stealth</p>
+</div>
+</div>
+<!-- Parts List -->
+<div class="space-y-3 pt-4 border-t border-white/5">
+<div class="flex justify-between items-center text-on-surface-variant group hover:text-white transition-colors duration-200">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[18px]">memory</span>
+<span class="font-body-md text-sm">Quantum Core Processor V2</span>
+</div>
+<span class="font-mono-data text-mono-data text-xs">$1,250.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant group hover:text-white transition-colors duration-200">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[18px]">battery_charging_full</span>
+<span class="font-body-md text-sm">High-Density Plasma Cell</span>
+</div>
+<span class="font-mono-data text-mono-data text-xs">$890.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant group hover:text-white transition-colors duration-200">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span class="font-body-md text-sm">Thermal Optics Array</span>
+</div>
+<span class="font-mono-data text-mono-data text-xs">$3,400.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant group hover:text-white transition-colors duration-200">
+<div class="flex items-center space-x-3">
+<span class="material-symbols-outlined text-[18px]">flight</span>
+<span class="font-body-md text-sm">Carbon-Weave Silent Rotors (x4)</span>
+</div>
+<span class="font-mono-data text-mono-data text-xs">$600.00</span>
+</div>
+</div>
+</div>
+<!-- Totals & Countdown -->
+<div class="pt-6 border-t border-white/10 space-y-6 bg-black/20 -mx-8 -mb-8 p-8 rounded-b-xl lg:-mx-12 lg:-mb-12 lg:p-12">
+<div class="flex justify-between items-end">
+<span class="font-label-caps text-label-caps text-on-surface-variant">TOTAL INVESTMENT</span>
+<span class="font-headline-md text-3xl text-primary-container tracking-wider">$6,140.00</span>
+</div>
+<!-- Est Delivery T-Minus -->
+<div class="bg-surface-container-highest/50 border border-primary-container/20 rounded-lg p-6 relative overflow-hidden">
+<div class="absolute right-0 top-0 w-32 h-32 bg-primary-container/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+<div class="flex items-center justify-between relative z-10">
+<div>
+<p class="font-mono-data text-mono-data text-on-surface-variant uppercase text-xs mb-2 flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-1">schedule</span>
+                                         Estimated Deployment
+                                     </p>
+<div class="font-headline-md text-2xl text-white tracking-widest flex items-baseline space-x-2">
+<span>T-MINUS</span>
+<span class="text-primary-container">14</span>
+<span class="text-sm text-on-surface-variant font-mono-data">DAYS</span>
+</div>
+</div>
+<div class="text-right hidden sm:block">
+<p class="font-mono-data text-mono-data text-on-surface-variant uppercase text-[10px] mb-1">Destination</p>
+<p class="font-body-md text-sm text-white">Sector 7G, N.A.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-zinc-950 w-full border-t border-white/5 mt-auto flex flex-col md:flex-row justify-between items-center px-12 py-8 max-w-[1440px] mx-auto w-full gap-4">
+<div class="text-zinc-600 font-bold font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair">
+            Â© 2024 DroneForge Tactical Operations. Clandestine Clearance Required.
+        </div>
+<div class="flex flex-wrap gap-4 justify-center md:justify-end">
+<a class="text-zinc-600 opacity-60 hover:opacity-100 transition-opacity hover:text-white font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair" href="#">Security Protocols</a>
+<a class="text-zinc-600 opacity-60 hover:opacity-100 transition-opacity hover:text-white font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair" href="#">Telemetry API</a>
+<a class="text-zinc-600 opacity-60 hover:opacity-100 transition-opacity hover:text-white font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair" href="#">Flight Logs</a>
+<a class="text-zinc-600 opacity-60 hover:opacity-100 transition-opacity hover:text-white font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair" href="#">System Status</a>
+<a class="text-zinc-600 opacity-60 hover:opacity-100 transition-opacity hover:text-white font-['Space_Grotesk'] text-[10px] font-mono tracking-widest text-zinc-500 cursor-crosshair" href="#">Terms of Engagement</a>
+</div>
+</footer>
+</body></html>

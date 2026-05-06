@@ -1,0 +1,105 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <!-- Header -->
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">terminal</span>
+            Admin Command Center
+          </p>
+          <h1 class="admin-page-title">Mission <span style="color:var(--cyan)">Control</span></h1>
+        </div>
+        <div class="admin-topbar-actions">
+          <span class="status-badge status-confirmed" style="font-size:.6rem;">SYSTEM NOMINAL</span>
+        </div>
+      </div>
+
+      <!-- Stat Bento Grid -->
+      <div class="admin-stat-grid">
+        <div class="glass-card admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(0,242,255,.1);">
+            <span class="material-symbols-outlined" style="color:var(--cyan);">group</span>
+          </div>
+          <div class="admin-stat-info">
+            <p class="admin-stat-label">Total Operators</p>
+            <p class="admin-stat-val"><%= totalUsers %></p>
+          </div>
+        </div>
+        <div class="glass-card admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(255,138,0,.1);">
+            <span class="material-symbols-outlined" style="color:var(--orange);">receipt_long</span>
+          </div>
+          <div class="admin-stat-info">
+            <p class="admin-stat-label">Total Orders</p>
+            <p class="admin-stat-val"><%= totalOrders %></p>
+          </div>
+        </div>
+        <div class="glass-card admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(0,255,65,.1);">
+            <span class="material-symbols-outlined" style="color:var(--green);">attach_money</span>
+          </div>
+          <div class="admin-stat-info">
+            <p class="admin-stat-label">Total Revenue</p>
+            <p class="admin-stat-val">$<%= totalRevenue.toFixed(2) %></p>
+          </div>
+        </div>
+        <div class="glass-card admin-stat-card">
+          <div class="admin-stat-icon" style="background:rgba(255,180,171,.1);">
+            <span class="material-symbols-outlined" style="color:var(--error);">inventory_2</span>
+          </div>
+          <div class="admin-stat-info">
+            <p class="admin-stat-label">Low Stock Parts</p>
+            <p class="admin-stat-val" style="color:<%= lowStock > 0 ? 'var(--error)' : 'var(--green)' %>"><%= lowStock %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders Table -->
+      <div class="glass-card admin-card" style="margin-top:2rem;">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">Recent Deployments</h2>
+          <a href="/admin/orders" class="btn btn-outline btn-sm">View All</a>
+        </div>
+        <% if (recentOrders.length === 0) { %>
+          <div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem;">No orders yet.</div>
+        <% } else { %>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Build</th>
+                <th>Operator</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recentOrders.forEach(order => { %>
+                <tr>
+                  <td><span style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);">DF-<%= order._id.toString().slice(-8).toUpperCase() %></span></td>
+                  <td><span style="font-size:.85rem;color:var(--text);font-weight:600;"><%= order.buildName %></span></td>
+                  <td><span style="font-size:.85rem;color:var(--text-variant);"><%= order.userId?.name || '—' %></span></td>
+                  <td><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">$<%= order.totalPrice.toFixed(2) %></span></td>
+                  <td><span class="status-badge status-<%= order.status %>"><%= order.status.toUpperCase() %></span></td>
+                  <td><span style="font-size:.75rem;color:var(--muted);font-family:var(--font-mono);"><%= new Date(order.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>

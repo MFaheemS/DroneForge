@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRONEFORGE - My Orders</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e5e2e3",
+                        "primary-fixed-dim": "#ecb2ff",
+                        "on-primary-fixed-variant": "#74009f",
+                        "on-secondary-fixed": "#290055",
+                        "tertiary-fixed": "#e2e0fc",
+                        "tertiary-fixed-dim": "#c6c4df",
+                        "primary-container": "#bd00ff",
+                        "inverse-on-surface": "#313031",
+                        "primary": "#ecb2ff",
+                        "on-primary": "#520071",
+                        "on-background": "#e5e2e3",
+                        "outline": "#9d8ba0",
+                        "surface-container-highest": "#353436",
+                        "background": "#131314",
+                        "on-tertiary-fixed": "#1a1a2e",
+                        "surface-tint": "#ecb2ff",
+                        "surface-container-lowest": "#0e0e0f",
+                        "on-tertiary-fixed-variant": "#45455b",
+                        "on-error": "#690005",
+                        "surface-container-low": "#1c1b1c",
+                        "secondary": "#d7baff",
+                        "tertiary-container": "#75748c",
+                        "secondary-container": "#611fb0",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-dim": "#131314",
+                        "surface-variant": "#353436",
+                        "secondary-fixed": "#eddcff",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#2f2e43",
+                        "outline-variant": "#514255",
+                        "on-surface-variant": "#d4c0d7",
+                        "surface-container": "#201f20",
+                        "primary-fixed": "#f8d8ff",
+                        "on-tertiary-container": "#ffffff",
+                        "surface": "#131314",
+                        "secondary-fixed-dim": "#d7baff",
+                        "on-primary-fixed": "#320047",
+                        "tertiary": "#c6c4df",
+                        "on-surface": "#e5e2e3",
+                        "on-secondary-fixed-variant": "#5e1bad",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#cca8ff",
+                        "inverse-primary": "#9900cf",
+                        "surface-bright": "#3a393a",
+                        "on-secondary": "#440087",
+                        "on-primary-container": "#ffffff",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin": "48px",
+                        "container-max": "1440px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-lg": ["Space Grotesk"],
+                        "mono-data": ["Space Grotesk"],
+                        "headline-lg": ["Space Grotesk"],
+                        "body-md": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.15em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "letterSpacing": "0.01em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        .glass-panel {
+            background: rgba(53, 52, 54, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
+        }
+        
+        .metallic-gradient {
+            background: linear-gradient(135deg, #c6c4df 0%, #75748c 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden selection:bg-primary-container selection:text-white">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black tracking-tighter text-cyan-400 drop-shadow-[0_0_10px_rgba(0,242,255,0.5)]">DRONEFORGE</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white transition-colors" href="#">FORGE</a>
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white transition-colors" href="#">MISSION</a>
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white transition-colors" href="#">MARKET</a>
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-cyan-400 border-b-2 border-cyan-400 pb-1" href="#">HUB</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 text-cyan-400">
+<button aria-label="Settings" class="hover:bg-white/5 transition-all duration-300 p-2 rounded-full Active: scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<button aria-label="Account" class="hover:bg-white/5 transition-all duration-300 p-2 rounded-full Active: scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 pt-16">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 border-r border-white/10 bg-zinc-900/80 backdrop-blur-2xl shadow-2xl flex-col p-4 gap-2 z-40">
+<div class="mb-8 px-4 mt-4">
+<h2 class="font-headline-md text-headline-md text-cyan-400 font-bold">FORGE_OS</h2>
+<div class="flex items-center gap-2 mt-2">
+<div aria-label="System Status Indicator" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,242,255,0.8)]"></div>
+<span class="font-mono-data text-mono-data text-zinc-400">v4.2.0 ACTIVE</span>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg font-['Space_Grotesk'] font-medium text-zinc-500 hover:bg-white/5 hover:text-cyan-300 transition-all Hover: translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                    TELEMETRY
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg font-['Space_Grotesk'] font-medium text-zinc-500 hover:bg-white/5 hover:text-cyan-300 transition-all Hover: translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="precision_manufacturing">precision_manufacturing</span>
+                    COMPONENTS
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg font-['Space_Grotesk'] font-medium bg-cyan-400/10 text-cyan-400 border-r-4 border-cyan-400" href="#">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+                    POWER
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg font-['Space_Grotesk'] font-medium text-zinc-500 hover:bg-white/5 hover:text-cyan-300 transition-all Hover: translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="radar">radar</span>
+                    SENSORS
+                </a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg font-['Space_Grotesk'] font-medium text-zinc-500 hover:bg-white/5 hover:text-cyan-300 transition-all Hover: translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+                    AI
+                </a>
+</nav>
+<button class="mt-auto mx-4 py-3 bg-gradient-to-r from-[#74009f] to-[#520071] border-t border-white/20 text-white font-label-caps text-label-caps rounded hover:shadow-[0_0_15px_rgba(189,0,255,0.4)] transition-all">
+                INITIATE BUILD
+            </button>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-64 p-margin max-w-container-max mx-auto w-full">
+<div class="mb-12">
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">My Orders</h1>
+<p class="font-body-lg text-body-lg text-outline">Review past builds, telemetry logs, and component manifests.</p>
+</div>
+<div class="flex flex-col gap-gutter">
+<!-- Order Card 1: Delivered -->
+<article class="glass-panel rounded-xl overflow-hidden group">
+<div class="p-6 border-b border-white/10 flex flex-col md:flex-row gap-6 items-start md:items-center cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-32 h-24 rounded-lg overflow-hidden shrink-0 border border-white/10">
+<img alt="Drone thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A sleek, stealthy, high-altitude military-style drone with sharp angular geometry, painted in matte obsidian black. The drone sits on an illuminated metallic tarmac at night, bathed in a low, moody neon purple light. The background is a highly blurred, dark industrial hangar with faint blue indicator lights. The aesthetic is extremely high-end, cinematic, and cyber-tactical." src="https://lh3.googleusercontent.com/aida/ADBb0uiquZ-tThBP5rKXPxqG3GmjujSv_IQqaFkaz_7_UY2hS8kt-UygvWquUMaPd-urKbNkSAaThab1CIDe9_BwBWZ07SYpkvZzrAr6y3RmD-3KBwjxOVh7dqznIRlKwNqZVV8RIQxLpaABC3FGNC0pk34PrxALK6LKSKuxpizgIjmxa3dTEO_5xS4OR_L1UACvlgR5YoboOpnVSBydFq_EWEPPNk9g9vCx6SmvSg5-GDy8iUJ6qoqVruP29II"/>
+</div>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+<div class="md:col-span-2">
+<h3 class="font-headline-md text-[24px] text-on-surface mb-1">Amethyst Stalker</h3>
+<p class="font-mono-data text-mono-data text-outline">ORD-992-AZX-4</p>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-outline mb-1">DEPLOYED</span>
+<span class="font-mono-data text-mono-data text-on-surface">24.10.2023</span>
+</div>
+<div class="flex justify-between items-center md:flex-col md:items-end">
+<span class="font-mono-data text-mono-data text-on-surface mb-1">9,450 CR</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,242,255,0.8)]"></div>
+<span class="font-label-caps text-label-caps text-cyan-400">DELIVERED</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-cyan-400 transition-colors hidden md:block" data-icon="expand_more">expand_more</span>
+</div>
+</article>
+<!-- Order Card 2: Processing -->
+<article class="glass-panel rounded-xl overflow-hidden group border-l-2 border-primary-container">
+<div class="p-6 border-b border-white/10 flex flex-col md:flex-row gap-6 items-start md:items-center cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-32 h-24 rounded-lg overflow-hidden shrink-0 border border-primary-container/30 relative">
+<div class="absolute inset-0 bg-primary-container/10 mix-blend-overlay z-10"></div>
+<img alt="Drone thumbnail" class="w-full h-full object-cover opacity-90 transition-all duration-500" data-alt="A heavily armored, quad-rotor drone with a bulky, brutalist carbon-fiber chassis. It is positioned on a brushed steel workbench in a dimly lit laboratory environment. The drone features glowing amethyst LED accents along its rotors and central sensor array. The lighting is focused, casting deep shadows, creating a clandestine, highly technical visual style." src="https://lh3.googleusercontent.com/aida/ADBb0ujmh_-LdCRXmJItCIxWFFrVRWsPG43X6Uv7ZZbDSKf8lwS3gDxXSXgJjILbtuHgM_RTbwicL1LMnwJfiZ0HMHCvnG885fiv8rlnhz5Z3YR1R6SoyKC2gz7VRkFOaSHDgV9PxOyfpQb4s9gLmKNhbEZDb_fsKz8FaVIJE8qvwPS4QZalAOlsbY6LKRikmLWWdWnjCXUg3oW9zjMTMbRdebprVzqsBvJyxEOucdwXERlrWLEemziLzsGPIbI"/>
+</div>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+<div class="md:col-span-2">
+<h3 class="font-headline-md text-[24px] text-on-surface mb-1">Obsidian Interceptor</h3>
+<p class="font-mono-data text-mono-data text-outline">ORD-801-BRQ-9</p>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-outline mb-1">ORDERED</span>
+<span class="font-mono-data text-mono-data text-on-surface">12.11.2023</span>
+</div>
+<div class="flex justify-between items-center md:flex-col md:items-end">
+<span class="font-mono-data text-mono-data text-on-surface mb-1">14,200 CR</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_rgba(189,0,255,0.8)] animate-pulse"></div>
+<span class="font-label-caps text-label-caps text-primary-container">PROCESSING</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary-container transition-colors hidden md:block rotate-180" data-icon="expand_less">expand_less</span>
+</div>
+<!-- Expanded Content -->
+<div class="p-6 bg-surface-container-highest/30">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2">
+<h4 class="font-label-caps text-label-caps text-outline mb-4 border-b border-white/5 pb-2">COMPONENT MANIFEST</h4>
+<ul class="space-y-3">
+<li class="flex justify-between items-center">
+<span class="font-mono-data text-mono-data text-on-surface">Chassis: Stealth-Weave Carbon X7</span>
+<span class="font-mono-data text-mono-data text-outline">2,100 CR</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-mono-data text-mono-data text-on-surface">Propulsion: Whisper-Drive Micro-Turbines (x4)</span>
+<span class="font-mono-data text-mono-data text-outline">4,800 CR</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-mono-data text-mono-data text-on-surface">Sensors: LIDAR Array Omni-V3</span>
+<span class="font-mono-data text-mono-data text-outline">3,500 CR</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="font-mono-data text-mono-data text-on-surface">Power: High-Density Plasma Core</span>
+<span class="font-mono-data text-mono-data text-outline">3,800 CR</span>
+</li>
+</ul>
+</div>
+<div class="border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-6">
+<h4 class="font-label-caps text-label-caps text-outline mb-4 border-b border-white/5 pb-2">FABRICATION STATUS</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-cyan-400 text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-mono-data text-mono-data text-on-surface text-sm">Design Validated</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-cyan-400 text-sm" data-icon="check_circle">check_circle</span>
+<span class="font-mono-data text-mono-data text-on-surface text-sm">Materials Sourced</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_8px_rgba(189,0,255,0.8)] ml-1 mr-1"></div>
+<span class="font-mono-data text-mono-data text-primary-container text-sm">Assembly in Progress</span>
+</div>
+<div class="flex items-center gap-3 opacity-50">
+<span class="material-symbols-outlined text-outline text-sm" data-icon="radio_button_unchecked">radio_button_unchecked</span>
+<span class="font-mono-data text-mono-data text-outline text-sm">Telemetry Calibration</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Order Card 3: Shipped -->
+<article class="glass-panel rounded-xl overflow-hidden group">
+<div class="p-6 border-b border-white/10 flex flex-col md:flex-row gap-6 items-start md:items-center cursor-pointer hover:bg-white/5 transition-colors">
+<div class="w-32 h-24 rounded-lg overflow-hidden shrink-0 border border-white/10">
+<img alt="Drone thumbnail" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A small, rapid-reconnaissance drone with a slim, aerodynamic profile, featuring a dark grey titanium finish. It is resting on an elevated deployment pad against a pitch-black background. A solitary, intense beam of cool white light illuminates the top chassis, highlighting the intricate metallic textures and subtle violet sensor nodes. The atmosphere is stark, tactical, and premium." src="https://lh3.googleusercontent.com/aida/ADBb0uhTzJv9Ah8Cp-LLu4NIwtt0tqJt15kF8qkSSDeXCTYR3Z0A4i0FM7-Nd3jAdzI-CzD8_zDeu5kZRDM_Ab23ruvIu-4LEYNNh0UdUDCBCTjRPjZ-swRsN6Vre8OLuQCezA3GzpjfJ6Ef_9SIzNg8spM88fqcQud_pMFA9WzO654TLm0r1Ne00cAI0nYGGGVARnvz6wPL5g2lsFEFGpkHU7HooBXj_ABOwcnhaqGbG8gsPTA6K0kqK4ix9A"/>
+</div>
+<div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+<div class="md:col-span-2">
+<h3 class="font-headline-md text-[24px] text-on-surface mb-1">Viper Recon Drone</h3>
+<p class="font-mono-data text-mono-data text-outline">ORD-334-CLP-1</p>
+</div>
+<div>
+<span class="block font-label-caps text-label-caps text-outline mb-1">DISPATCHED</span>
+<span class="font-mono-data text-mono-data text-on-surface">18.11.2023</span>
+</div>
+<div class="flex justify-between items-center md:flex-col md:items-end">
+<span class="font-mono-data text-mono-data text-on-surface mb-1">5,800 CR</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-[#f8d8ff] shadow-[0_0_8px_rgba(248,216,255,0.8)]"></div>
+<span class="font-label-caps text-label-caps text-primary-fixed">SHIPPED</span>
+</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary-fixed transition-colors hidden md:block" data-icon="expand_more">expand_more</span>
+</div>
+</article>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="relative w-full py-8 border-t border-white/5 bg-black flex flex-col items-center gap-4 px-12 z-50">
+<div class="flex gap-6">
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-colors" href="#">SATELLITE LINK</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-colors" href="#">LEGAL</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-colors" href="#">UPGRADE</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-colors" href="#">SUPPORT</a>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-cyan-400 text-center uppercase">Â©2024 DRONEFORGE AEROSPACE. ALL SYSTEMS NOMINAL.</p>
+</footer>
+<!-- Hidden images requested by user to ensure inclusion -->
+<div class="hidden">
+<img data-alt="A highly detailed close-up of a drone's optical sensor array, featuring multiple complex lenses housed in a rugged matte black casing. The lenses reflect a faint, mysterious violet glow. The background is completely black, emphasizing the advanced hardware and precision engineering of the component. The visual style is macro, technical, and hyper-realistic." src="https://lh3.googleusercontent.com/aida/ADBb0ugz6DvFMVAc0JadbCF0k-XwSzfgEZNFHQc75NaaQGqeoZu4ej6WUHQCEBpc84LP6zPFiB2YPvS7EEE3AXgQm_BXrNxs8eiEngfqH7c2N2tlVLRPuX3QrYlH1j75emiQurMHT9vyqUDJzV6oPDJZ-2wcuKGdiwpQeJ8zUG8WvsgU5yUHwTakQ9YZdUCUlJQtwMKJVlXuvntMoH_FBAlosCwvC1kizNkC84wpSb9PWWg17b-aV5Wo8-G90gw"/>
+<img data-alt="A wide shot of a high-tech drone command center at night. The room is filled with dark, sleek consoles displaying complex telemetry data in bright cyan and neon purple on multiple curved glass screens. The lighting is dim and moody, heavily relying on the glow from the interfaces. The aesthetic is extremely sophisticated, evoking a secret, elite aerospace operations facility." src="https://lh3.googleusercontent.com/aida/ADBb0ujcragCVjKsuTRhOU7Ugi7oA0-LnL4t_MhLNgahMWjsxTvUkvqWcZvPHzyUpRMe-iL2d2I3d87qBRUAqEaKgFx_V0HI03rVlgLcRcX2k9hYnfpb9BohvbN_zRhoRo1yMwXgt-Lgfja0oNqrGCitWaJ4uIlsJTaraqDDICA8TpPZTFtTtDaBZJmAvG07alnwM3-oaXy3j-0d6x-yA5DSXSMZ93C_rGG6zCxfqWj8K0oFlVazOZ00ScaWDEQ"/>
+</div>
+</body></html>

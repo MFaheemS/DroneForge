@@ -1,3 +1,11 @@
+<%
+  // Helper: returns 'nav-active' if the current path starts with the given prefix
+  function isActive(prefix) {
+    if (prefix === '/') return currentPath === '/';
+    return currentPath.startsWith(prefix) ? 'nav-active' : '';
+  }
+%>
+
 <nav class="navbar">
   <a href="/" class="navbar-brand">
     <svg viewBox="0 0 32 32" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,33 +27,80 @@
   </button>
 
   <ul class="navbar-links" id="navLinks">
-    <li><a href="/">Forge</a></li>
 
     <% if (!user) { %>
-      <li><a href="/auth/login" class="btn-nav">Login</a></li>
+      <%/* ── Guest navigation ── */%>
+      <li><a href="/" class="<%= isActive('/') %>">Home</a></li>
+      <li><a href="/parts" class="<%= isActive('/parts') %>">Marketplace</a></li>
+      <li><a href="/auth/login" class="btn-nav <%= isActive('/auth/login') %>">Login</a></li>
       <li><a href="/auth/register" class="btn-nav-solid">Register</a></li>
+
+    <% } else if (user.role === 'admin') { %>
+      <%/* ── Admin navigation ── */%>
+      <li><a href="/admin" class="<%= isActive('/admin') && currentPath === '/admin' ? 'nav-active' : '' %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">dashboard</span>
+        Dashboard
+      </a></li>
+      <li><a href="/admin/users" class="<%= isActive('/admin/users') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">group</span>
+        Users
+      </a></li>
+      <li><a href="/admin/parts" class="<%= isActive('/admin/parts') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">inventory_2</span>
+        Parts
+      </a></li>
+      <li><a href="/admin/orders" class="<%= isActive('/admin/orders') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">receipt_long</span>
+        Orders
+      </a></li>
+
+      <%/* Admin user menu */%>
+      <li class="dropdown">
+        <a href="#" style="gap:0.5rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;font-variation-settings:'FILL' 0;">shield</span>
+          <%= user.name.split(' ')[0] %>
+          <span class="role-badge admin">ADMIN</span>
+        </a>
+        <div class="dropdown-menu">
+          <a href="/auth/logout" style="color:var(--error);">
+            <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">logout</span>
+            Logout
+          </a>
+        </div>
+      </li>
+
     <% } else { %>
-      <li><a href="/build">Build</a></li>
-      <li><a href="/parts">Market</a></li>
-      <li><a href="/orders">Orders</a></li>
-      <% if (user.role === 'admin') { %>
-        <li><a href="/admin">
-          Admin <span class="role-badge admin">ADMIN</span>
-        </a></li>
-      <% } %>
+      <%/* ── Customer navigation ── */%>
+      <li><a href="/" class="<%= isActive('/') %>">Home</a></li>
+      <li><a href="/build" class="<%= isActive('/build') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">precision_manufacturing</span>
+        Builder
+      </a></li>
+      <li><a href="/parts" class="<%= isActive('/parts') %>">Marketplace</a></li>
+      <li>
+        <a href="/cart" class="<%= isActive('/cart') %>" style="position:relative;">
+          <span class="material-symbols-outlined" style="font-size:.95rem;vertical-align:middle;">shopping_cart</span>
+          Cart
+          <span id="cartNavBadge" style="display:none;position:absolute;top:-6px;right:-10px;min-width:16px;height:16px;background:var(--cyan);color:var(--on-cyan);border-radius:999px;font-size:.55rem;font-weight:700;font-family:var(--font-mono);line-height:16px;text-align:center;padding:0 3px;">0</span>
+        </a>
+      </li>
+      <li><a href="/orders" class="<%= isActive('/orders') %>">Orders</a></li>
+
+      <%/* Customer user menu */%>
       <li class="dropdown">
         <a href="#" style="gap:0.5rem;">
           <span class="material-symbols-outlined" style="font-size:1rem;font-variation-settings:'FILL' 0;">account_circle</span>
           <%= user.name.split(' ')[0] %>
-          <% if (user.role === 'admin') { %><span class="role-badge admin">ADMIN</span><% } else { %><span class="role-badge user">PILOT</span><% } %>
+          <span class="role-badge user">PILOT</span>
         </a>
         <div class="dropdown-menu">
-          <a href="/profile">My Profile</a>
-          <a href="/orders">My Orders</a>
-          <div class="dropdown-divider"></div>
-          <a href="/auth/logout" style="color:var(--error);">Logout</a>
+          <a href="/auth/logout" style="color:var(--error);">
+            <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">logout</span>
+            Logout
+          </a>
         </div>
       </li>
     <% } %>
+
   </ul>
 </nav>

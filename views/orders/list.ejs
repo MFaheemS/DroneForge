@@ -1,0 +1,122 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="orders-page">
+  <div class="grid-bg"></div>
+
+  <div class="container" style="padding-top:6rem;padding-bottom:4rem;">
+
+    <!-- Page Header -->
+    <div style="margin-bottom:3rem;">
+      <p class="section-label">
+        <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">receipt_long</span>
+        Hangar Archives
+      </p>
+      <h1 class="section-title" style="font-size:clamp(2rem,5vw,3rem);">
+        My <span style="color:var(--cyan)">Orders</span>
+        <span class="cyan-bar"></span>
+      </h1>
+      <p style="color:var(--text-variant);margin-top:.5rem;">Review past builds, telemetry logs, and component manifests.</p>
+    </div>
+
+    <% if (!orders.length) { %>
+      <div class="cart-empty">
+        <img src="/images/drone-lineal.gif" alt="No orders" width="80" loading="lazy" />
+        <h2>No Deployments Yet</h2>
+        <p>Your order history is empty. Build your first custom drone to get started.</p>
+        <a href="/build" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:.9rem;">precision_manufacturing</span>
+          Open Builder
+        </a>
+      </div>
+    <% } else { %>
+      <div class="orders-list">
+        <% orders.forEach((order, idx) => { %>
+          <article class="glass-card order-card" style="border-left:2px solid <%= order.status==='confirmed'?'var(--cyan)':order.status==='shipped'?'var(--orange)':order.status==='delivered'?'var(--green)':order.status==='cancelled'?'var(--error)':'var(--outline)' %>;">
+            <!-- Order Summary Row -->
+            <div class="order-card-header" data-order-id="<%= order._id %>" onclick="toggleOrder(this)">
+              <div class="order-card-thumb">
+                <img src="/images/drone-small.gif" alt="Order" loading="lazy" onerror="this.src='/images/drone-illustration.png'" />
+              </div>
+              <div class="order-card-meta">
+                <h3><%= order.buildName %></h3>
+                <p style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);">
+                  ORD-<%= order._id.toString().slice(-8).toUpperCase() %>
+                </p>
+              </div>
+              <div class="order-card-date">
+                <span class="section-label" style="margin-bottom:.25rem;font-size:.6rem;">Ordered</span>
+                <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--text);">
+                  <%= new Date(order.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) %>
+                </span>
+              </div>
+              <div class="order-card-price-status">
+                <span style="font-family:var(--font-mono);font-size:1rem;color:var(--text);font-weight:600;">$<%= order.totalPrice.toFixed(2) %></span>
+                <span class="status-badge status-<%= order.status %>"><%= order.status.toUpperCase() %></span>
+              </div>
+              <span class="material-symbols-outlined order-expand-icon" style="color:var(--muted);transition:transform .3s;">expand_more</span>
+            </div>
+
+            <!-- Expanded Content -->
+            <div class="order-card-body hidden" id="order-body-<%= order._id %>">
+              <div class="order-card-expanded">
+                <div class="order-parts-col">
+                  <h4 class="section-label" style="margin-bottom:1rem;font-size:.65rem;border-bottom:1px solid var(--glass-border);padding-bottom:.5rem;">Component Manifest</h4>
+                  <% order.parts.forEach(p => { %>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);">
+                      <span style="font-family:var(--font-mono);font-size:.85rem;color:var(--text);">
+                        <%= p.name %> <span style="color:var(--muted);">×<%= p.quantity %></span>
+                      </span>
+                      <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--muted);">$<%= (p.priceAtOrder*p.quantity).toFixed(2) %></span>
+                    </div>
+                  <% }) %>
+                </div>
+                <div class="order-status-col">
+                  <h4 class="section-label" style="margin-bottom:1rem;font-size:.65rem;border-bottom:1px solid var(--glass-border);padding-bottom:.5rem;">Fabrication Status</h4>
+                  <div class="order-timeline">
+                    <% const stages = ['confirmed','shipped','delivered']; %>
+                    <% const stageIcons = {confirmed:'check_circle',shipped:'local_shipping',delivered:'verified'}; %>
+                    <% stages.forEach(stage => { %>
+                      <% const done = ['confirmed','shipped','delivered'].indexOf(order.status) >= stages.indexOf(stage); %>
+                      <div class="order-timeline-item">
+                        <span class="material-symbols-outlined" style="font-size:1rem;color:<%= done?'var(--cyan)':'var(--muted)' %>;font-variation-settings:'FILL' <%= done?1:0 %>;">
+                          <%= stageIcons[stage] %>
+                        </span>
+                        <span style="font-family:var(--font-mono);font-size:.8rem;color:<%= done?'var(--text)':'var(--muted)' %>;">
+                          <%= stage.charAt(0).toUpperCase()+stage.slice(1) %>
+                        </span>
+                      </div>
+                    <% }) %>
+                  </div>
+                  <!-- Shipping Address -->
+                  <% if (order.shippingAddress) { %>
+                    <div style="margin-top:1.5rem;">
+                      <p class="section-label" style="font-size:.6rem;margin-bottom:.5rem;">Ship To</p>
+                      <p style="font-family:var(--font-mono);font-size:.75rem;color:var(--text-variant);line-height:1.8;">
+                        <%= order.shippingAddress.fullName %><br/>
+                        <%= order.shippingAddress.address %><br/>
+                        <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.zip %>
+                      </p>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script>
+function toggleOrder(el) {
+  const id = el.dataset.orderId;
+  const body = document.getElementById('order-body-' + id);
+  const icon = el.querySelector('.order-expand-icon');
+  body.classList.toggle('hidden');
+  icon.style.transform = body.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+</script>

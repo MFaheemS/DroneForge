@@ -1,0 +1,140 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">inventory_2</span>
+            Inventory Control
+          </p>
+          <h1 class="admin-page-title">Parts <span style="color:var(--cyan)">Arsenal</span></h1>
+        </div>
+        <a href="/admin/parts/add" class="btn btn-primary">
+          <span class="material-symbols-outlined" style="font-size:.9rem;">add</span>
+          Add Part
+        </a>
+      </div>
+
+      <!-- Filters -->
+      <form method="GET" action="/admin/parts" class="admin-filter-bar glass-card">
+        <div class="admin-filter-row">
+          <div class="admin-search-wrap">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--muted);">search</span>
+            <input type="text" name="search" class="admin-search-input" placeholder="Search parts…" value="<%= search %>" />
+          </div>
+          <select name="category" class="form-select" style="width:auto;min-width:150px;">
+            <option value="">All Categories</option>
+            <% ['frame','motors','propellers','battery','flightController','camera','ESC','transmitter'].forEach(cat => { %>
+              <option value="<%= cat %>" <%= category===cat?'selected':'' %>><%= cat.charAt(0).toUpperCase()+cat.slice(1) %></option>
+            <% }) %>
+          </select>
+          <button type="submit" class="btn btn-primary btn-sm">
+            <span class="material-symbols-outlined" style="font-size:.85rem;">filter_list</span>
+            Filter
+          </button>
+        </div>
+      </form>
+
+      <div class="glass-card admin-card" style="margin-top:1.5rem;">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">Parts (<%= total %>)</h2>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Part</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Weight</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% parts.forEach(p => { %>
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:.75rem;">
+                      <% if (p.imageUrl) { %>
+                        <img src="<%= p.imageUrl %>" alt="<%= p.name %>" style="width:40px;height:40px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--glass-border);" loading="lazy" />
+                      <% } else { %>
+                        <div style="width:40px;height:40px;background:var(--surface-high);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;">
+                          <span class="material-symbols-outlined" style="font-size:1.1rem;color:var(--muted);">memory</span>
+                        </div>
+                      <% } %>
+                      <div>
+                        <span style="font-size:.9rem;color:var(--text);font-weight:500;display:block;"><%= p.name %></span>
+                        <span style="font-size:.7rem;color:var(--muted);font-family:var(--font-mono);">ID: <%= p._id.toString().slice(-6) %></span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="category-badge"><%= p.category %></span></td>
+                  <td><span style="font-family:var(--font-mono);font-size:.85rem;color:var(--cyan);">$<%= p.price.toFixed(2) %></span></td>
+                  <td><span style="font-size:.8rem;color:var(--muted);"><%= p.weight %>g</span></td>
+                  <td>
+                    <span style="font-family:var(--font-mono);font-size:.85rem;color:<%= p.stock < 5 ? 'var(--error)' : p.stock < 20 ? 'var(--orange)' : 'var(--green)' %>;">
+                      <%= p.stock %>
+                    </span>
+                  </td>
+                  <td>
+                    <div style="display:flex;gap:.5rem;align-items:center;">
+                      <a href="/admin/parts/<%= p._id %>/edit" class="btn btn-outline btn-sm">
+                        <span class="material-symbols-outlined" style="font-size:.8rem;">edit</span>
+                        Edit
+                      </a>
+                      <button class="btn btn-sm delete-part-btn" data-part-id="<%= p._id %>" data-part-name="<%= p.name %>"
+                              style="background:rgba(255,180,171,.08);color:var(--error);border:1px solid rgba(255,180,171,.3);">
+                        <span class="material-symbols-outlined" style="font-size:.8rem;">delete</span>
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <% if (pages > 1) { %>
+          <div class="admin-pagination">
+            <% for (let i = 1; i <= pages; i++) { %>
+              <a href="/admin/parts?page=<%= i %>&search=<%= search %>&category=<%= category %>"
+                 class="admin-page-btn <%= page === i ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="deletePartModal" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width:400px;">
+    <div class="modal-header">
+      <h2 class="modal-title" style="color:var(--error);">Delete Part?</h2>
+      <button class="modal-close" id="deleteModalClose"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <p style="padding:1rem 1.5rem;color:var(--text-variant);font-size:.9rem;line-height:1.7;">
+      Delete <strong id="deletePartName" style="color:var(--text);"></strong>? This cannot be undone.
+    </p>
+    <div style="display:flex;gap:.75rem;padding:0 1.5rem 1.5rem;">
+      <button class="btn btn-outline" id="deleteCancelBtn" style="flex:1;">Cancel</button>
+      <button class="btn" id="deleteConfirmBtn" style="flex:1;background:var(--error-container);color:var(--error);border-color:var(--error);">
+        <span class="material-symbols-outlined" style="font-size:.9rem;">delete_forever</span>
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script src="/js/admin.js"></script>

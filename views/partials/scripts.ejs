@@ -1,3 +1,15 @@
 <script src="/js/main.js"></script>
+<script>
+// Cart count badge
+(function () {
+  const badge = document.getElementById('cartNavBadge');
+  if (!badge) return;
+  fetch('/cart/count').then(r => r.json()).then(data => {
+    const count = data.count ?? 0;
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'inline-flex' : 'none';
+  }).catch(() => {});
+})();
+</script>
 </body>
 </html>

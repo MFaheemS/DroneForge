@@ -1,0 +1,178 @@
+<%- include('partials/head', { title: title }) %>
+<%- include('partials/navbar') %>
+
+<main class="cart-page">
+  <div class="grid-bg"></div>
+
+  <div class="container" style="padding-top:6rem;padding-bottom:4rem;">
+
+    <!-- Page Header -->
+    <div class="cart-header">
+      <div>
+        <p class="section-label"><span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">shopping_cart</span> Active Loadout</p>
+        <h1 class="section-title" style="font-size:clamp(2rem,5vw,3rem);">
+          My <span style="color:var(--cyan)">Payload</span>
+          <span class="cyan-bar"></span>
+        </h1>
+      </div>
+      <% if (cart.length > 0) { %>
+        <button class="btn btn-outline btn-sm" id="clearCartBtn">
+          <span class="material-symbols-outlined" style="font-size:.9rem;">delete_sweep</span>
+          Clear All
+        </button>
+      <% } %>
+    </div>
+
+    <% if (!cart.length) { %>
+      <!-- Empty State -->
+      <div class="cart-empty">
+        <img src="/images/drone-lineal.gif" alt="Empty" width="100" loading="lazy" />
+        <h2>No Hardware Selected</h2>
+        <p>Your loadout is empty. Head to the builder or marketplace to arm up.</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+          <a href="/build" class="btn btn-primary">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">precision_manufacturing</span>
+            Open Builder
+          </a>
+          <a href="/parts" class="btn btn-outline">Browse Parts</a>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="cart-layout">
+
+        <!-- Cart Items -->
+        <div class="cart-items-col">
+          <div class="glass-card" id="cartItemsContainer">
+            <div class="cart-items-header">
+              <span class="section-label" style="margin-bottom:0;">System Components (<span id="cartItemCountLabel"><%= cart.reduce((s,i)=>s+i.quantity,0) %></span>)</span>
+            </div>
+
+            <% cart.forEach((item, idx) => { %>
+              <div class="cart-item" data-part-id="<%= item.partId %>" id="cart-item-<%= item.partId %>">
+                <div class="cart-item-img">
+                  <% if (item.imageUrl) { %>
+                    <img src="<%= item.imageUrl %>" alt="<%= item.name %>" loading="lazy" />
+                  <% } else { %>
+                    <div class="cart-item-img-placeholder">
+                      <span class="material-symbols-outlined" style="font-size:1.5rem;color:var(--muted);">drone</span>
+                    </div>
+                  <% } %>
+                </div>
+                <div class="cart-item-info">
+                  <h3><%= item.name %></h3>
+                  <p class="cart-item-cat">
+                    <span class="category-badge"><%= item.category.toUpperCase() %></span>
+                    <span style="color:var(--muted);font-size:.75rem;"><%- item.weight ? item.weight + 'g' : '' %></span>
+                  </p>
+                  <div class="cart-item-stock">
+                    <span class="stock-dot"></span>
+                    <span>In Stock</span>
+                  </div>
+                </div>
+                <div class="cart-qty-ctrl">
+                  <button class="qty-btn" data-action="minus" data-part-id="<%= item.partId %>">
+                    <span class="material-symbols-outlined">remove</span>
+                  </button>
+                  <span class="qty-val" id="qty-<%= item.partId %>"><%= item.quantity %></span>
+                  <button class="qty-btn" data-action="plus" data-part-id="<%= item.partId %>">
+                    <span class="material-symbols-outlined">add</span>
+                  </button>
+                </div>
+                <div class="cart-item-price">
+                  <span class="cart-item-price-val" id="price-<%= item.partId %>">$<%= (item.price * item.quantity).toFixed(2) %></span>
+                  <span style="font-size:.65rem;color:var(--muted);font-family:var(--font-mono);">EACH $<%= item.price.toFixed(2) %></span>
+                </div>
+                <button class="cart-item-remove" data-part-id="<%= item.partId %>" aria-label="Remove">
+                  <span class="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            <% }) %>
+          </div>
+
+          <!-- Continue Shopping -->
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+            <a href="/build" class="btn btn-outline btn-sm">
+              <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+              Continue Building
+            </a>
+            <a href="/parts" class="btn btn-outline btn-sm">Browse More Parts</a>
+          </div>
+        </div>
+
+        <!-- Summary Panel -->
+        <aside class="cart-summary-panel glass-card">
+          <h2 class="cart-summary-title">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">analytics</span>
+            Telemetry Summary
+          </h2>
+
+          <div class="cart-summary-lines">
+            <div class="cart-summary-line">
+              <span>Hardware Subtotal</span>
+              <span id="summarySubtotal">$<%= total.toFixed(2) %></span>
+            </div>
+            <div class="cart-summary-line">
+              <span>Estimated Tax (8%)</span>
+              <span id="summaryTax">$<%= (total * 0.08).toFixed(2) %></span>
+            </div>
+            <div class="cart-summary-line" style="font-size:.8rem;color:var(--muted);">
+              <span>Shipping</span>
+              <span>Calculated at checkout</span>
+            </div>
+            <div class="cart-summary-total">
+              <span class="section-label" style="margin-bottom:0;">Total Estimate</span>
+              <span class="cart-total-val" id="summaryTotal">$<%= (total * 1.08).toFixed(2) %></span>
+            </div>
+          </div>
+
+          <a href="/orders/checkout" class="btn btn-primary" style="width:100%;justify-content:center;" id="checkoutBtn">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">rocket_launch</span>
+            Initiate Checkout Protocol
+          </a>
+
+          <div class="cart-security-note">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">lock</span>
+            End-to-End Encrypted Transaction
+          </div>
+
+          <!-- Promo Image -->
+          <div class="cart-promo-img">
+            <img src="/images/drone-fly.gif" alt="DroneForge" loading="lazy" />
+            <div class="cart-promo-overlay">
+              <span class="section-label" style="margin-bottom:.25rem;">Pro Tip</span>
+              <p style="font-size:.8rem;color:var(--text);">Use the Builder to configure perfect part compatibility before ordering.</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    <% } %>
+  </div>
+</main>
+
+<!-- Clear Confirm Modal -->
+<div class="modal-overlay" id="clearCartModal" role="dialog" aria-modal="true">
+  <div class="modal-panel" style="max-width:420px;">
+    <div class="modal-header">
+      <h2 class="modal-title" style="color:var(--error);">Clear Loadout?</h2>
+      <button class="modal-close" id="clearCartModalClose">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <p style="padding:1rem 1.5rem;color:var(--text-variant);line-height:1.7;font-size:.9rem;">
+      This will remove all items from your cart. This action cannot be undone.
+    </p>
+    <div style="display:flex;gap:.75rem;padding:0 1.5rem 1.5rem;">
+      <button class="btn btn-outline" id="clearCancelBtn" style="flex:1;">Cancel</button>
+      <button class="btn" id="clearConfirmBtn" style="flex:1;background:var(--error-container);color:var(--error);border-color:var(--error);">
+        <span class="material-symbols-outlined" style="font-size:.9rem;">delete_forever</span>
+        Clear All
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script src="/js/cart.js"></script>

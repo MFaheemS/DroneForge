@@ -1,0 +1,145 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="confirmation-page">
+  <div class="grid-bg"></div>
+
+  <div class="container" style="padding-top:5rem;padding-bottom:4rem;">
+    <div class="confirmation-layout">
+
+      <!-- Left: Success Visual -->
+      <div class="confirmation-left">
+        <!-- Status Badge -->
+        <div class="confirmation-status-badge">
+          <span class="status-pulse"></span>
+          SYSTEM STATUS: NOMINAL
+        </div>
+
+        <h1 class="confirmation-headline">
+          ORDER<br />
+          <span style="color:var(--cyan);text-shadow:0 0 30px rgba(0,242,255,.4);">CONFIRMED</span>
+        </h1>
+
+        <p class="confirmation-subtext">
+          Clearance granted. Your custom drone configuration <strong><%= order.buildName %></strong> has been submitted to the forge. Standby for assembly telemetry.
+        </p>
+
+        <!-- HUD Visual -->
+        <div class="confirmation-hud glass-card">
+          <img src="/images/drone-fly.gif" alt="Drone Takeoff" loading="lazy" class="confirmation-hud-bg" />
+          <div class="confirmation-hud-overlay">
+            <div class="hud-ring">
+              <div class="hud-crosshair-v"></div>
+              <div class="hud-crosshair-h"></div>
+              <div class="hud-center-dot">
+                <span class="material-symbols-outlined" style="font-size:2rem;color:var(--cyan);">flight_takeoff</span>
+              </div>
+              <div class="hud-data-tag" style="top:20%;left:20%;">
+                <span style="color:var(--muted);font-size:.65rem;font-family:var(--font-mono);">ALT: 1200FT</span>
+              </div>
+              <div class="hud-data-tag" style="bottom:20%;right:20%;">
+                <span style="color:var(--muted);font-size:.65rem;font-family:var(--font-mono);">SPD: NOMINAL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;">
+          <a href="/orders" class="btn btn-primary" style="justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">receipt_long</span>
+            View All Orders
+          </a>
+          <a href="/build" class="btn btn-outline" style="justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">precision_manufacturing</span>
+            Build Another Drone
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Order Details -->
+      <div class="confirmation-right glass-card">
+        <div class="confirmation-order-header">
+          <div>
+            <p class="section-label" style="margin-bottom:.25rem;">Authorization Code</p>
+            <h2 style="font-family:var(--font-headline);font-size:1.4rem;letter-spacing:.1em;color:var(--text);">
+              DF-<%= order._id.toString().slice(-8).toUpperCase() %>
+            </h2>
+          </div>
+          <div style="text-align:right;">
+            <p class="section-label" style="margin-bottom:.25rem;">Status</p>
+            <span class="status-badge status-<%= order.status %>"><%= order.status.toUpperCase() %></span>
+          </div>
+        </div>
+
+        <!-- Build Name & Date -->
+        <div class="confirmation-build-info">
+          <div class="confirmation-build-img">
+            <img src="/images/drone-gif.gif" alt="Drone" loading="lazy" />
+          </div>
+          <div>
+            <h3 style="font-family:var(--font-headline);color:var(--text);font-size:1.2rem;font-weight:700;text-transform:uppercase;">
+              <%= order.buildName %>
+            </h3>
+            <p style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);">
+              Ordered: <%= new Date(order.createdAt).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) %>
+            </p>
+          </div>
+        </div>
+
+        <!-- Parts List -->
+        <div class="confirmation-parts">
+          <h4 class="section-label" style="margin-bottom:1rem;border-bottom:1px solid var(--glass-border);padding-bottom:.5rem;">Component Manifest</h4>
+          <% order.parts.forEach(p => { %>
+            <div class="confirmation-part-row">
+              <div style="display:flex;align-items:center;gap:.75rem;">
+                <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">
+                  <%= p.category === 'camera' ? 'camera_alt' : p.category === 'battery' ? 'battery_charging_full' : p.category === 'motors' ? 'settings' : p.category === 'frame' ? 'grid_view' : 'memory' %>
+                </span>
+                <div>
+                  <span style="font-size:.9rem;color:var(--text);display:block;"><%= p.name %></span>
+                  <span style="font-size:.65rem;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;"><%= p.category %> ×<%= p.quantity %></span>
+                </div>
+              </div>
+              <span style="font-family:var(--font-mono);font-size:.85rem;color:var(--text);">$<%= (p.priceAtOrder * p.quantity).toFixed(2) %></span>
+            </div>
+          <% }) %>
+        </div>
+
+        <!-- Totals + Delivery -->
+        <div class="confirmation-totals">
+          <div class="confirmation-total-row"><span>Subtotal</span><span>$<%= (order.totalPrice - order.shippingCost - order.tax).toFixed(2) %></span></div>
+          <div class="confirmation-total-row"><span>Shipping (<%= order.shippingMethod %>)</span><span>$<%= order.shippingCost.toFixed(2) %></span></div>
+          <div class="confirmation-total-row"><span>Tax</span><span>$<%= order.tax.toFixed(2) %></span></div>
+          <div class="confirmation-total-final">
+            <span>Total Investment</span>
+            <span style="color:var(--cyan);text-shadow:0 0 10px rgba(0,242,255,.3);">$<%= order.totalPrice.toFixed(2) %></span>
+          </div>
+        </div>
+
+        <!-- Est. Delivery -->
+        <div class="confirmation-delivery glass-card">
+          <div>
+            <p class="section-label" style="margin-bottom:.5rem;font-size:.65rem;">
+              <span class="material-symbols-outlined" style="font-size:.75rem;vertical-align:middle;">schedule</span>
+              Estimated Deployment
+            </p>
+            <div style="font-family:var(--font-headline);font-size:1.5rem;color:var(--text);">
+              T-MINUS <span style="color:var(--cyan);"><%= order.shippingMethod === 'priority' ? '2' : '5' %></span>
+              <span style="font-size:.85rem;color:var(--muted);">DAYS</span>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <p style="font-size:.65rem;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;margin-bottom:.25rem;">Destination</p>
+            <p style="font-size:.85rem;color:var(--text);font-family:var(--font-mono);">
+              <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>

@@ -1,0 +1,121 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">inventory_2</span>
+            <%= part ? 'Edit Part' : 'Add Part' %>
+          </p>
+          <h1 class="admin-page-title"><%= part ? 'Edit' : 'New' %> <span style="color:var(--cyan)">Component</span></h1>
+        </div>
+        <a href="/admin/parts" class="btn btn-outline btn-sm">
+          <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+          Back
+        </a>
+      </div>
+
+      <!-- Server errors -->
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-error" style="margin-bottom:1.5rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+          <div>
+            <% errors.forEach(e => { %><p style="margin:0;font-size:.9rem;"><%= e.msg %></p><% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <div class="glass-card admin-card">
+        <form action="<%= part ? '/admin/parts/'+part._id+'/edit' : '/admin/parts/add' %>" method="POST" enctype="multipart/form-data">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Part Name *</label>
+              <input type="text" name="name" class="form-input" required maxlength="100" value="<%= part ? part.name : (formData?.name || '') %>" placeholder="e.g. Titan X Frame" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select name="category" class="form-select" required>
+                <% ['frame','motors','propellers','battery','flightController','camera','ESC','transmitter'].forEach(cat => { %>
+                  <option value="<%= cat %>" <%= (part?.category === cat || formData?.category === cat) ? 'selected' : '' %>>
+                    <%= cat.charAt(0).toUpperCase() + cat.slice(1) %>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Price ($) *</label>
+              <input type="number" name="price" class="form-input" required min="0" step="0.01" value="<%= part ? part.price : (formData?.price || '') %>" placeholder="0.00" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Weight (g) *</label>
+              <input type="number" name="weight" class="form-input" required min="0" step="0.1" value="<%= part ? part.weight : (formData?.weight || '') %>" placeholder="0.0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stock *</label>
+              <input type="number" name="stock" class="form-input" required min="0" step="1" value="<%= part ? part.stock : (formData?.stock || '') %>" placeholder="0" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea name="description" class="form-textarea" required maxlength="500" rows="4" placeholder="Describe the component's specs, material, compatibility…"><%= part ? part.description : (formData?.description || '') %></textarea>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="form-group">
+            <label class="form-label">Part Image (JPG, PNG, WebP, GIF — max 5MB)</label>
+            <% if (part && part.imageUrl) { %>
+              <div style="margin-bottom:.75rem;display:flex;align-items:center;gap:1rem;">
+                <img src="<%= part.imageUrl %>" alt="Current" style="width:80px;height:80px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--glass-border);" />
+                <span style="font-size:.8rem;color:var(--muted);">Current image — upload new to replace</span>
+              </div>
+            <% } %>
+            <div class="admin-file-upload">
+              <input type="file" name="image" id="imageUpload" accept="image/*" style="display:none;" onchange="previewImage(this)" />
+              <label for="imageUpload" class="admin-file-upload-label">
+                <span class="material-symbols-outlined" style="font-size:2rem;color:var(--muted);">upload_file</span>
+                <span style="font-size:.85rem;color:var(--muted);">Click to upload image</span>
+              </label>
+              <img id="imagePreview" src="" alt="" style="display:none;max-width:200px;border-radius:var(--radius);border:1px solid var(--glass-border);margin-top:.75rem;" />
+            </div>
+          </div>
+
+          <!-- Compatibility Tags -->
+          <div class="form-group">
+            <label class="form-label">Compatible With (comma-separated)</label>
+            <input type="text" name="compatibility" class="form-input" placeholder="e.g. 5 inch frame, 2306 motors"
+                   value="<%= part ? (Array.isArray(part.compatibility) ? part.compatibility.join(', ') : '') : (formData?.compatibility || '') %>" />
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;">
+            <a href="/admin/parts" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined" style="font-size:.9rem;"><%= part ? 'save' : 'add_circle' %></span>
+              <%= part ? 'Save Changes' : 'Add Part' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script>
+function previewImage(input) {
+  const preview = document.getElementById('imagePreview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>

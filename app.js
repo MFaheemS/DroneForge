@@ -36,9 +36,10 @@ app.use(session({
   }
 }));
 
-// Make user available in all templates
+// Make user and current path available in all templates
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
+  res.locals.currentPath = req.path;
   next();
 });
 
@@ -47,6 +48,9 @@ app.use('/', require('./routes/home'));
 app.use('/auth', require('./routes/auth'));
 app.use('/parts', require('./routes/parts'));
 app.use('/build', require('./routes/build'));
+app.use('/cart', require('./routes/cart'));
+app.use('/orders', require('./routes/orders'));
+app.use('/admin', require('./routes/admin'));
 
 // 404
 app.use((req, res) => {

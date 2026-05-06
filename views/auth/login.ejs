@@ -97,6 +97,30 @@
         </button>
       </form>
 
+      <!-- Quick-fill test credentials -->
+      <div class="demo-creds-section">
+        <p class="demo-creds-label">
+          <span class="material-symbols-outlined" style="font-size:.75rem;vertical-align:middle;">bolt</span>
+          Demo Access
+        </p>
+        <div class="demo-creds-row">
+          <button type="button" class="demo-cred-btn" onclick="fillCreds('admin@droneforge.io','Admin@1234')">
+            <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--orange);">shield</span>
+            <span>
+              <span style="display:block;font-size:.75rem;font-weight:600;color:var(--text);">Admin Account</span>
+              <span style="display:block;font-size:.65rem;color:var(--muted);font-family:var(--font-mono);">admin@droneforge.io</span>
+            </span>
+          </button>
+          <button type="button" class="demo-cred-btn" onclick="fillCreds('pilot@droneforge.io','Pilot@1234')">
+            <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--cyan);">flight_takeoff</span>
+            <span>
+              <span style="display:block;font-size:.75rem;font-weight:600;color:var(--text);">Customer Account</span>
+              <span style="display:block;font-size:.65rem;color:var(--muted);font-family:var(--font-mono);">pilot@droneforge.io</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
       <hr class="auth-divider" />
       <div class="auth-footer-link">
         No account? <a href="/auth/register">Request Clearance</a>
@@ -125,6 +149,18 @@
 
 <%- include('../partials/scripts') %>
 <script>
+  function fillCreds(email, password) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = password;
+    document.getElementById('password').type = 'password';
+    // brief flash on the inputs to confirm fill
+    [document.getElementById('email'), document.getElementById('password')].forEach(el => {
+      el.style.transition = 'box-shadow .2s';
+      el.style.boxShadow = '0 0 0 2px rgba(0,242,255,.4)';
+      setTimeout(() => { el.style.boxShadow = ''; }, 600);
+    });
+  }
+
   document.querySelectorAll('.si-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
       const input = btn.closest('.si-wrap').querySelector('input');

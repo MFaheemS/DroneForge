@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRONEFORGE - Community Hub</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#0d1515",
+                        "surface-container-high": "#232b2c",
+                        "inverse-surface": "#dce4e4",
+                        "on-secondary-fixed": "#2f1500",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#4e2600",
+                        "on-tertiary": "#003907",
+                        "on-primary-container": "#006a71",
+                        "inverse-primary": "#00696f",
+                        "on-secondary-fixed-variant": "#6f3900",
+                        "primary-fixed-dim": "#00dbe7",
+                        "surface-dim": "#0d1515",
+                        "outline": "#849495",
+                        "surface-container-lowest": "#080f10",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#613100",
+                        "on-tertiary-fixed": "#002203",
+                        "surface-tint": "#00dbe7",
+                        "secondary": "#ffb77f",
+                        "on-surface-variant": "#b9cacb",
+                        "error-container": "#93000a",
+                        "surface-bright": "#333b3b",
+                        "primary-container": "#00f2ff",
+                        "on-primary": "#00363a",
+                        "inverse-on-surface": "#2a3232",
+                        "on-tertiary-container": "#007016",
+                        "tertiary-fixed-dim": "#00e639",
+                        "surface-variant": "#2e3637",
+                        "on-surface": "#dce4e4",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#151d1e",
+                        "tertiary-fixed": "#72ff70",
+                        "secondary-fixed-dim": "#ffb77f",
+                        "secondary-fixed": "#ffdcc4",
+                        "outline-variant": "#3a494b",
+                        "on-primary-fixed": "#002022",
+                        "on-tertiary-fixed-variant": "#00530e",
+                        "secondary-container": "#ff8a00",
+                        "on-error": "#690005",
+                        "primary-fixed": "#74f5ff",
+                        "on-background": "#dce4e4",
+                        "surface-container": "#192122",
+                        "tertiary-container": "#00fd40",
+                        "primary": "#e1fdff",
+                        "surface-container-highest": "#2e3637",
+                        "tertiary": "#e4ffdb",
+                        "background": "#0d1515"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "md": "16px",
+                        "margin": "40px",
+                        "unit": "4px",
+                        "lg": "24px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "sm": "8px"
+                    },
+                    fontFamily: {
+                        "h1": ["Space Grotesk"],
+                        "h2": ["Space Grotesk"],
+                        "h3": ["Space Grotesk"],
+                        "body-md": ["Inter"],
+                        "label-caps": ["Space Grotesk"],
+                        "mono-data": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "h1": ["64px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "h2": ["48px", { lineHeight: "1.2", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "h3": ["32px", { lineHeight: "1.2", letterSpacing: "0em", fontWeight: "600" }],
+                        "body-md": ["16px", { lineHeight: "1.5", letterSpacing: "0em", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "1.0", letterSpacing: "0.15em", fontWeight: "600" }],
+                        "mono-data": ["14px", { lineHeight: "1.0", letterSpacing: "0.05em", fontWeight: "500" }],
+                        "body-lg": ["18px", { lineHeight: "1.6", letterSpacing: "0em", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 border-b border-white/10 bg-zinc-950/70 backdrop-blur-xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)] flex justify-between items-center px-8 h-16">
+<div class="text-2xl font-black tracking-tighter text-cyan-400 drop-shadow-[0_0_10px_rgba(0,242,255,0.5)] font-['Space_Grotesk']">
+            DRONEFORGE
+        </div>
+<div class="hidden md:flex gap-8 h-full items-center">
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-300 h-full flex items-center px-2" href="#">FORGE</a>
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-300 h-full flex items-center px-2" href="#">MISSION</a>
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-zinc-400 hover:text-white hover:bg-white/5 transition-all duration-300 h-full flex items-center px-2" href="#">MARKET</a>
+<!-- Active State -->
+<a class="font-['Space_Grotesk'] tracking-widest uppercase text-xs text-cyan-400 border-b-2 border-cyan-400 pb-1 h-full flex items-center px-2 relative top-[1px]" href="#">HUB</a>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-cyan-400 hover:bg-white/5 transition-all duration-300 cursor-pointer p-2 rounded-full" data-icon="settings">settings</span>
+<span class="material-symbols-outlined text-cyan-400 hover:bg-white/5 transition-all duration-300 cursor-pointer p-2 rounded-full" data-icon="account_circle">account_circle</span>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-grow pt-32 pb-24 px-8 md:px-margin max-w-[1800px] mx-auto w-full">
+<!-- Header Section -->
+<header class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-8">
+<div class="max-w-3xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary-container" data-icon="hub" style="font-variation-settings: 'FILL' 1;">hub</span>
+<span class="font-label-caps text-label-caps text-primary-fixed-dim tracking-widest">GLOBAL TELEMETRY NETWORK</span>
+</div>
+<h1 class="font-h1 text-h1 text-on-background mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.05)]">COMMUNITY HUB</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Explore the highest-rated experimental loadouts from top-tier aerospace engineers. Analyze telemetry, inspect modular components, and integrate open-source designs into your next forge.</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-primary-container/50 hover:bg-white/10 px-6 py-3 rounded-DEFAULT transition-all duration-300 text-on-surface hover:text-primary-container hover:shadow-[0_0_15px_rgba(0,242,255,0.1)] group">
+<span class="material-symbols-outlined text-[18px] group-hover:animate-pulse" data-icon="filter_list">filter_list</span>
+<span class="font-label-caps text-label-caps">FILTER SPECS</span>
+</button>
+<button class="flex items-center gap-2 bg-primary-container/10 border border-primary-container/30 hover:bg-primary-container hover:text-on-primary-container px-6 py-3 rounded-DEFAULT transition-all duration-300 text-primary-container shadow-[0_0_20px_rgba(0,242,255,0.15)]">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+<span class="font-label-caps text-label-caps">PUBLISH BUILD</span>
+</button>
+</div>
+</header>
+<!-- Bento Grid Gallery -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<article class="group relative rounded-xl bg-[rgba(22,22,24,0.7)] backdrop-blur-[20px] border border-white/10 overflow-hidden flex flex-col shadow-[inset_1px_1px_0_0_rgba(255,255,255,0.1)] hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8),inset_1px_1px_0_0_rgba(0,242,255,0.2)] transition-all duration-500 min-h-[480px]">
+<!-- Image Container with Hover Overlay -->
+<div class="relative h-[280px] w-full overflow-hidden bg-surface-container-low border-b border-white/5">
+<img alt="Drone Build" class="w-full h-full object-cover opacity-70 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700 ease-out" data-alt="A highly detailed, metallic dark grey quadcopter drone resting on a sleek, matte black workbench. The drone features neon blue accents along its rotor arms and a glowing central telemetry core. Lighting is dramatic and cinematic, styled like a premium automotive product shot, casting sharp, luminescent reflections against a deep, multi-layered Glassmorphism background. The mood is utilitarian, high-tech, and stealthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi85R6QIJFTrFrN-Z370PPWBV9AC8wthi7a46somlYO6tu3RMA3dNuv1n1gEgiFZRcCK41eUA2HnH7pbpVmXsZTs8u4Vdp-jiRD3i17coyV5PvD7cla4cRXH_H1bu6xC3zy0uFOAQc8mdeBW6GwVzm8Ej4qc0TiA5kRpzmwsQ5W7mUQ-g4OBlbN0A-yfo9EgAnneaQEgnNsWrWxn6h9rBd4p5WMNHKexFLbAhDX077pPoEGuJryq-cVT0vthoMXWymcM552Sedmvk"/>
+<!-- Tech Data Hover Overlay -->
+<div class="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-surface-container-high/90 via-surface/60 to-transparent">
+<div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+<h4 class="font-label-caps text-label-caps text-primary-container mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="memory">memory</span>
+                                HARDWARE MANIFEST
+                            </h4>
+<ul class="space-y-2 font-mono-data text-mono-data text-[12px]">
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>CHASSIS</span><span class="text-on-background">AERO-V TITANIUM</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>PROPULSION</span><span class="text-primary-fixed-dim">ION-X QUAD</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>POWER</span><span class="text-on-background">FUSION CELL MK2</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>OPTICS</span><span class="text-on-background">LIDAR ARRAY 360</span></li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="p-6 flex flex-col flex-grow">
+<!-- Title & Creator -->
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-h3 text-h3 text-[20px] text-on-background leading-tight mb-2 tracking-tight group-hover:text-primary-container transition-colors">Vanguard Interceptor</h3>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-bright overflow-hidden border border-white/20">
+<img alt="Creator Avatar" class="w-full h-full object-cover" data-alt="A close-up portrait of a serious-looking engineer in a dark, tech-wear jacket, set against a blurred, neon-lit industrial background. The lighting is moody with cool blue tones, matching the high-end cybernetic aesthetic of the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFoGIu6__DQTsu00e8F0jie28Rsk-Xb5DQRCBIrMjP1fAiCKv9Ql36Y8gbvP993v1MpoBEC2zVEbLRXUWr-N4ajn4033xtahgODiVd_gnKPF1Mh1tBgySwZ_7A_8dgFtGC8sXVs1FChXB-gInLsvWMAWaimrRBH92dUJTAb0Gda0HuXtLga9lo65ecmqc-NjXI_sysbesC2aY9QIWamqwnKqYSDUfoH9cxXLpqvPz6KqeeoyfRwvKWJDE37v1BNj8qHahP0SKqiP0"/>
+</div>
+<span class="font-mono-data text-mono-data text-xs text-on-surface-variant">@Cipher_09</span>
+</div>
+</div>
+<!-- Upvote Badge -->
+<div class="flex flex-col items-center justify-center bg-surface-container p-2 rounded-lg border border-white/5 min-w-[50px]">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed-dim mb-1 cursor-pointer hover:text-white transition-colors" data-icon="keyboard_double_arrow_up">keyboard_double_arrow_up</span>
+<span class="font-mono-data text-mono-data text-xs text-on-background">4.2K</span>
+</div>
+</div>
+<!-- Tech Specs Row -->
+<div class="grid grid-cols-2 gap-3 mb-6 mt-auto">
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-primary-container/20 group-hover/spec:bg-primary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">MAX VELOCITY</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                285 <span class="text-[10px] text-outline">KM/H</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-secondary-container/20 group-hover/spec:bg-secondary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">DRY WEIGHT</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                1.4 <span class="text-[10px] text-outline">KG</span>
+</div>
+</div>
+</div>
+<!-- Tags -->
+<div class="flex gap-2 flex-wrap">
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">RACING</span>
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">CARBON FIBER</span>
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">AGILITY</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group relative rounded-xl bg-[rgba(22,22,24,0.7)] backdrop-blur-[20px] border border-white/10 overflow-hidden flex flex-col shadow-[inset_1px_1px_0_0_rgba(255,255,255,0.1)] hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8),inset_1px_1px_0_0_rgba(0,242,255,0.2)] transition-all duration-500 min-h-[480px]">
+<div class="relative h-[280px] w-full overflow-hidden bg-surface-container-low border-b border-white/5">
+<img alt="Drone Build" class="w-full h-full object-cover opacity-70 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700 ease-out" data-alt="A heavy-duty, industrial inspection drone equipped with large, rugged camera gimbals and sensory arrays. The chassis is a matte olive drab with stark white hazard markings. It is dramatically lit from below against a pitch-black background, emphasizing its complex mechanical structure and metallic minimalism. The image exudes a sense of heavy payload capability and precision engineering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4vOzEyU5Qb5P8EKkxcKDo9XogEVnYFe1YRBEQjpwssG74qB4CWCjvl_TI4fcm4xbbPFMv_nbRHb2UPgdu8CchEKTkBCWcC1VlWAKETCCk81MPeCQxffL7YjIUV_hvEGiB0h3LBwawsgR05Ot2nbFGuTFq7-yKm-6B7p8yM2xjGM70z6ClIkRbHn9oMmZqh78_9MzCxyWQ8sZJk22NxWnZJoumWLl42hKjaHKldQ-IEO-b58d5ILTueiHPGxv7O34fIi_7VUuMacM"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-surface-container-high/90 via-surface/60 to-transparent">
+<div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+<h4 class="font-label-caps text-label-caps text-primary-container mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="memory">memory</span>
+                                HARDWARE MANIFEST
+                            </h4>
+<ul class="space-y-2 font-mono-data text-mono-data text-[12px]">
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>CHASSIS</span><span class="text-on-background">GOLIATH HEAVY</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>PROPULSION</span><span class="text-on-background">TWIN-ROTOR DUAL</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>PAYLOAD</span><span class="text-secondary-fixed-dim">CINEMA RIG 8K</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>POWER</span><span class="text-on-background">HIGH-CAP LIPO</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-h3 text-h3 text-[20px] text-on-background leading-tight mb-2 tracking-tight group-hover:text-primary-container transition-colors">Behemoth Rig</h3>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-bright overflow-hidden border border-white/20">
+<div class="w-full h-full bg-surface-variant flex items-center justify-center font-mono-data text-[10px] text-on-surface">NV</div>
+</div>
+<span class="font-mono-data text-mono-data text-xs text-on-surface-variant">@NovaVision</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center bg-surface-container p-2 rounded-lg border border-white/5 min-w-[50px]">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mb-1 cursor-pointer hover:text-primary-fixed-dim transition-colors" data-icon="keyboard_double_arrow_up">keyboard_double_arrow_up</span>
+<span class="font-mono-data text-mono-data text-xs text-on-surface-variant">892</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-6 mt-auto">
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-primary-container/20 group-hover/spec:bg-primary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">MAX VELOCITY</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                85 <span class="text-[10px] text-outline">KM/H</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-secondary-container/20 group-hover/spec:bg-secondary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">PAYLOAD CAP</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                12.5 <span class="text-[10px] text-outline">KG</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap">
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">CINEMATOGRAPHY</span>
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">HEAVY LIFT</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group relative rounded-xl bg-[rgba(22,22,24,0.7)] backdrop-blur-[20px] border border-white/10 overflow-hidden flex flex-col shadow-[inset_1px_1px_0_0_rgba(255,255,255,0.1)] hover:-translate-y-2 hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8),inset_1px_1px_0_0_rgba(0,242,255,0.2)] transition-all duration-500 min-h-[480px]">
+<div class="relative h-[280px] w-full overflow-hidden bg-surface-container-low border-b border-white/5">
+<img alt="Drone Build" class="w-full h-full object-cover opacity-70 group-hover:scale-110 group-hover:opacity-40 transition-all duration-700 ease-out" data-alt="A sleek, aerodynamic fixed-wing drone hybrid designed for high-altitude surveying. The fuselage is constructed from glossy white composite materials, accented with sharp, neon blue racing stripes. The camera angle is an extreme wide shot showing the drone banking sharply, leaving a faint digital-looking trail in the dark, smoky background. The aesthetic is clean, experimental, and incredibly fast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGy7KEzG-_ckpu3xpX-p0hC76tF2u7LZXOofd3ZAsNr-p2hUlYl9pNYXN3dL-jFeGgCyS8-4oo-Y2zKDSZ0qpjDiU_I5lr1b-1YCV8n9gyThHA9jSxjszw1cRkLxaFFHY0sbNEC2zyzSWoZ6VNj_FpSXb2_aRtxOAGQSYko0GdlJxncfOwNpFBJPYJQb9sdVlDCxzxC1Mt0Q0IZs-lJwz6JA-AGgDrFkaStOclsgn-6n0hJ6-L_dV5yhVZx-664JP1hf2zgJ6G4_M"/>
+<div class="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-t from-surface-container-high/90 via-surface/60 to-transparent">
+<div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+<h4 class="font-label-caps text-label-caps text-primary-container mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="memory">memory</span>
+                                HARDWARE MANIFEST
+                            </h4>
+<ul class="space-y-2 font-mono-data text-mono-data text-[12px]">
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>CHASSIS</span><span class="text-on-background">AERO-GLIDE WING</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>PROPULSION</span><span class="text-on-background">TURBOFAN MICRO</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>COMMS</span><span class="text-tertiary-fixed-dim">SAT-LINK PRO</span></li>
+<li class="flex justify-between border-b border-white/10 pb-1 text-on-surface-variant"><span>POWER</span><span class="text-on-background">SOLAR MESH</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-h3 text-h3 text-[20px] text-on-background leading-tight mb-2 tracking-tight group-hover:text-primary-container transition-colors">Strato-Scout V2</h3>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-bright overflow-hidden border border-white/20">
+<div class="w-full h-full bg-primary-container/20 flex items-center justify-center font-mono-data text-[10px] text-primary-container">AZ</div>
+</div>
+<span class="font-mono-data text-mono-data text-xs text-on-surface-variant">@Aero_Zephyr</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center bg-surface-container p-2 rounded-lg border border-white/5 min-w-[50px]">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed-dim mb-1 cursor-pointer hover:text-white transition-colors" data-icon="keyboard_double_arrow_up">keyboard_double_arrow_up</span>
+<span class="font-mono-data text-mono-data text-xs text-on-background">3.1K</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3 mb-6 mt-auto">
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-primary-container/20 group-hover/spec:bg-primary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">FLIGHT TIME</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                4.5 <span class="text-[10px] text-outline">HRS</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest/50 p-3 rounded border border-white/5 relative overflow-hidden group/spec">
+<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-tertiary-container/20 group-hover/spec:bg-tertiary-container transition-colors"></div>
+<div class="font-label-caps text-label-caps text-[10px] text-on-surface-variant mb-1">RANGE</div>
+<div class="font-mono-data text-mono-data text-[16px] text-on-background flex items-baseline gap-1">
+                                120 <span class="text-[10px] text-outline">KM</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2 flex-wrap">
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">FIXED WING</span>
+<span class="px-2 py-1 text-[10px] font-label-caps text-on-surface-variant bg-surface-container border border-outline-variant rounded-sm hover:border-primary-container/50 hover:text-primary-container transition-colors cursor-pointer">LONG RANGE</span>
+</div>
+</div>
+</article>
+<!-- Add new card component here -->
+</div>
+</main>
+<!-- Footer -->
+<footer class="relative w-full py-8 border-t border-white/5 bg-black flex flex-col items-center gap-4 px-12 mt-auto">
+<div class="flex gap-8">
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-all duration-300" href="#">SATELLITE LINK</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-all duration-300" href="#">LEGAL</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-all duration-300" href="#">UPGRADE</a>
+<a class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600 hover:text-cyan-400 transition-all duration-300" href="#">SUPPORT</a>
+</div>
+<div class="font-['Space_Grotesk'] text-[10px] tracking-[0.2em] text-zinc-600">
+            Â©2024 DRONEFORGE AEROSPACE. ALL SYSTEMS NOMINAL.
+        </div>
+</footer>
+</body></html>

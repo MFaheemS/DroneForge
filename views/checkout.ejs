@@ -1,0 +1,300 @@
+<%- include('partials/head', { title: title }) %>
+<%- include('partials/navbar') %>
+
+<main class="checkout-page">
+  <div class="grid-bg"></div>
+  <div class="container" style="padding-top:6rem;padding-bottom:4rem;">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:2rem;">
+      <a href="/">Home</a>
+      <span class="material-symbols-outlined" style="font-size:.75rem;color:var(--muted);">chevron_right</span>
+      <a href="/cart">Cart</a>
+      <span class="material-symbols-outlined" style="font-size:.75rem;color:var(--muted);">chevron_right</span>
+      <span style="color:var(--cyan);">Checkout</span>
+    </nav>
+
+    <!-- Progress Stepper -->
+    <div class="checkout-stepper" id="checkoutStepper">
+      <div class="stepper-step active" id="step-indicator-1">
+        <div class="stepper-circle completed">
+          <span class="material-symbols-outlined" style="font-size:1rem;">check</span>
+        </div>
+        <span class="stepper-label">Build Review</span>
+      </div>
+      <div class="stepper-line active" id="step-line-1"></div>
+      <div class="stepper-step active" id="step-indicator-2">
+        <div class="stepper-circle active">
+          <span class="material-symbols-outlined" style="font-size:1rem;">local_shipping</span>
+        </div>
+        <span class="stepper-label">Shipping</span>
+      </div>
+      <div class="stepper-line" id="step-line-2"></div>
+      <div class="stepper-step" id="step-indicator-3">
+        <div class="stepper-circle">
+          <span class="material-symbols-outlined" style="font-size:1rem;">payments</span>
+        </div>
+        <span class="stepper-label">Payment</span>
+      </div>
+    </div>
+
+    <!-- Error Banner -->
+    <% if (errors.length > 0) { %>
+      <div class="alert alert-error" style="margin-bottom:1.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+        <div>
+          <% errors.forEach(e => { %>
+            <p style="margin:0;font-size:.9rem;"><%= e.msg %></p>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="checkout-layout">
+
+      <!-- LEFT: Multi-step form -->
+      <div class="checkout-form-col">
+
+        <!-- STEP 1: Build Review -->
+        <div class="checkout-step" id="checkout-step-1">
+          <div class="glass-card checkout-section">
+            <div class="checkout-section-header">
+              <h2>Build Review</h2>
+              <p>Name your drone and review your component selection.</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Build Name (Drone Designation)</label>
+              <input type="text" id="buildNameInput" class="form-input" placeholder="e.g. Vanguard Interceptor Mk.I" maxlength="80" value="Custom Drone Build" />
+              <span class="form-error hidden" id="err-buildName"></span>
+            </div>
+            <div class="review-parts-list">
+              <% cart.forEach(item => { %>
+                <div class="review-part-row">
+                  <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">memory</span>
+                  <div class="review-part-info">
+                    <span><%= item.name %></span>
+                    <span class="category-badge" style="font-size:.6rem;"><%= item.category %></span>
+                  </div>
+                  <span style="font-family:var(--font-mono);font-size:.9rem;color:var(--text);">×<%= item.quantity %> — $<%= (item.price*item.quantity).toFixed(2) %></span>
+                </div>
+              <% }) %>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:1.5rem;">
+              <button class="btn btn-primary" id="goToStep2Btn">
+                Next: Shipping Protocol
+                <span class="material-symbols-outlined" style="font-size:.9rem;">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Shipping -->
+        <div class="checkout-step hidden" id="checkout-step-2">
+          <div class="glass-card checkout-section">
+            <div class="checkout-section-header">
+              <h2>Shipping Protocol</h2>
+              <p>Specify the primary extraction point for your hardware shipment.</p>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Operator Name</label>
+                <input type="text" id="fullNameInput" class="form-input" placeholder="John Ghost Doe" />
+                <span class="form-error hidden" id="err-fullName"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Comm-Link (Email)</label>
+                <input type="email" id="emailInput" class="form-input" placeholder="operator@droneforge.io" />
+                <span class="form-error hidden" id="err-email"></span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Physical Coordinates (Address)</label>
+              <input type="text" id="addressInput" class="form-input" placeholder="Street, Building, Unit" />
+              <span class="form-error hidden" id="err-address"></span>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label class="form-label">Sector (City)</label>
+                <input type="text" id="cityInput" class="form-input" placeholder="New Berlin" />
+                <span class="form-error hidden" id="err-city"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Territory (State)</label>
+                <input type="text" id="stateInput" class="form-input" placeholder="Neo-Europa" />
+                <span class="form-error hidden" id="err-state"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">ZIP / Grid Code</label>
+                <input type="text" id="zipInput" class="form-input" placeholder="90210" />
+                <span class="form-error hidden" id="err-zip"></span>
+              </div>
+            </div>
+
+            <!-- Shipping Method -->
+            <div class="form-group" style="margin-top:1.5rem;">
+              <label class="form-label">Extraction Method</label>
+              <div class="shipping-methods">
+                <label class="shipping-option selected" id="ship-priority-label">
+                  <input type="radio" name="shippingMethod" value="priority" id="ship-priority" checked style="display:none;" />
+                  <div class="shipping-option-icon">
+                    <span class="material-symbols-outlined">rocket_launch</span>
+                  </div>
+                  <div class="shipping-option-info">
+                    <span class="shipping-option-name">Stealth Priority</span>
+                    <span class="shipping-option-desc">24–48 Hours — Clandestine Delivery</span>
+                  </div>
+                  <span class="shipping-option-price">+$45.00</span>
+                </label>
+                <label class="shipping-option" id="ship-standard-label">
+                  <input type="radio" name="shippingMethod" value="standard" id="ship-standard" style="display:none;" />
+                  <div class="shipping-option-icon" style="background:var(--surface-high);">
+                    <span class="material-symbols-outlined">flight_takeoff</span>
+                  </div>
+                  <div class="shipping-option-info">
+                    <span class="shipping-option-name">Standard Transport</span>
+                    <span class="shipping-option-desc">3–5 Days — Ground Freight</span>
+                  </div>
+                  <span class="shipping-option-price" style="color:var(--muted);">Free</span>
+                </label>
+              </div>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;">
+              <button class="btn btn-outline btn-sm" id="backToStep1Btn">
+                <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+                Back
+              </button>
+              <button class="btn btn-primary" id="goToStep3Btn">
+                Next: Payment
+                <span class="material-symbols-outlined" style="font-size:.9rem;">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Payment -->
+        <div class="checkout-step hidden" id="checkout-step-3">
+          <form action="/orders/checkout" method="POST" id="checkoutForm">
+            <div class="glass-card checkout-section">
+              <div class="checkout-section-header">
+                <h2>Payment Authorization</h2>
+                <p>Fake payment — no real charges. All inputs are for demo purposes only.</p>
+              </div>
+
+              <!-- Hidden fields populated by JS -->
+              <input type="hidden" name="buildName" id="hiddenBuildName" />
+              <input type="hidden" name="fullName" id="hiddenFullName" />
+              <input type="hidden" name="email" id="hiddenEmail" />
+              <input type="hidden" name="address" id="hiddenAddress" />
+              <input type="hidden" name="city" id="hiddenCity" />
+              <input type="hidden" name="state" id="hiddenState" />
+              <input type="hidden" name="zip" id="hiddenZip" />
+              <input type="hidden" name="shippingMethod" id="hiddenShippingMethod" value="priority" />
+
+              <!-- Card UI -->
+              <div class="card-ui">
+                <div class="card-chip"></div>
+                <div class="card-number-display" id="cardDisplayNumber">•••• •••• •••• ••••</div>
+                <div class="card-footer">
+                  <div>
+                    <span class="card-label">Card Holder</span>
+                    <span class="card-value" id="cardDisplayName">OPERATOR NAME</span>
+                  </div>
+                  <div>
+                    <span class="card-label">Expires</span>
+                    <span class="card-value" id="cardDisplayExpiry">MM/YY</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Card Number</label>
+                <input type="text" name="cardNumber" id="cardNumberInput" class="form-input" placeholder="0000 0000 0000 0000" maxlength="19" />
+                <span class="form-error hidden" id="err-cardNumber"></span>
+              </div>
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label class="form-label">Expiry (MM/YY)</label>
+                  <input type="text" name="cardExpiry" id="cardExpiryInput" class="form-input" placeholder="MM/YY" maxlength="5" />
+                  <span class="form-error hidden" id="err-cardExpiry"></span>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CVC</label>
+                  <input type="text" name="cardCvc" id="cardCvcInput" class="form-input" placeholder="•••" maxlength="4" />
+                  <span class="form-error hidden" id="err-cardCvc"></span>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;">
+                <button type="button" class="btn btn-outline btn-sm" id="backToStep2Btn">
+                  <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+                  Back
+                </button>
+                <button type="submit" class="btn btn-primary" id="submitOrderBtn">
+                  <span class="material-symbols-outlined" style="font-size:.9rem;">verified</span>
+                  Confirm Extraction Point
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Order Summary -->
+      <aside class="checkout-summary-col">
+        <div class="glass-card checkout-summary-panel">
+          <div class="checkout-summary-header">
+            <h3>Fleet Assembly Summary</h3>
+            <span class="badge" style="background:rgba(0,242,255,.1);color:var(--cyan);font-size:.65rem;">
+              <%= cart.reduce((s,i)=>s+i.quantity,0) %> COMPONENT<%= cart.reduce((s,i)=>s+i.quantity,0)!==1?'S':'' %>
+            </span>
+          </div>
+
+          <div class="checkout-parts-list">
+            <% cart.forEach(item => { %>
+              <div class="checkout-part-row">
+                <div class="checkout-part-info">
+                  <span style="font-size:.9rem;color:var(--text);font-family:var(--font-body)"><%= item.name %></span>
+                  <span style="font-size:.65rem;color:var(--muted);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;"><%= item.category %> ×<%= item.quantity %></span>
+                </div>
+                <span style="font-family:var(--font-mono);font-size:.85rem;color:var(--text);">$<%= (item.price*item.quantity).toFixed(2) %></span>
+              </div>
+            <% }) %>
+          </div>
+
+          <div class="checkout-totals">
+            <div class="checkout-total-row">
+              <span>Subtotal</span>
+              <span>$<%= subtotal.toFixed(2) %></span>
+            </div>
+            <div class="checkout-total-row" id="summaryShippingRow">
+              <span>Shipping</span>
+              <span id="summaryShipping">$45.00</span>
+            </div>
+            <div class="checkout-total-row">
+              <span>Tax (8%)</span>
+              <span>$<%= (subtotal * 0.08).toFixed(2) %></span>
+            </div>
+            <div class="checkout-total-final">
+              <span>Total Investment</span>
+              <span id="summaryGrandTotal" style="color:var(--cyan);">$<%= (subtotal * 1.08 + 45).toFixed(2) %></span>
+            </div>
+          </div>
+
+          <div class="checkout-security-badge">
+            <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">verified_user</span>
+            <p style="font-size:.7rem;color:var(--muted);line-height:1.5;text-transform:uppercase;letter-spacing:.1em;">
+              All transactions are encrypted with 256-bit AES-GCM grade security protocols.
+            </p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script src="/js/checkout.js"></script>
