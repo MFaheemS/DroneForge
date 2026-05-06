@@ -1,0 +1,164 @@
+<%- include('partials/head', { title: 'The Origin — About DroneForge' }) %>
+<%- include('partials/navbar') %>
+
+<main class="about-page">
+  <div class="grid-bg"></div>
+
+  <!-- ── HERO ── -->
+  <section class="about-hero">
+    <div class="container">
+      <div class="about-hero-inner">
+        <div class="about-hero-text">
+          <p class="section-label reveal">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">history_edu</span>
+            The Origin Story
+          </p>
+          <h1 class="about-hero-title reveal">
+            Built by Pilots,<br/>
+            <span style="color:var(--cyan)">For Pilots.</span>
+            <span class="cyan-bar"></span>
+          </h1>
+          <p class="about-hero-sub reveal">
+            DroneForge was born from frustration — endless hours hunting compatible parts across a dozen scattered vendors, only to end up with a drone that barely flew. We decided to fix that.
+          </p>
+          <div class="about-hero-stats reveal">
+            <div class="about-stat">
+              <span class="about-stat-val" data-target="4200" data-suffix="+">0</span>
+              <span class="about-stat-label">Drones Built</span>
+            </div>
+            <div class="about-stat">
+              <span class="about-stat-val" data-target="120" data-suffix="+">0</span>
+              <span class="about-stat-label">Parts Available</span>
+            </div>
+            <div class="about-stat">
+              <span class="about-stat-val" data-target="38" data-suffix="">0</span>
+              <span class="about-stat-label">Countries Reached</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-hero-visual reveal">
+          <div class="about-glow-ring"></div>
+          <img src="/images/drone-gif.gif" alt="DroneForge Drone" loading="lazy" class="about-drone-img" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MISSION ── -->
+  <section class="section" style="background:rgba(21,29,30,0.5);border-top:1px solid var(--glass-border);">
+    <div class="container">
+      <div class="about-mission-grid">
+        <div class="glass-card about-mission-card reveal">
+          <span class="material-symbols-outlined" style="font-size:2rem;color:var(--cyan);font-variation-settings:'FILL' 1;margin-bottom:1rem;display:block;">target</span>
+          <h3 style="font-family:var(--font-headline);font-size:1.15rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;">Our Mission</h3>
+          <p style="color:var(--text-variant);font-size:.9rem;line-height:1.8;">Democratize access to professional-grade drone hardware. Every pilot — hobbyist to aerospace engineer — deserves a tool that treats them like a pro.</p>
+        </div>
+        <div class="glass-card about-mission-card reveal" style="transition-delay:.1s">
+          <span class="material-symbols-outlined" style="font-size:2rem;color:var(--orange);font-variation-settings:'FILL' 1;margin-bottom:1rem;display:block;">visibility</span>
+          <h3 style="font-family:var(--font-headline);font-size:1.15rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;">Our Vision</h3>
+          <p style="color:var(--text-variant);font-size:.9rem;line-height:1.8;">A world where configuring and ordering a custom drone is as seamless as buying a laptop — with full compatibility guarantees and next-day assembly.</p>
+        </div>
+        <div class="glass-card about-mission-card reveal" style="transition-delay:.2s">
+          <span class="material-symbols-outlined" style="font-size:2rem;color:var(--green);font-variation-settings:'FILL' 1;margin-bottom:1rem;display:block;">handshake</span>
+          <h3 style="font-family:var(--font-headline);font-size:1.15rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;">Our Promise</h3>
+          <p style="color:var(--text-variant);font-size:.9rem;line-height:1.8;">Every part passes our compatibility engine before it reaches your cart. No more guesswork. No more returns. Just builds that fly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TIMELINE ── -->
+  <section class="section">
+    <div class="container">
+      <p class="section-label reveal" style="justify-content:center;">Milestones</p>
+      <h2 class="section-title reveal" style="text-align:center;">
+        The DroneForge <span style="color:var(--cyan)">Timeline</span>
+        <span class="cyan-bar" style="margin:auto;"></span>
+      </h2>
+      <div class="timeline" style="margin-top:3rem;">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2021</div>
+          <div class="glass-card timeline-card">
+            <h4 style="font-family:var(--font-headline);color:var(--cyan);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">The Idea</h4>
+            <p style="font-size:.9rem;color:var(--text-variant);line-height:1.7;">Two pilots, one frustrating build session, and a whiteboard full of ideas. DroneForge is sketched out in a garage.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal" style="transition-delay:.1s">
+          <div class="timeline-dot" style="background:var(--orange);box-shadow:0 0 12px var(--orange);"></div>
+          <div class="timeline-date">2022</div>
+          <div class="glass-card timeline-card">
+            <h4 style="font-family:var(--font-headline);color:var(--orange);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">First Build</h4>
+            <p style="font-size:.9rem;color:var(--text-variant);line-height:1.7;">Alpha launched with 30 parts. First 100 users place orders in 48 hours. The compatibility engine prevents 312 bad builds.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal" style="transition-delay:.2s">
+          <div class="timeline-dot" style="background:var(--green);box-shadow:0 0 12px var(--green);"></div>
+          <div class="timeline-date">2023</div>
+          <div class="glass-card timeline-card">
+            <h4 style="font-family:var(--font-headline);color:var(--green);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Scale Up</h4>
+            <p style="font-size:.9rem;color:var(--text-variant);line-height:1.7;">120+ parts, 15 partner vendors, and operations in 38 countries. The Forge gets its iconic dark UI redesign.</p>
+          </div>
+        </div>
+        <div class="timeline-item reveal" style="transition-delay:.3s">
+          <div class="timeline-dot" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan);"></div>
+          <div class="timeline-date">2024</div>
+          <div class="glass-card timeline-card">
+            <h4 style="font-family:var(--font-headline);color:var(--cyan);font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;">Today</h4>
+            <p style="font-size:.9rem;color:var(--text-variant);line-height:1.7;">4,200+ drones built. Admin tools launched for vendors. AI-assisted build suggestions in beta. The best is ahead.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TEAM ── -->
+  <section class="section" style="background:rgba(21,29,30,0.5);border-top:1px solid var(--glass-border);">
+    <div class="container">
+      <p class="section-label reveal" style="justify-content:center;">The Crew</p>
+      <h2 class="section-title reveal" style="text-align:center;">
+        Meet the <span style="color:var(--cyan)">Operators</span>
+        <span class="cyan-bar" style="margin:auto;"></span>
+      </h2>
+      <div class="team-grid" style="margin-top:3rem;">
+        <% [
+          { name:'Zara Nakamura', role:'Co-Founder & CEO', icon:'psychology', color:'var(--cyan)', bio:'FPV racer turned engineer. Flew competitively for 7 years before co-founding DroneForge.' },
+          { name:'Marcus Osei', role:'CTO & Lead Architect', icon:'code', color:'var(--orange)', bio:'Built aerospace software for 10 years. Obsesses over compatibility matrices at 2am.' },
+          { name:'Lena Kovacs', role:'Head of Design', icon:'palette', color:'var(--green)', bio:'Believes good UI feels like a cockpit — every control exactly where you expect it.' },
+          { name:'Tariq Al-Rashid', role:'Head of Hardware', icon:'hardware', color:'var(--cyan)', bio:'Certified drone technician with 200+ builds. Personally tests every new part we stock.' }
+        ].forEach(member => { %>
+          <div class="glass-card team-card reveal">
+            <div class="team-avatar" style="background:rgba(0,242,255,.08);border:1px solid rgba(0,242,255,.15);">
+              <span class="material-symbols-outlined" style="font-size:2rem;color:<%= member.color %>;font-variation-settings:'FILL' 1;"><%= member.icon %></span>
+            </div>
+            <h3 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem;"><%= member.name %></h3>
+            <p style="font-size:.65rem;color:<%= member.color %>;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem;"><%= member.role %></p>
+            <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;"><%= member.bio %></p>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="section" style="text-align:center;">
+    <div class="container">
+      <p class="section-label reveal" style="justify-content:center;">Join the Forge</p>
+      <h2 class="section-title reveal" style="max-width:560px;margin:0 auto;">
+        Ready to build something <span style="color:var(--cyan)">extraordinary?</span>
+        <span class="cyan-bar" style="margin:auto;"></span>
+      </h2>
+      <div class="hero-actions reveal" style="justify-content:center;margin-top:2.5rem;">
+        <a href="<%= user ? '/build' : '/auth/register' %>" class="btn btn-primary btn-lg">
+          <span class="material-symbols-outlined" style="font-size:1rem;">rocket_launch</span>
+          Start Building
+        </a>
+        <a href="/contact" class="btn btn-outline btn-lg">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

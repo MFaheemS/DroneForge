@@ -1,0 +1,174 @@
+<%- include('partials/head', { title: 'Contact — DroneForge' }) %>
+<%- include('partials/navbar') %>
+
+<main class="contact-page">
+  <div class="grid-bg"></div>
+
+  <div class="container" style="padding-top:6rem;padding-bottom:5rem;">
+
+    <div class="contact-layout">
+
+      <!-- LEFT: Info -->
+      <div class="contact-info-col">
+        <p class="section-label reveal">
+          <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">cell_tower</span>
+          Secure Comm Link
+        </p>
+        <h1 class="contact-title reveal">
+          Talk to<br/>
+          <span style="color:var(--cyan)">Mission Control</span>
+          <span class="cyan-bar"></span>
+        </h1>
+        <p class="contact-sub reveal">
+          Have a question about a build, a parts order, or want to partner with us? Our crew monitors all channels 24/7. We'll respond within 24 hours.
+        </p>
+
+        <div class="contact-channels reveal">
+          <div class="glass-card contact-channel-card">
+            <span class="material-symbols-outlined" style="color:var(--cyan);font-size:1.3rem;">alternate_email</span>
+            <div>
+              <p style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:.25rem;">Email</p>
+              <p style="font-size:.9rem;color:var(--text);">support@droneforge.io</p>
+            </div>
+          </div>
+          <div class="glass-card contact-channel-card">
+            <span class="material-symbols-outlined" style="color:var(--orange);font-size:1.3rem;">schedule</span>
+            <div>
+              <p style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:.25rem;">Response Time</p>
+              <p style="font-size:.9rem;color:var(--text);">Within 24 hours</p>
+            </div>
+          </div>
+          <div class="glass-card contact-channel-card">
+            <span class="material-symbols-outlined" style="color:var(--green);font-size:1.3rem;">public</span>
+            <div>
+              <p style="font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-family:var(--font-mono);margin-bottom:.25rem;">Coverage</p>
+              <p style="font-size:.9rem;color:var(--text);">Global — 38 Countries</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Form -->
+      <div class="contact-form-col">
+        <div class="glass-card contact-form-card">
+
+          <!-- Success toast shown after submit -->
+          <div class="contact-success hidden" id="contactSuccess">
+            <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--green);display:block;margin-bottom:1rem;">check_circle</span>
+            <h3 style="font-family:var(--font-headline);color:var(--text);font-size:1.2rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem;">Message Transmitted</h3>
+            <p style="color:var(--text-variant);font-size:.9rem;line-height:1.7;">Your message has been received. Expect a response within 24 hours.</p>
+          </div>
+
+          <form id="contactForm" novalidate>
+            <div class="contact-form-header">
+              <h2 style="font-family:var(--font-headline);font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text);">Send a Transmission</h2>
+              <p style="font-size:.8rem;color:var(--muted);margin-top:.25rem;">All fields required. No spam, ever.</p>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input type="text" id="cf-name" class="form-input" placeholder="John Ghost Doe" maxlength="80" />
+                <span class="form-error hidden" id="err-cf-name"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="cf-email" class="form-input" placeholder="pilot@example.io" />
+                <span class="form-error hidden" id="err-cf-email"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select id="cf-subject" class="form-select">
+                <option value="">Select a subject…</option>
+                <option value="order">Order Support</option>
+                <option value="parts">Parts & Compatibility</option>
+                <option value="build">Build Help</option>
+                <option value="partnership">Partnership / Vendor</option>
+                <option value="other">Other</option>
+              </select>
+              <span class="form-error hidden" id="err-cf-subject"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea id="cf-message" class="form-textarea form-input" rows="5" placeholder="Describe your mission objective…" maxlength="2000"></textarea>
+              <div style="display:flex;justify-content:space-between;margin-top:.3rem;">
+                <span class="form-error hidden" id="err-cf-message"></span>
+                <span style="font-size:.65rem;color:var(--muted);font-family:var(--font-mono);margin-left:auto;" id="charCount">0 / 2000</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="contactSubmitBtn" style="width:100%;justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:1rem;" id="submitIcon">send</span>
+              <span id="submitLabel">Transmit Message</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script>
+(function () {
+  const form       = document.getElementById('contactForm');
+  const successEl  = document.getElementById('contactSuccess');
+  const submitBtn  = document.getElementById('contactSubmitBtn');
+  const submitIcon = document.getElementById('submitIcon');
+  const submitLabel= document.getElementById('submitLabel');
+  const msgInput   = document.getElementById('cf-message');
+  const charCount  = document.getElementById('charCount');
+
+  // Char counter
+  msgInput?.addEventListener('input', () => {
+    charCount.textContent = msgInput.value.length + ' / 2000';
+  });
+
+  function showErr(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.toggle('hidden', !msg);
+  }
+  function clearErrors() {
+    document.querySelectorAll('#contactForm .form-error').forEach(e => { e.textContent = ''; e.classList.add('hidden'); });
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearErrors();
+
+    const name    = document.getElementById('cf-name').value.trim();
+    const email   = document.getElementById('cf-email').value.trim();
+    const subject = document.getElementById('cf-subject').value;
+    const message = document.getElementById('cf-message').value.trim();
+    let ok = true;
+
+    if (name.length < 2)                              { showErr('err-cf-name', 'Name is required.'); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))   { showErr('err-cf-email', 'Valid email required.'); ok = false; }
+    if (!subject)                                     { showErr('err-cf-subject', 'Select a subject.'); ok = false; }
+    if (message.length < 10)                          { showErr('err-cf-message', 'Message must be at least 10 characters.'); ok = false; }
+    if (!ok) return;
+
+    // Simulate sending
+    submitBtn.disabled = true;
+    submitIcon.textContent = 'hourglass_top';
+    submitLabel.textContent = 'Transmitting…';
+    submitIcon.style.animation = 'spin 1s linear infinite';
+
+    await new Promise(r => setTimeout(r, 1400));
+
+    form.style.display = 'none';
+    successEl.classList.remove('hidden');
+    successEl.style.animation = 'fadeInUp .4s ease forwards';
+  });
+})();
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+</style>

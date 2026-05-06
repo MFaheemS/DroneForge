@@ -4,26 +4,48 @@ const session = require('express-session');
 const { MongoStore } = require('connect-mongo');
 const path = require('path');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 
-// DB connection
+// ── Security Headers ──
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// ── MongoDB Query Sanitization (strips $ and . from body/params — Express 5 compatible) ──
+function sanitizeObj(obj) {
+  if (!obj || typeof obj !== 'object') return;
+  for (const key of Object.keys(obj)) {
+    if (key.startsWith('$') || key.includes('.')) { delete obj[key]; continue; }
+    if (typeof obj[key] === 'object') sanitizeObj(obj[key]);
+  }
+}
+app.use((req, _res, next) => {
+  sanitizeObj(req.body);
+  sanitizeObj(req.params);
+  next();
+});
+
+// ── Static Files with Cache-Control ──
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
+  etag: true,
+}));
+
+// ── DB Connection ──
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB error:', err));
 
-// View engine
+// ── View Engine ──
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Body parsing
+// ── Body Parsing ──
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session
+// ── Session ──
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -36,28 +58,37 @@ app.use(session({
   }
 }));
 
-// Make user and current path available in all templates
+// ── Template Locals ──
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.currentPath = req.path;
   next();
 });
 
-// Routes
+// ── Rate Limiter for Auth Routes ──
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => res.status(429).render('errors/404', { title: 'Too Many Requests', message: 'Too many login attempts. Please wait 15 minutes.' })
+});
+
+// ── Routes ──
 app.use('/', require('./routes/home'));
-app.use('/auth', require('./routes/auth'));
+app.use('/auth', authLimiter, require('./routes/auth'));
 app.use('/parts', require('./routes/parts'));
 app.use('/build', require('./routes/build'));
 app.use('/cart', require('./routes/cart'));
 app.use('/orders', require('./routes/orders'));
 app.use('/admin', require('./routes/admin'));
 
-// 404
+// ── 404 ──
 app.use((req, res) => {
   res.status(404).render('errors/404');
 });
 
-// 500
+// ── 500 ──
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('errors/404', { message: 'Something went wrong.' });
