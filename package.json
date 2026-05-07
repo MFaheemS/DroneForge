@@ -26,6 +26,7 @@
     "nodemailer": "^8.0.7"
   },
   "devDependencies": {
+    "jimp": "^1.6.1",
     "nodemon": "^3.1.14"
   }
 }

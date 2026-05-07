@@ -306,56 +306,109 @@
     orderBtn.disabled = filledSlots < 3;
   }
 
+  // ── DRONE SIMULATION STATE ──
+  const schematicCanvas = document.getElementById('schematicCanvas');
+
+  function updateDroneState(state, problemSlotKeys) {
+    // Remove all state classes from canvas
+    schematicCanvas.classList.remove('drone-complete', 'drone-error');
+
+    // Clear all error-slot markers
+    document.querySelectorAll('.slot-group.error-slot').forEach(el => el.classList.remove('error-slot'));
+
+    if (state === 'complete') {
+      schematicCanvas.classList.add('drone-complete');
+    } else if (state === 'error') {
+      schematicCanvas.classList.add('drone-error');
+      // Mark each problematic slot group
+      (problemSlotKeys || []).forEach(key => {
+        document.querySelectorAll(`.slot-group[data-slot="${key}"]`).forEach(el => {
+          el.classList.add('error-slot');
+        });
+      });
+    }
+    // 'idle' = no class added, no animation
+  }
+
   function renderCompatibility() {
     const allParts = [];
     Object.values(SLOTS).forEach(s => s.parts.forEach(p => allParts.push(p)));
+
     if (allParts.length < 2) {
-      compatDot.className   = 'compat-dot';
+      compatDot.className    = 'compat-dot';
       compatText.textContent = '—';
       compatBanner.style.display = 'none';
+      updateDroneState('idle');
       return;
     }
 
-    const issues = [];
+    const issues        = [];
+    const problemSlots  = new Set();
 
     // Check: motors × 4 required for a full build
     const motorCount = SLOTS.motors.parts.length;
     if (motorCount > 0 && motorCount < 4) {
       issues.push(`Only ${motorCount}/4 motors selected — need all 4 for a flyable build.`);
+      problemSlots.add('motors');
     }
 
-    // Check: heavy frame + micro motors
-    const frame = SLOTS.frame.parts[0];
+    // Check: heavy frame + micro/nano motors
+    const frame  = SLOTS.frame.parts[0];
     const motors = SLOTS.motors.parts;
     if (frame && motors.length > 0) {
       const frameIsHeavy = frame.weight > 200;
-      const motorIsSmall = motors[0].name.toLowerCase().includes('nano') || motors[0].name.toLowerCase().includes('micro');
+      const motorIsSmall = motors[0].name.toLowerCase().includes('nano') ||
+                           motors[0].name.toLowerCase().includes('micro') ||
+                           motors[0].name.toLowerCase().includes('ultralight');
       if (frameIsHeavy && motorIsSmall) {
-        issues.push('Heavy frame detected with micro motors — may lack sufficient thrust.');
+        issues.push('Heavy frame with micro motors — insufficient thrust for liftoff.');
+        problemSlots.add('frame');
+        problemSlots.add('motors');
       }
     }
 
-    // Check: battery too heavy for build
+    // Check: battery too heavy relative to the rest of the build
     const battery = SLOTS.battery.parts[0];
-    const totalWeightNoBatt = allParts.filter(p => p.category !== 'battery').reduce((s, p) => s + p.weight, 0);
-    if (battery && battery.weight > totalWeightNoBatt * 1.5) {
+    const weightNoBatt = allParts.filter(p => p.category !== 'battery').reduce((s, p) => s + p.weight, 0);
+    if (battery && battery.weight > weightNoBatt * 1.5) {
       issues.push('Battery is very heavy relative to the build — consider a lighter pack.');
+      problemSlots.add('battery');
     }
 
-    if (issues.length === 0) {
+    // Check: no ESC selected but motors present
+    if (motors.length > 0 && SLOTS.ESC.parts.length === 0) {
+      issues.push('Motors selected but no ESC — motors cannot run without an ESC.');
+      problemSlots.add('ESC');
+      problemSlots.add('motors');
+    }
+
+    // ── Determine overall state ──
+    const allFilled = Object.values(SLOTS).every(s => s.parts.length >= s.max);
+
+    if (issues.length === 0 && allFilled) {
+      // STATE 2: all slots filled, all compatible → rotate green
       compatDot.className    = 'compat-dot green';
-      compatText.textContent  = 'Compatible';
+      compatText.textContent = 'Compatible';
       compatBanner.style.display = 'none';
+      updateDroneState('complete');
+    } else if (issues.length === 0) {
+      // Partial fill, no issues yet — idle
+      compatDot.className    = 'compat-dot green';
+      compatText.textContent = 'Compatible';
+      compatBanner.style.display = 'none';
+      updateDroneState('idle');
     } else {
-      const isWarning = issues.length <= 1;
+      // STATE 3: compatibility issues → vibrate + highlight red
+      const isWarning = issues.length === 1;
       compatDot.className    = `compat-dot ${isWarning ? 'yellow' : 'red'}`;
-      compatText.textContent  = isWarning ? 'Warning' : 'Issues';
-      compatBanner.style.display = 'flex';
-      compatBanner.style.background = isWarning ? 'rgba(255,138,0,0.08)' : 'rgba(255,180,171,0.08)';
-      compatBanner.style.borderColor = isWarning ? 'rgba(255,138,0,0.3)' : 'rgba(255,180,171,0.3)';
-      compatBanner.style.color = isWarning ? 'var(--orange)' : 'var(--error)';
-      compatMsg.textContent = issues[0];
+      compatText.textContent = isWarning ? 'Warning' : 'Issues';
+      compatBanner.style.display    = 'flex';
+      compatBanner.style.background = isWarning ? 'rgba(255,138,0,0.08)'    : 'rgba(255,180,171,0.08)';
+      compatBanner.style.borderColor= isWarning ? 'rgba(255,138,0,0.3)'     : 'rgba(255,180,171,0.3)';
+      compatBanner.style.color      = isWarning ? 'var(--orange)'            : 'var(--error)';
+      compatMsg.textContent  = issues[0];
       compatIcon.textContent = isWarning ? 'warning' : 'error';
+      updateDroneState('error', [...problemSlots]);
     }
   }
 
@@ -429,7 +482,7 @@
     .btn-pulse { animation: btnPulse .5s var(--ease); }
     @keyframes btnPulse {
       0%,100% { transform: scale(1); }
-      50%      { transform: scale(.95); box-shadow: 0 0 16px rgba(0,242,255,.4); }
+      50%      { transform: scale(.95); box-shadow: 0 0 16px rgba(180,79,255,.4); }
     }
   `;
   document.head.appendChild(style);

@@ -91,6 +91,16 @@
           </div>
         </div>
 
+        <!-- Remember Me -->
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1.25rem;">
+          <input type="checkbox" id="rememberMe" name="rememberMe" value="1"
+            style="width:15px;height:15px;accent-color:var(--cyan);cursor:pointer;flex-shrink:0;" />
+          <label for="rememberMe"
+            style="font-family:var(--font-label);font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.05em;cursor:pointer;user-select:none;">
+            Remember me for 30 days
+          </label>
+        </div>
+
         <button type="submit" class="auth-btn-stitch">
           <span class="material-symbols-outlined" style="font-size:1rem;">login</span>
           Access Command Center
@@ -156,7 +166,7 @@
     // brief flash on the inputs to confirm fill
     [document.getElementById('email'), document.getElementById('password')].forEach(el => {
       el.style.transition = 'box-shadow .2s';
-      el.style.boxShadow = '0 0 0 2px rgba(0,242,255,.4)';
+      el.style.boxShadow = '0 0 0 2px rgba(180,79,255,.4)';
       setTimeout(() => { el.style.boxShadow = ''; }, 600);
     });
   }

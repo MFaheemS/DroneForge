@@ -14,6 +14,14 @@ router.get('/contact', (req, res) => {
   res.render('contact', { title: 'Contact — DroneForge' });
 });
 
+router.get('/faq',      (req, res) => res.render('faq',     { title: 'FAQ — DroneForge' }));
+router.get('/privacy',  (req, res) => res.render('privacy', { title: 'Privacy Policy — DroneForge' }));
+router.get('/terms',    (req, res) => res.render('terms',   { title: 'Terms of Service — DroneForge' }));
+router.get('/blog',     (req, res) => res.redirect('/about'));
+router.get('/careers',  (req, res) => res.redirect('/about'));
+router.get('/shipping', (req, res) => res.redirect('/faq'));
+router.get('/returns',  (req, res) => res.redirect('/faq'));
+
 // Contact form POST (server-side validation + sanitization)
 router.post('/contact', [
   body('name').trim().notEmpty().withMessage('Name is required.').isLength({ max: 80 }).escape(),

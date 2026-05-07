@@ -1,0 +1,49 @@
+<%- include('partials/head', { title: 'FAQ — DroneForge' }) %>
+<%- include('partials/navbar') %>
+
+<main style="min-height:100vh;padding:6rem 0 4rem;">
+  <div class="grid-bg"></div>
+  <div class="container" style="max-width:780px;position:relative;z-index:1;">
+
+    <div style="text-align:center;margin-bottom:3rem;">
+      <p class="section-label" style="justify-content:center;">Support</p>
+      <h1 class="section-title">Frequently Asked <span style="color:var(--cyan);">Questions</span>
+        <span class="cyan-bar" style="margin:0 auto;"></span>
+      </h1>
+    </div>
+
+    <% const faqs = [
+      { q: 'How does the drone builder work?', a: 'Select parts slot by slot on the interactive schematic. The builder checks compatibility in real time, estimates flight time, and calculates total weight and cost. When all 8 slots are filled with compatible parts, add the build to your cart.' },
+      { q: 'Are the parts compatible with each other?', a: 'The builder performs automatic compatibility checks — it flags mismatched motor/frame combinations and oversized batteries. Always review the compatibility indicator in the build summary before ordering.' },
+      { q: 'How long does shipping take?', a: 'Standard shipping takes 5–7 business days. Expedited (2–3 days) and overnight options are available at checkout. Orders over $150 qualify for free standard shipping.' },
+      { q: 'Can I return a part?', a: 'Yes. Unused parts in original packaging can be returned within 30 days of delivery. Opened electronic components (flight controllers, ESCs) are eligible for exchange only if defective.' },
+      { q: 'How do I reset my password?', a: 'Click "Recover Cipher" on the login page, enter your email, and a secure time-limited reset link will be sent within a few minutes. The link expires after 15 minutes for your security.' },
+      { q: 'Do you offer bulk or trade pricing?', a: 'Yes — teams, clubs, and commercial operators can contact us via the Help Center for volume pricing. Discounts start at orders of 10+ units of the same part.' },
+      { q: 'What payment methods are accepted?', a: 'We accept all major credit/debit cards (Visa, Mastercard, Amex) at checkout. Additional payment methods may be added in future updates.' },
+      { q: 'How do I track my order?', a: 'Once your order is confirmed, visit My Orders from the navigation menu. Each order card shows its current status: Processing, Shipped, or Delivered.' }
+    ]; %>
+
+    <div style="display:flex;flex-direction:column;gap:1rem;">
+      <% faqs.forEach((item, i) => { %>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);overflow:hidden;">
+          <button onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='block'?'none':'block';this.querySelector('.faq-icon').textContent=this.nextElementSibling.style.display==='block'?'remove':'add';"
+            style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.1rem 1.4rem;background:none;border:none;color:var(--text);font-family:var(--font-headline);font-size:.95rem;font-weight:700;cursor:pointer;text-align:left;">
+            <%= item.q %>
+            <span class="material-symbols-outlined faq-icon" style="font-size:1.1rem;color:var(--cyan);flex-shrink:0;">add</span>
+          </button>
+          <div style="display:none;padding:0 1.4rem 1.1rem;color:var(--text-variant);font-size:.9rem;line-height:1.7;border-top:1px solid var(--glass-border);">
+            <p style="padding-top:.9rem;"><%= item.a %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem;padding:2rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);">
+      <p style="color:var(--muted);margin-bottom:1rem;">Still have questions?</p>
+      <a href="/contact" class="btn btn-primary">Contact Support</a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

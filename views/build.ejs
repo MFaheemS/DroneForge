@@ -1,4 +1,4 @@
-<%- include('partials/head', { title: title }) %>
+﻿<%- include('partials/head', { title: title }) %>
 <%- include('partials/navbar') %>
 
 <main class="builder-page">
@@ -139,7 +139,7 @@
           <!-- Grid lines -->
           <defs>
             <pattern id="sgrid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,242,255,0.05)" stroke-width="1"/>
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(180,79,255,0.05)" stroke-width="1"/>
             </pattern>
             <filter id="glow-cyan">
               <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
@@ -153,13 +153,13 @@
           <rect width="500" height="500" fill="url(#sgrid)"/>
 
           <!-- ── ARMS ── -->
-          <line x1="250" y1="250" x2="120" y2="120" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
-          <line x1="250" y1="250" x2="380" y2="120" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
-          <line x1="250" y1="250" x2="120" y2="380" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
-          <line x1="250" y1="250" x2="380" y2="380" stroke="rgba(0,242,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="120" y2="120" stroke="rgba(180,79,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="380" y2="120" stroke="rgba(180,79,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="120" y2="380" stroke="rgba(180,79,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+          <line x1="250" y1="250" x2="380" y2="380" stroke="rgba(180,79,255,0.25)" stroke-width="6" stroke-linecap="round"/>
 
           <!-- ── BODY ── -->
-          <rect x="215" y="215" width="70" height="70" rx="12" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.5)" stroke-width="1.5"/>
+          <rect x="215" y="215" width="70" height="70" rx="12" fill="rgba(25,33,34,0.9)" stroke="rgba(180,79,255,0.5)" stroke-width="1.5"/>
 
           <!-- ── SLOTS ── -->
 
@@ -170,36 +170,36 @@
 
           <!-- Motor TL -->
           <g class="slot-group motor-slot" data-slot="motors" data-index="0" tabindex="0" role="button" aria-label="Motor top-left slot">
-            <circle cx="105" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
-            <circle cx="105" cy="105" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
-            <text x="105" y="109" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+            <circle cx="105" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(180,79,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="105" cy="105" r="16" fill="rgba(180,79,255,0.06)" class="slot-pulse-ring"/>
+            <text x="105" y="109" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
           </g>
 
           <!-- Motor TR -->
           <g class="slot-group motor-slot" data-slot="motors" data-index="1" tabindex="0" role="button" aria-label="Motor top-right slot">
-            <circle cx="395" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
-            <circle cx="395" cy="105" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
-            <text x="395" y="109" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+            <circle cx="395" cy="105" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(180,79,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="395" cy="105" r="16" fill="rgba(180,79,255,0.06)" class="slot-pulse-ring"/>
+            <text x="395" y="109" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
           </g>
 
           <!-- Motor BL -->
           <g class="slot-group motor-slot" data-slot="motors" data-index="2" tabindex="0" role="button" aria-label="Motor bottom-left slot">
-            <circle cx="105" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
-            <circle cx="105" cy="395" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
-            <text x="105" y="399" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+            <circle cx="105" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(180,79,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="105" cy="395" r="16" fill="rgba(180,79,255,0.06)" class="slot-pulse-ring"/>
+            <text x="105" y="399" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
           </g>
 
           <!-- Motor BR -->
           <g class="slot-group motor-slot" data-slot="motors" data-index="3" tabindex="0" role="button" aria-label="Motor bottom-right slot">
-            <circle cx="395" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-circle"/>
-            <circle cx="395" cy="395" r="16" fill="rgba(0,242,255,0.06)" class="slot-pulse-ring"/>
-            <text x="395" y="399" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
+            <circle cx="395" cy="395" r="28" fill="rgba(25,33,34,0.85)" stroke="rgba(180,79,255,0.4)" stroke-width="1.5" class="slot-circle"/>
+            <circle cx="395" cy="395" r="16" fill="rgba(180,79,255,0.06)" class="slot-pulse-ring"/>
+            <text x="395" y="399" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="9" font-family="Space Grotesk" font-weight="600" class="slot-label">MTR</text>
           </g>
 
           <!-- Flight Controller (body top) -->
           <g class="slot-group" data-slot="flightController" tabindex="0" role="button" aria-label="Flight Controller slot">
-            <rect x="225" y="192" width="50" height="20" rx="4" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.4)" stroke-width="1.5" class="slot-rect"/>
-            <text x="250" y="206" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">FC</text>
+            <rect x="225" y="192" width="50" height="20" rx="4" fill="rgba(25,33,34,0.9)" stroke="rgba(180,79,255,0.4)" stroke-width="1.5" class="slot-rect"/>
+            <text x="250" y="206" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">FC</text>
           </g>
 
           <!-- ESC (body right) -->
@@ -222,16 +222,16 @@
 
           <!-- Propellers indicator (on motor circles outer ring) -->
           <g class="slot-group" data-slot="propellers" tabindex="0" role="button" aria-label="Propellers slot" style="cursor:pointer;">
-            <circle cx="105" cy="105" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
-            <circle cx="395" cy="105" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
-            <circle cx="105" cy="395" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
-            <circle cx="395" cy="395" r="44" fill="none" stroke="rgba(0,242,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="105" cy="105" r="44" fill="none" stroke="rgba(180,79,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="395" cy="105" r="44" fill="none" stroke="rgba(180,79,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="105" cy="395" r="44" fill="none" stroke="rgba(180,79,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
+            <circle cx="395" cy="395" r="44" fill="none" stroke="rgba(180,79,255,0.15)" stroke-width="1" stroke-dasharray="4 4" class="prop-ring"/>
           </g>
 
           <!-- Transmitter (far right label) -->
           <g class="slot-group" data-slot="transmitter" tabindex="0" role="button" aria-label="Transmitter slot">
-            <rect x="416" y="225" width="52" height="50" rx="6" fill="rgba(25,33,34,0.9)" stroke="rgba(0,242,255,0.35)" stroke-width="1.5" class="slot-rect"/>
-            <text x="442" y="254" text-anchor="middle" fill="rgba(0,242,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">TX</text>
+            <rect x="416" y="225" width="52" height="50" rx="6" fill="rgba(25,33,34,0.9)" stroke="rgba(180,79,255,0.35)" stroke-width="1.5" class="slot-rect"/>
+            <text x="442" y="254" text-anchor="middle" fill="rgba(180,79,255,0.7)" font-size="7" font-family="Space Grotesk" font-weight="600" class="slot-label">TX</text>
           </g>
 
         </svg>

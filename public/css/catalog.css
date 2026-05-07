@@ -1,4 +1,4 @@
-/* ===========================
+﻿/* ===========================
    DRONEFORGE — PARTS CATALOG
    =========================== */
 
@@ -9,7 +9,7 @@
   padding: 5rem 0 2rem;
   border-bottom: 1px solid var(--glass-border);
   position: relative;
-  background: linear-gradient(180deg, rgba(0,242,255,0.03) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(180,79,255,0.03) 0%, transparent 100%);
 }
 .catalog-header-inner {
   display: flex;
@@ -20,7 +20,7 @@
 }
 .catalog-header-gif img {
   opacity: .8;
-  filter: drop-shadow(0 0 20px rgba(0,242,255,0.3));
+  filter: drop-shadow(0 0 20px rgba(180,79,255,0.3));
   animation: floatY 3s ease-in-out infinite;
 }
 .catalog-title {
@@ -67,7 +67,7 @@
 }
 .search-bar:focus {
   border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(0,242,255,0.1);
+  box-shadow: 0 0 0 3px rgba(180,79,255,0.1);
 }
 .search-bar::placeholder { color: var(--muted); }
 .search-clear {
@@ -182,13 +182,13 @@
   transition: all var(--t) var(--ease);
 }
 .filter-cat-btn:hover {
-  background: rgba(0,242,255,0.06);
-  border-color: rgba(0,242,255,0.2);
+  background: rgba(180,79,255,0.06);
+  border-color: rgba(180,79,255,0.2);
   color: var(--text);
 }
 .filter-cat-btn.active {
-  background: rgba(0,242,255,0.1);
-  border-color: rgba(0,242,255,0.4);
+  background: rgba(180,79,255,0.1);
+  border-color: rgba(180,79,255,0.4);
   color: var(--cyan);
   font-weight: 600;
 }
@@ -220,13 +220,13 @@
   background: var(--cyan);
   cursor: pointer;
   pointer-events: all;
-  box-shadow: 0 0 8px rgba(0,242,255,0.5);
+  box-shadow: 0 0 8px rgba(180,79,255,0.5);
   border: 2px solid var(--bg);
 }
 .range-input::-moz-range-thumb {
   width: 16px; height: 16px; border-radius: 50%;
   background: var(--cyan); cursor: pointer;
-  box-shadow: 0 0 8px rgba(0,242,255,0.5); border: 2px solid var(--bg);
+  box-shadow: 0 0 8px rgba(180,79,255,0.5); border: 2px solid var(--bg);
 }
 
 /* ── FILTER TOGGLE (MOBILE) ── */
@@ -306,7 +306,7 @@
 }
 .part-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(0,242,255,0.35);
+  border-color: rgba(180,79,255,0.35);
   box-shadow: var(--glow-cyan), var(--glass-inner);
 }
 
@@ -343,13 +343,13 @@
   border-radius: 2rem;
   backdrop-filter: blur(10px);
 }
-.part-cat-badge.frame          { background: rgba(0,242,255,0.15); color: var(--cyan); border: 1px solid rgba(0,242,255,0.3); }
+.part-cat-badge.frame          { background: rgba(180,79,255,0.15); color: var(--cyan); border: 1px solid rgba(180,79,255,0.3); }
 .part-cat-badge.motors         { background: rgba(255,138,0,0.15); color: var(--orange); border: 1px solid rgba(255,138,0,0.3); }
 .part-cat-badge.propellers     { background: rgba(0,255,65,0.12); color: var(--green); border: 1px solid rgba(0,255,65,0.3); }
 .part-cat-badge.battery        { background: rgba(0,255,65,0.12); color: var(--green); border: 1px solid rgba(0,255,65,0.3); }
-.part-cat-badge.flightController { background: rgba(0,242,255,0.15); color: var(--cyan); border: 1px solid rgba(0,242,255,0.3); }
+.part-cat-badge.flightController { background: rgba(180,79,255,0.15); color: var(--cyan); border: 1px solid rgba(180,79,255,0.3); }
 .part-cat-badge.camera         { background: rgba(255,138,0,0.15); color: var(--orange); border: 1px solid rgba(255,138,0,0.3); }
-.part-cat-badge.ESC            { background: rgba(0,242,255,0.15); color: var(--cyan); border: 1px solid rgba(0,242,255,0.3); }
+.part-cat-badge.ESC            { background: rgba(180,79,255,0.15); color: var(--cyan); border: 1px solid rgba(180,79,255,0.3); }
 .part-cat-badge.transmitter    { background: rgba(255,138,0,0.15); color: var(--orange); border: 1px solid rgba(255,138,0,0.3); }
 .part-stock-badge {
   position: absolute; top: .6rem; right: .6rem;
@@ -421,7 +421,7 @@
   display: flex; align-items: center;
   transition: all var(--t) var(--ease);
 }
-.btn-spec-toggle:hover { color: var(--cyan); border-color: rgba(0,242,255,0.3); }
+.btn-spec-toggle:hover { color: var(--cyan); border-color: rgba(180,79,255,0.3); }
 
 /* ── SPEC POPUP ── */
 .spec-popup {
@@ -451,7 +451,7 @@
   justify-content: space-between;
   padding: .75rem 1rem;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0,242,255,0.04);
+  background: rgba(180,79,255,0.04);
 }
 .spec-popup-close {
   background: none; border: none; color: var(--muted);

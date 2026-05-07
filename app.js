@@ -50,11 +50,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  rolling: true,                   // reset expiry on every request (true inactivity timeout)
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 30 * 60 * 1000
+    maxAge: 30 * 60 * 1000         // 30 min inactivity window (extended to 30d by remember-me)
   }
 }));
 

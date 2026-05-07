@@ -69,6 +69,11 @@ exports.postLogin = async (req, res) => {
 
     req.session.user = { id: user._id, name: user.name, email: user.email, role: user.role };
 
+    // Remember-me: extend cookie to 30 days
+    if (req.body.rememberMe === '1') {
+      req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
+    }
+
     if (user.role === 'admin') return res.redirect('/admin');
     res.redirect('/');
   } catch (err) {

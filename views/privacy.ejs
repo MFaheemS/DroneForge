@@ -1,0 +1,43 @@
+<%- include('partials/head', { title: 'Privacy Policy — DroneForge' }) %>
+<%- include('partials/navbar') %>
+
+<main style="min-height:100vh;padding:6rem 0 4rem;">
+  <div class="grid-bg"></div>
+  <div class="container" style="max-width:780px;position:relative;z-index:1;">
+
+    <div style="text-align:center;margin-bottom:3rem;">
+      <p class="section-label" style="justify-content:center;">Legal</p>
+      <h1 class="section-title">Privacy <span style="color:var(--cyan);">Policy</span>
+        <span class="cyan-bar" style="margin:0 auto;"></span>
+      </h1>
+      <p style="color:var(--muted);font-size:.85rem;margin-top:.75rem;">Last updated: January 2026</p>
+    </div>
+
+    <% const sections = [
+      { title: 'Information We Collect', body: 'We collect information you provide directly — such as your name, email address, and shipping details when you register or place an order. We also collect usage data (pages visited, parts viewed) to improve the platform.' },
+      { title: 'How We Use Your Information', body: 'Your information is used to process orders, manage your account, send order confirmations, and provide customer support. We do not sell your personal data to third parties.' },
+      { title: 'Password Security', body: 'Passwords are hashed using bcrypt with a cost factor of 12 before storage. Plain-text passwords are never stored or logged anywhere in our system.' },
+      { title: 'Session & Cookies', body: 'We use server-side sessions stored in MongoDB to keep you logged in. Session cookies are httpOnly and expire after 30 minutes of inactivity (or 30 days if you select Remember Me). No third-party tracking cookies are used.' },
+      { title: 'Data Retention', body: 'Account data is retained for the lifetime of your account. You may request deletion at any time by contacting support. Order records are retained for 7 years for legal and tax compliance.' },
+      { title: 'Third-Party Services', body: 'DroneForge uses MongoDB Atlas for database hosting and Nodemailer for transactional emails. These services are bound by their own privacy policies.' },
+      { title: 'Your Rights', body: 'You have the right to access, correct, or delete your personal data. To exercise these rights, contact us at privacy@droneforge.io. We will respond within 30 days.' },
+      { title: 'Changes to This Policy', body: 'We may update this policy from time to time. Significant changes will be communicated via email or a notice on the platform. Continued use after changes constitutes acceptance.' }
+    ]; %>
+
+    <div style="display:flex;flex-direction:column;gap:1.5rem;">
+      <% sections.forEach(s => { %>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:1.5rem;backdrop-filter:var(--glass-blur);">
+          <h2 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--cyan);margin-bottom:.6rem;"><%= s.title %></h2>
+          <p style="color:var(--text-variant);font-size:.9rem;line-height:1.75;"><%= s.body %></p>
+        </div>
+      <% }) %>
+    </div>
+
+    <p style="text-align:center;color:var(--muted);font-size:.8rem;margin-top:2.5rem;">
+      Questions? <a href="/contact" style="color:var(--cyan);">Contact us</a>
+    </p>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>

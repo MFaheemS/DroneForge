@@ -1,4 +1,4 @@
-/* ===========================
+﻿/* ===========================
    CART, CHECKOUT, ORDERS, CONFIRMATION
    =========================== */
 
@@ -44,7 +44,7 @@
   transition: background var(--t) var(--ease);
 }
 .cart-item:last-child { border-bottom: none; }
-.cart-item:hover { background: rgba(0,242,255,.03); }
+.cart-item:hover { background: rgba(180,79,255,.03); }
 
 .cart-item-img {
   width: 64px;
@@ -117,7 +117,7 @@
   transition: color var(--t), background var(--t);
   font-size: .9rem;
 }
-.qty-btn:hover { color: var(--cyan); background: rgba(0,242,255,.1); }
+.qty-btn:hover { color: var(--cyan); background: rgba(180,79,255,.1); }
 .qty-btn .material-symbols-outlined { font-size: .9rem; }
 .qty-val {
   width: 36px;
@@ -197,7 +197,7 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--cyan);
-  text-shadow: 0 0 10px rgba(0,242,255,.3);
+  text-shadow: 0 0 10px rgba(180,79,255,.3);
 }
 .cart-security-note {
   display: flex;
@@ -273,7 +273,7 @@
 .stepper-circle.active {
   border-color: var(--cyan);
   color: var(--cyan);
-  box-shadow: 0 0 12px rgba(0,242,255,.25);
+  box-shadow: 0 0 12px rgba(180,79,255,.25);
 }
 .stepper-circle.completed {
   border-color: var(--cyan);
@@ -384,7 +384,7 @@
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(0,242,255,.1);
+  box-shadow: 0 0 0 3px rgba(180,79,255,.1);
 }
 .form-input::placeholder { color: var(--muted); opacity: .6; }
 .form-error {
@@ -414,16 +414,16 @@
   cursor: pointer;
   transition: border-color var(--t), background var(--t);
 }
-.shipping-option:hover { border-color: rgba(0,242,255,.3); }
+.shipping-option:hover { border-color: rgba(180,79,255,.3); }
 .shipping-option.selected {
   border-color: var(--cyan);
-  background: rgba(0,242,255,.05);
+  background: rgba(180,79,255,.05);
 }
 .shipping-option-icon {
   width: 40px;
   height: 40px;
   border-radius: var(--radius);
-  background: rgba(0,242,255,.1);
+  background: rgba(180,79,255,.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -465,7 +465,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0,242,255,.08), transparent 60%);
+  background: linear-gradient(135deg, rgba(180,79,255,.08), transparent 60%);
   pointer-events: none;
 }
 .card-chip {
@@ -568,8 +568,8 @@
   align-items: flex-start;
   gap: .75rem;
   padding: 1rem;
-  background: rgba(0,242,255,.04);
-  border: 1px solid rgba(0,242,255,.1);
+  background: rgba(180,79,255,.04);
+  border: 1px solid rgba(180,79,255,.1);
   border-radius: var(--radius);
 }
 
@@ -654,7 +654,7 @@
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  border: 1px solid rgba(0,242,255,.4);
+  border: 1px solid rgba(180,79,255,.4);
   position: relative;
   display: flex;
   align-items: center;
@@ -665,7 +665,7 @@
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  border: 1px solid rgba(0,242,255,.15);
+  border: 1px solid rgba(180,79,255,.15);
 }
 .hud-crosshair-v {
   position: absolute;
@@ -673,7 +673,7 @@
   bottom: 0;
   left: 50%;
   width: 1px;
-  background: rgba(0,242,255,.3);
+  background: rgba(180,79,255,.3);
 }
 .hud-crosshair-h {
   position: absolute;
@@ -681,7 +681,7 @@
   right: 0;
   top: 50%;
   height: 1px;
-  background: rgba(0,242,255,.3);
+  background: rgba(180,79,255,.3);
 }
 .hud-center-dot {
   z-index: 1;
@@ -784,7 +784,7 @@
   cursor: pointer;
   transition: background var(--t);
 }
-.order-card-header:hover { background: rgba(0,242,255,.03); }
+.order-card-header:hover { background: rgba(180,79,255,.03); }
 
 .order-card-thumb {
   width: 48px;
@@ -859,7 +859,7 @@
   white-space: nowrap;
 }
 .status-pending   { background: rgba(132,148,149,.15); color: var(--muted); border: 1px solid rgba(132,148,149,.3); }
-.status-confirmed { background: rgba(0,242,255,.1);    color: var(--cyan);  border: 1px solid rgba(0,242,255,.3); }
+.status-confirmed { background: rgba(180,79,255,.1);    color: var(--cyan);  border: 1px solid rgba(180,79,255,.3); }
 .status-shipped   { background: rgba(255,138,0,.1);    color: var(--orange);border: 1px solid rgba(255,138,0,.3); }
 .status-delivered { background: rgba(0,255,65,.1);     color: var(--green); border: 1px solid rgba(0,255,65,.3); }
 .status-cancelled { background: rgba(255,180,171,.1);  color: var(--error); border: 1px solid rgba(255,180,171,.3); }
@@ -872,9 +872,9 @@
   letter-spacing: .1em;
   padding: .15rem .5rem;
   border-radius: 999px;
-  background: rgba(0,242,255,.08);
+  background: rgba(180,79,255,.08);
   color: var(--cyan);
-  border: 1px solid rgba(0,242,255,.2);
+  border: 1px solid rgba(180,79,255,.2);
 }
 
 /* Toast */

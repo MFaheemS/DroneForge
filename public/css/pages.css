@@ -1,4 +1,4 @@
-/* ===========================
+﻿/* ===========================
    ABOUT, CONTACT, HOME ENHANCEMENTS
    =========================== */
 
@@ -52,7 +52,7 @@
   font-size: 2rem;
   font-weight: 900;
   color: var(--cyan);
-  text-shadow: 0 0 20px rgba(0,242,255,.3);
+  text-shadow: 0 0 20px rgba(180,79,255,.3);
 }
 .about-stat-label {
   font-family: var(--font-mono);
@@ -74,7 +74,7 @@
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  border: 1px solid rgba(0,242,255,.2);
+  border: 1px solid rgba(180,79,255,.2);
   animation: slowSpin 20s linear infinite;
 }
 .about-glow-ring::before {
@@ -82,12 +82,12 @@
   position: absolute;
   inset: 20px;
   border-radius: 50%;
-  border: 1px solid rgba(0,242,255,.1);
+  border: 1px solid rgba(180,79,255,.1);
 }
 @keyframes slowSpin { to { transform: rotate(360deg); } }
 .about-drone-img {
   width: 220px;
-  filter: drop-shadow(0 0 30px rgba(0,242,255,.25));
+  filter: drop-shadow(0 0 30px rgba(180,79,255,.25));
   animation: float 5s ease-in-out infinite;
 }
 @keyframes float {
@@ -162,7 +162,7 @@
 }
 .team-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(0,242,255,.25);
+  border-color: rgba(180,79,255,.25);
 }
 .team-avatar {
   width: 72px;
@@ -271,9 +271,9 @@
   font-size: .6rem;
   padding: .2rem .6rem;
   border-radius: 999px;
-  background: rgba(0,242,255,.08);
+  background: rgba(180,79,255,.08);
   color: var(--cyan);
-  border: 1px solid rgba(0,242,255,.2);
+  border: 1px solid rgba(180,79,255,.2);
   text-transform: uppercase;
   letter-spacing: .08em;
 }
@@ -312,8 +312,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(0,242,255,.1);
-  border: 1px solid rgba(0,242,255,.2);
+  background: rgba(180,79,255,.1);
+  border: 1px solid rgba(180,79,255,.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,7 +353,7 @@
   cursor: pointer;
   transition: color .2s, border-color .2s;
 }
-.tctl-btn:hover { color: var(--cyan); border-color: rgba(0,242,255,.3); }
+.tctl-btn:hover { color: var(--cyan); border-color: rgba(180,79,255,.3); }
 .tctl-dots {
   display: flex;
   gap: .4rem;
@@ -382,14 +382,14 @@
   z-index: 99999;
   transform: translate(-50%, -50%);
   transition: transform .1s, width .2s, height .2s, opacity .2s;
-  box-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(0,242,255,.4);
+  box-shadow: 0 0 10px var(--cyan), 0 0 20px rgba(180,79,255,.4);
 }
 .cursor-ring {
   position: fixed;
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(0,242,255,.5);
+  border: 1px solid rgba(180,79,255,.5);
   pointer-events: none;
   z-index: 99998;
   transform: translate(-50%, -50%);

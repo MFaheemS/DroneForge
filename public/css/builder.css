@@ -1,4 +1,4 @@
-/* ===========================
+﻿/* ===========================
    DRONEFORGE — BUILDER PAGE
    =========================== */
 
@@ -7,7 +7,7 @@
 .builder-header {
   padding: 5rem 0 1.5rem;
   border-bottom: 1px solid var(--glass-border);
-  background: linear-gradient(180deg, rgba(0,242,255,0.03) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(180,79,255,0.03) 0%, transparent 100%);
 }
 .builder-title {
   font-family: var(--font-headline);
@@ -71,7 +71,7 @@
   height: auto;
   display: block;
   margin: 0 auto;
-  filter: drop-shadow(0 0 40px rgba(0,242,255,0.06));
+  filter: drop-shadow(0 0 40px rgba(180,79,255,0.06));
 }
 
 /* Slot groups */
@@ -112,10 +112,9 @@
   50%       { opacity: .7; r: 22; }
 }
 
-/* Propeller rings spin when filled */
+/* Propeller rings — base style when filled (animation controlled by canvas state) */
 .slot-group.filled .prop-ring {
-  stroke: rgba(0,242,255,0.4);
-  animation: spinProp 4s linear infinite;
+  stroke: rgba(180,79,255,0.4);
   transform-origin: center;
 }
 @keyframes spinProp {
@@ -176,7 +175,7 @@
   cursor: pointer;
   transition: all var(--t) var(--ease);
 }
-.slot-pill:hover { border-color: rgba(0,242,255,0.3); color: var(--text); }
+.slot-pill:hover { border-color: rgba(180,79,255,0.3); color: var(--text); }
 .slot-pill.filled { border-color: rgba(0,255,65,0.3); color: var(--green); }
 .pill-status {
   font-size: .6rem;
@@ -216,15 +215,15 @@
   color: var(--text-variant);
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0,242,255,0.03);
+  background: rgba(180,79,255,0.03);
 }
 .summary-badge {
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: .75rem;
   color: var(--cyan);
-  background: rgba(0,242,255,0.1);
-  border: 1px solid rgba(0,242,255,0.2);
+  background: rgba(180,79,255,0.1);
+  border: 1px solid rgba(180,79,255,0.2);
   padding: .1rem .5rem;
   border-radius: 2rem;
 }
@@ -346,7 +345,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(8,15,16,0.85);
+  background: rgba(8,6,14,0.85);
   backdrop-filter: blur(8px);
   z-index: 500;
   display: flex;
@@ -384,7 +383,7 @@
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(0,242,255,0.03);
+  background: rgba(180,79,255,0.03);
 }
 .modal-title {
   font-family: var(--font-headline);
@@ -403,7 +402,7 @@
   transition: all var(--t) var(--ease);
   flex-shrink: 0;
 }
-.modal-close:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,242,255,0.3); }
+.modal-close:hover { background: rgba(255,255,255,0.1); border-color: rgba(180,79,255,0.3); }
 
 .modal-search-wrap {
   display: flex; align-items: center; gap: .6rem;
@@ -456,8 +455,8 @@
   background: rgba(255,255,255,0.02);
 }
 .modal-part-row:hover {
-  border-color: rgba(0,242,255,0.3);
-  background: rgba(0,242,255,0.04);
+  border-color: rgba(180,79,255,0.3);
+  background: rgba(180,79,255,0.04);
 }
 .modal-part-row.selected {
   border-color: var(--green);
@@ -501,6 +500,114 @@
   color: var(--muted);
   padding: 2rem;
   font-size: .875rem;
+}
+
+/* ── DRONE SIMULATION STATES ── */
+
+/* Drone SVG base: needs a stable transform-origin for rotation */
+.drone-svg {
+  transform-origin: center center;
+  transition: filter .6s var(--ease);
+}
+
+/* ── STATE 1: IDLE — no animation (default, nothing to add) ── */
+
+/* ── STATE 2: COMPLETE — entire drone rotates, turns green ── */
+.schematic-canvas.drone-complete .drone-svg {
+  animation: droneRotate 6s linear infinite;
+  filter: drop-shadow(0 0 28px rgba(0,255,65,0.5));
+}
+/* Arms */
+.schematic-canvas.drone-complete svg line {
+  stroke: rgba(0,255,65,0.5) !important;
+  transition: stroke .6s;
+}
+/* Body rect */
+.schematic-canvas.drone-complete svg > rect[x="215"] {
+  stroke: rgba(0,255,65,0.8) !important;
+}
+/* All slot circles and rects */
+.schematic-canvas.drone-complete .slot-circle {
+  stroke: var(--green) !important;
+  stroke-width: 2 !important;
+  filter: url(#glow-cyan);
+}
+.schematic-canvas.drone-complete .slot-rect {
+  stroke: var(--green) !important;
+  stroke-width: 2 !important;
+}
+.schematic-canvas.drone-complete .slot-label {
+  fill: var(--green) !important;
+}
+.schematic-canvas.drone-complete .prop-ring {
+  stroke: rgba(0,255,65,0.5) !important;
+  animation: none !important;
+}
+.schematic-canvas.drone-complete .slot-pulse-ring {
+  animation: none;
+  fill: rgba(0,255,65,0.08);
+}
+/* Grid tint goes green */
+.schematic-canvas.drone-complete svg > rect[fill="url(#sgrid)"] {
+  opacity: .6;
+}
+
+@keyframes droneRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── STATE 3: ERROR — subtle vibrate every 3 s, problem slots go red ── */
+.schematic-canvas.drone-error .drone-svg {
+  animation: droneVibrate 3s ease-in-out infinite;
+}
+
+/* Vibration occupies first ~12% of each 3 s cycle then idles */
+@keyframes droneVibrate {
+  0%   { transform: translate(0,0) rotate(0deg); }
+  2%   { transform: translate(-2px, 1px) rotate(-.3deg); }
+  4%   { transform: translate( 2px,-1px) rotate( .3deg); }
+  6%   { transform: translate(-2px, 2px) rotate(-.2deg); }
+  8%   { transform: translate( 1px,-1px) rotate( .2deg); }
+  10%  { transform: translate(-1px, 1px) rotate(0); }
+  12%  { transform: translate(0,0) rotate(0); }
+  100% { transform: translate(0,0) rotate(0); }
+}
+
+/* Error slot highlights — red */
+.schematic-canvas.drone-error .slot-group.error-slot .slot-circle {
+  stroke: var(--error) !important;
+  stroke-width: 2.5 !important;
+  filter: url(#glow-orange);
+}
+.schematic-canvas.drone-error .slot-group.error-slot .slot-rect {
+  stroke: var(--error) !important;
+  stroke-width: 2.5 !important;
+  filter: url(#glow-orange);
+}
+.schematic-canvas.drone-error .slot-group.error-slot .slot-label {
+  fill: var(--error) !important;
+}
+.schematic-canvas.drone-error .prop-ring {
+  animation: none !important;
+}
+.schematic-canvas.drone-error .slot-group.error-slot .slot-pulse-ring {
+  animation: errorPulse 1.2s ease-in-out infinite;
+  fill: rgba(255,180,171,0.08);
+}
+@keyframes errorPulse {
+  0%,100% { opacity:.4; }
+  50%     { opacity: 1; }
+}
+
+/* Prop rings only spin in the default idle state (no simulation class on canvas) */
+#schematicCanvas:not(.drone-complete):not(.drone-error) .slot-group.filled .prop-ring {
+  animation: spinProp 4s linear infinite;
+}
+/* Ensure no stray spinProp fires during simulation states */
+#schematicCanvas.drone-complete .prop-ring,
+#schematicCanvas.drone-error    .prop-ring {
+  animation: none !important;
 }
 
 /* ── RESPONSIVE ── */
