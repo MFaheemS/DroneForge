@@ -189,9 +189,9 @@
               <div class="part-card-footer">
                 <span class="part-price">$<%= part.price.toFixed(2) %></span>
                 <div class="part-actions">
-                  <button class="btn-spec-toggle" data-id="<%= part._id %>" aria-label="View specs for <%= part.name %>">
+                  <a href="/parts/<%= part._id %>" class="btn-spec-toggle" aria-label="View details for <%= part.name %>" title="View details" style="display:inline-flex;align-items:center;justify-content:center;">
                     <span class="material-symbols-outlined" style="font-size:.9rem;">info</span>
-                  </button>
+                  </a>
                   <% if (part.stock > 0) { %>
                     <button
                       class="btn btn-primary btn-sm add-to-build-btn"

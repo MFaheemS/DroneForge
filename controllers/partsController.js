@@ -58,6 +58,29 @@ exports.getPartApi = async (req, res) => {
   }
 };
 
+exports.getPartDetail = async (req, res) => {
+  try {
+    const part = await Part.findById(req.params.id).lean();
+    if (!part) return res.status(404).render('errors/404', { message: 'Part not found.' });
+
+    // Related parts: same category, different id, up to 4
+    const related = await Part.find({
+      category: part.category,
+      _id: { $ne: part._id },
+      isAvailable: true
+    }).limit(4).lean();
+
+    res.render('parts/detail', {
+      title: `${part.name} — DroneForge`,
+      part,
+      related
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('errors/404', { message: 'Could not load part.' });
+  }
+};
+
 exports.getPartsByCategory = async (req, res) => {
   try {
     const { category } = req.params;

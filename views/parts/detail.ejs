@@ -1,0 +1,217 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<%
+const CATEGORY_LABELS = {
+  frame: 'Frame', motors: 'Motor', propellers: 'Propellers',
+  battery: 'Battery', flightController: 'Flight Controller',
+  camera: 'Camera', ESC: 'ESC', transmitter: 'Transmitter'
+};
+const CATEGORY_ICONS = {
+  frame: 'grid_view', motors: 'settings', propellers: 'autorenew',
+  battery: 'battery_charging_full', flightController: 'memory',
+  camera: 'camera_alt', ESC: 'electrical_services', transmitter: 'settings_remote'
+};
+const specs = part.specs instanceof Map ? Object.fromEntries(part.specs) : (part.specs || {});
+%>
+
+<main style="min-height:100vh;padding-bottom:5rem;">
+  <div class="grid-bg"></div>
+
+  <!-- ── BREADCRUMB ── -->
+  <div style="position:relative;z-index:1;padding:5rem 0 0;">
+    <div class="container">
+      <nav style="display:flex;align-items:center;gap:.5rem;font-size:.75rem;font-family:var(--font-label);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;">
+        <a href="/parts" style="color:var(--muted);transition:color .2s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'">Parts</a>
+        <span class="material-symbols-outlined" style="font-size:.75rem;">chevron_right</span>
+        <a href="/parts?category=<%= part.category %>" style="color:var(--muted);transition:color .2s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--muted)'"><%= CATEGORY_LABELS[part.category] || part.category %></a>
+        <span class="material-symbols-outlined" style="font-size:.75rem;">chevron_right</span>
+        <span style="color:var(--text-variant);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%= part.name %></span>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT ── -->
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;">
+
+      <!-- LEFT: Image -->
+      <div>
+        <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);overflow:hidden;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative;">
+          <% if (part.imageUrl) { %>
+            <img src="<%= part.imageUrl %>" alt="<%= part.name %>"
+              style="width:100%;height:100%;object-fit:cover;display:block;" loading="eager" />
+          <% } else { %>
+            <span class="material-symbols-outlined" style="font-size:5rem;color:var(--muted);font-variation-settings:'FILL' 0;"><%= CATEGORY_ICONS[part.category] || 'precision_manufacturing' %></span>
+          <% } %>
+          <!-- Stock badge -->
+          <div style="position:absolute;top:.75rem;right:.75rem;">
+            <% if (part.stock > 10) { %>
+              <span style="background:rgba(0,255,65,.12);border:1px solid rgba(0,255,65,.3);color:var(--green);font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:2rem;">In Stock</span>
+            <% } else if (part.stock > 0) { %>
+              <span style="background:rgba(255,138,0,.12);border:1px solid rgba(255,138,0,.3);color:var(--orange);font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:2rem;">Low Stock — <%= part.stock %> left</span>
+            <% } else { %>
+              <span style="background:rgba(255,180,171,.1);border:1px solid rgba(255,180,171,.3);color:var(--error);font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:2rem;">Out of Stock</span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Info -->
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+        <!-- Category badge + name -->
+        <div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
+            <span class="material-symbols-outlined" style="font-size:.85rem;color:var(--cyan);font-variation-settings:'FILL' 1;"><%= CATEGORY_ICONS[part.category] || 'precision_manufacturing' %></span>
+            <span style="font-family:var(--font-label);font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);"><%= CATEGORY_LABELS[part.category] || part.category %></span>
+          </div>
+          <h1 style="font-family:var(--font-headline);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;letter-spacing:-.02em;line-height:1.15;color:var(--text);margin-bottom:.75rem;"><%= part.name %></h1>
+          <p style="color:var(--text-variant);font-size:.95rem;line-height:1.75;"><%= part.description %></p>
+        </div>
+
+        <!-- Price + Weight -->
+        <div style="display:flex;align-items:center;gap:1.5rem;padding:1.25rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);">
+          <div>
+            <span style="display:block;font-family:var(--font-label);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;">Price</span>
+            <span style="font-family:var(--font-mono);font-size:2rem;font-weight:900;color:var(--cyan);letter-spacing:-.02em;">$<%= part.price.toFixed(2) %></span>
+          </div>
+          <div style="width:1px;height:40px;background:var(--glass-border);"></div>
+          <div>
+            <span style="display:block;font-family:var(--font-label);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;">Weight</span>
+            <span style="font-family:var(--font-mono);font-size:1.4rem;font-weight:700;color:var(--text);"><%= part.weight %>g</span>
+          </div>
+          <div style="width:1px;height:40px;background:var(--glass-border);"></div>
+          <div>
+            <span style="display:block;font-family:var(--font-label);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;">Category</span>
+            <span style="font-family:var(--font-mono);font-size:.9rem;font-weight:700;color:var(--text-variant);"><%= CATEGORY_LABELS[part.category] || part.category %></span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <% if (part.stock > 0) { %>
+            <button
+              id="addToCartBtn"
+              class="btn btn-primary" style="flex:1;min-width:160px;"
+              data-id="<%= part._id %>"
+              data-name="<%= part.name %>"
+              data-price="<%= part.price %>"
+              data-weight="<%= part.weight %>"
+              data-image="<%= part.imageUrl || '' %>"
+              data-category="<%= part.category %>">
+              <span class="material-symbols-outlined" style="font-size:.95rem;">add_shopping_cart</span>
+              Add to Cart
+            </button>
+          <% } else { %>
+            <button class="btn btn-primary" style="flex:1;min-width:160px;" disabled>Out of Stock</button>
+          <% } %>
+          <a href="/build" class="btn btn-outline" style="flex:1;min-width:160px;">
+            <span class="material-symbols-outlined" style="font-size:.95rem;">precision_manufacturing</span>
+            Use in Builder
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SPECS TABLE ── -->
+    <% if (Object.keys(specs).length > 0) { %>
+    <div style="margin-top:3rem;">
+      <h2 style="font-family:var(--font-headline);font-size:1.15rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;color:var(--cyan);font-variation-settings:'FILL' 1;">settings</span>
+        Technical Specifications
+      </h2>
+      <div style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);overflow:hidden;">
+        <table style="width:100%;border-collapse:collapse;">
+          <% const specEntries = Object.entries(specs); %>
+          <% specEntries.forEach(([key, val], i) => { %>
+            <tr style="border-bottom:<%= i < specEntries.length - 1 ? '1px solid var(--glass-border)' : 'none' %>;">
+              <td style="padding:.85rem 1.25rem;width:40%;font-family:var(--font-label);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">
+                <%= key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ').trim() %>
+              </td>
+              <td style="padding:.85rem 1.25rem;font-family:var(--font-mono);font-size:.88rem;color:var(--text);">
+                <%= val %>
+              </td>
+            </tr>
+          <% }) %>
+        </table>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ── RELATED PARTS ── -->
+    <% if (related.length > 0) { %>
+    <div style="margin-top:3.5rem;">
+      <h2 style="font-family:var(--font-headline);font-size:1.15rem;font-weight:800;letter-spacing:-.01em;color:var(--text);margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;color:var(--cyan);font-variation-settings:'FILL' 1;">inventory_2</span>
+        More <%= CATEGORY_LABELS[part.category] || 'Parts' %>
+      </h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;">
+        <% related.forEach(r => { %>
+          <a href="/parts/<%= r._id %>"
+            style="display:block;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);overflow:hidden;backdrop-filter:var(--glass-blur);transition:border-color .25s,box-shadow .25s;text-decoration:none;"
+            onmouseover="this.style.borderColor='rgba(180,79,255,.4)';this.style.boxShadow='var(--glow-cyan)'"
+            onmouseout="this.style.borderColor='var(--glass-border)';this.style.boxShadow='none'">
+            <div style="aspect-ratio:1/1;overflow:hidden;background:var(--surface-low);">
+              <% if (r.imageUrl) { %>
+                <img src="<%= r.imageUrl %>" alt="<%= r.name %>" loading="lazy"
+                  style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s;"
+                  onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+              <% } else { %>
+                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--muted);font-variation-settings:'FILL' 0;"><%= CATEGORY_ICONS[r.category] || 'precision_manufacturing' %></span>
+                </div>
+              <% } %>
+            </div>
+            <div style="padding:.85rem;">
+              <div style="font-family:var(--font-headline);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><%= r.name %></div>
+              <div style="font-family:var(--font-mono);font-size:.9rem;color:var(--cyan);font-weight:700;">$<%= r.price.toFixed(2) %></div>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
+
+  </div><!-- /container -->
+</main>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+<script>
+(function() {
+  var btn = document.getElementById('addToCartBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    var id = this.dataset.id;
+    var name = this.dataset.name;
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partId: id, quantity: 1 })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success || data.redirect) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:9999;background:var(--surface-high);border:1px solid rgba(0,255,65,.3);border-radius:var(--radius-lg);padding:.85rem 1.25rem;display:flex;align-items:center;gap:.75rem;font-size:.88rem;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);animation:fadeIn .25s ease;';
+        toast.innerHTML = '<span class="material-symbols-outlined" style="color:var(--green);font-variation-settings:\'FILL\' 1;font-size:1.1rem;">check_circle</span>' + name + ' added to cart!';
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.style.opacity='0'; toast.style.transition='opacity .3s'; setTimeout(function(){toast.remove();},300); }, 3000);
+      } else if (data.loginRequired) {
+        window.location.href = '/auth/login';
+      }
+    })
+    .catch(function() { window.location.href = '/cart'; });
+  });
+})();
+</script>
+
+<style>
+@media (max-width: 768px) {
+  .container > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

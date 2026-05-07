@@ -1,5 +1,9 @@
 function requireAuth(req, res, next) {
   if (!req.session.user) {
+    // JSON / fetch requests get a 401 instead of an HTML redirect
+    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+      return res.status(401).json({ loginRequired: true });
+    }
     return res.redirect('/auth/login');
   }
   next();
