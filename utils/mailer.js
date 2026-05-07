@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-//functionn for password resettinngg
+//functionn for passwordd ressettinngg
 async function sendPasswordResetEmail(to, name, resetUrl) {
   await transporter.sendMail({
     from: `"DroneForge" <${process.env.EMAIL_FROM}>`,
