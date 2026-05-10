@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.session.user.id).lean();
+    const user = await User.findById(req.user.id).lean();
     if (!user) return res.redirect('/auth/logout');
     const [orderCount, totalSpent, recentOrders] = await Promise.all([
       Order.countDocuments({ userId: user._id }),
@@ -28,18 +28,18 @@ exports.getProfile = async (req, res) => {
 
 exports.postProfile = async (req, res) => {
   const renderWithError = async (error) => {
-    const user = await User.findById(req.session.user.id).lean().catch(() => null);
+    const user = await User.findById(req.user.id).lean().catch(() => null);
     const [orderCount, totalSpent, recentOrders] = await Promise.all([
-      Order.countDocuments({ userId: req.session.user.id }),
+      Order.countDocuments({ userId: req.user.id }),
       Order.aggregate([{ $match: { userId: user?._id, status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$totalPrice' } } }]),
-      Order.find({ userId: req.session.user.id }).sort({ createdAt: -1 }).limit(5).lean()
+      Order.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(5).lean()
     ]);
     res.render('profile', { title: 'My Profile — DroneForge', profileUser: user, orderCount, totalSpent: totalSpent[0]?.total || 0, recentOrders, success: '', error });
   };
 
   try {
     const { name, phone, bio, currentPassword, newPassword } = req.body;
-    const user = await User.findById(req.session.user.id);
+    const user = await User.findById(req.user.id);
     if (!user) return res.redirect('/auth/logout');
 
     if (!name || !name.trim()) return renderWithError('Name is required.');
@@ -58,7 +58,6 @@ exports.postProfile = async (req, res) => {
     }
 
     await user.save();
-    req.session.user.name = user.name;
     res.redirect('/profile?success=1');
   } catch (err) {
     console.error(err);

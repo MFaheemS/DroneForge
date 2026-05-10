@@ -1,11 +1,11 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { attachUser } = require('./middleware/auth');
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.set('trust proxy', 1);
 // ── Security Headers ──
 app.use(helmet({ contentSecurityPolicy: false }));
 
-// ── MongoDB Query Sanitization (strips $ and . from body/params — Express 5 compatible) ──
+// ── MongoDB Query Sanitization ──
 function sanitizeObj(obj) {
   if (!obj || typeof obj !== 'object') return;
   for (const key of Object.keys(obj)) {
@@ -29,7 +29,7 @@ app.use((req, _res, next) => {
   next();
 });
 
-// ── Static Files with Cache-Control ──
+// ── Static Files ──
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
   etag: true,
@@ -47,24 +47,14 @@ app.set('views', path.join(__dirname, 'views'));
 // ── Body Parsing ──
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
-// ── Session ──
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  rolling: true,                   // reset expiry on every request (true inactivity timeout)
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 5 * 60 * 1000           // 5 min inactivity window (extended to 30d by remember-me)
-  }
-}));
+// ── Attach JWT user to every request ──
+app.use(attachUser);
 
 // ── Template Locals ──
 app.use((req, res, next) => {
-  res.locals.user = req.session.user || null;
+  res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
   next();
 });

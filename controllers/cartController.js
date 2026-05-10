@@ -1,15 +1,23 @@
 const Part = require('../models/Part');
+const Cart = require('../models/Cart');
 
-function getCart(req) {
-  if (!req.session.cart) req.session.cart = [];
-  return req.session.cart;
+async function getOrCreateCart(userId) {
+  let cart = await Cart.findOne({ userId });
+  if (!cart) cart = await Cart.create({ userId, items: [] });
+  return cart;
 }
 
-exports.getCart = (req, res) => {
-  const cart = getCart(req);
-  const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
-  res.render('cart', { title: 'My Payload — DroneForge', cart, total, itemCount });
+exports.getCart = async (req, res) => {
+  try {
+    const cart = req.user ? await getOrCreateCart(req.user.id) : { items: [] };
+    const items = cart.items || [];
+    const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+    res.render('cart', { title: 'My Payload — DroneForge', cart: items, total, itemCount });
+  } catch (err) {
+    console.error(err);
+    res.render('cart', { title: 'My Payload — DroneForge', cart: [], total: 0, itemCount: 0 });
+  }
 };
 
 exports.addToCart = async (req, res) => {
@@ -21,12 +29,12 @@ exports.addToCart = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Part not found.' });
     }
 
-    const cart = getCart(req);
-    const existing = cart.find(i => i.partId === partId);
+    const cart = await getOrCreateCart(req.user.id);
+    const existing = cart.items.find(i => i.partId === partId);
     if (existing) {
       existing.quantity = Math.min(existing.quantity + qty, part.stock || 99);
     } else {
-      cart.push({
+      cart.items.push({
         partId,
         name: part.name,
         category: part.category,
@@ -36,9 +44,9 @@ exports.addToCart = async (req, res) => {
         quantity: qty
       });
     }
-    req.session.cart = cart;
+    await cart.save();
 
-    const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
+    const itemCount = cart.items.reduce((sum, i) => sum + i.quantity, 0);
     res.json({ success: true, itemCount, message: `${part.name} added to cart.` });
   } catch (err) {
     console.error(err);
@@ -46,38 +54,64 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-exports.updateCart = (req, res) => {
-  const { partId, quantity } = req.body;
-  const qty = parseInt(quantity);
-  const cart = getCart(req);
+exports.updateCart = async (req, res) => {
+  try {
+    const { partId, quantity } = req.body;
+    const qty = parseInt(quantity);
+    const cart = await getOrCreateCart(req.user.id);
 
-  if (isNaN(qty) || qty < 1) {
-    req.session.cart = cart.filter(i => i.partId !== partId);
-  } else {
-    const item = cart.find(i => i.partId === partId);
-    if (item) item.quantity = qty;
+    if (isNaN(qty) || qty < 1) {
+      cart.items = cart.items.filter(i => i.partId !== partId);
+    } else {
+      const item = cart.items.find(i => i.partId === partId);
+      if (item) item.quantity = qty;
+    }
+    await cart.save();
+
+    const total = cart.items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const itemCount = cart.items.reduce((s, i) => s + i.quantity, 0);
+    res.json({ success: true, total: total.toFixed(2), itemCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error.' });
   }
-
-  const total = req.session.cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  const itemCount = req.session.cart.reduce((s, i) => s + i.quantity, 0);
-  res.json({ success: true, total: total.toFixed(2), itemCount });
 };
 
-exports.removeFromCart = (req, res) => {
-  const { partId } = req.body;
-  req.session.cart = getCart(req).filter(i => i.partId !== partId);
-  const total = req.session.cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  const itemCount = req.session.cart.reduce((s, i) => s + i.quantity, 0);
-  res.json({ success: true, total: total.toFixed(2), itemCount });
+exports.removeFromCart = async (req, res) => {
+  try {
+    const { partId } = req.body;
+    const cart = await getOrCreateCart(req.user.id);
+    cart.items = cart.items.filter(i => i.partId !== partId);
+    await cart.save();
+
+    const total = cart.items.reduce((s, i) => s + i.price * i.quantity, 0);
+    const itemCount = cart.items.reduce((s, i) => s + i.quantity, 0);
+    res.json({ success: true, total: total.toFixed(2), itemCount });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
-exports.clearCart = (req, res) => {
-  req.session.cart = [];
-  res.json({ success: true });
+exports.clearCart = async (req, res) => {
+  try {
+    const cart = await getOrCreateCart(req.user.id);
+    cart.items = [];
+    await cart.save();
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
 };
 
-exports.getCartCount = (req, res) => {
-  const cart = getCart(req);
-  const itemCount = cart.reduce((s, i) => s + i.quantity, 0);
-  res.json({ itemCount });
+exports.getCartCount = async (req, res) => {
+  try {
+    if (!req.user) return res.json({ itemCount: 0 });
+    const cart = await Cart.findOne({ userId: req.user.id }).lean();
+    const itemCount = (cart?.items || []).reduce((s, i) => s + i.quantity, 0);
+    res.json({ itemCount });
+  } catch {
+    res.json({ itemCount: 0 });
+  }
 };

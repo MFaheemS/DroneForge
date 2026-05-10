@@ -1,13 +1,31 @@
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const { sendPasswordResetEmail } = require('../utils/mailer');
 
 const SALT_ROUNDS = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12;
 
+function signToken(user, rememberMe = false) {
+  return jwt.sign(
+    { id: user._id, name: user.name, email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: rememberMe ? '30d' : '7d' }
+  );
+}
+
+function setTokenCookie(res, token, rememberMe = false) {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000
+  });
+}
+
 exports.getRegister = (req, res) => {
-  if (req.session.user) return res.redirect('/');
+  if (req.user) return res.redirect('/');
   res.render('auth/register', { errors: [], old: {} });
 };
 
@@ -30,7 +48,8 @@ exports.postRegister = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
     const user = await User.create({ name, email, passwordHash });
 
-    req.session.user = { id: user._id, name: user.name, email: user.email, role: user.role };
+    const token = signToken(user);
+    setTokenCookie(res, token);
     res.redirect('/');
   } catch (err) {
     console.error(err);
@@ -39,7 +58,7 @@ exports.postRegister = async (req, res) => {
 };
 
 exports.getLogin = (req, res) => {
-  if (req.session.user) return res.redirect('/');
+  if (req.user) return res.redirect('/');
   res.render('auth/login', { errors: [], old: {}, query: req.query });
 };
 
@@ -67,12 +86,9 @@ exports.postLogin = async (req, res) => {
       });
     }
 
-    req.session.user = { id: user._id, name: user.name, email: user.email, role: user.role };
-
-    // Remember-me: extend cookie to 30 days
-    if (req.body.rememberMe === '1') {
-      req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000;
-    }
+    const rememberMe = req.body.rememberMe === '1';
+    const token = signToken(user, rememberMe);
+    setTokenCookie(res, token, rememberMe);
 
     if (user.role === 'admin') return res.redirect('/admin');
     res.redirect('/');
@@ -83,7 +99,8 @@ exports.postLogin = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  req.session.destroy(() => res.redirect('/'));
+  res.clearCookie('token');
+  res.redirect('/');
 };
 
 exports.getForgotPassword = (req, res) => {
@@ -101,7 +118,6 @@ exports.postForgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // Don't reveal whether email exists
       return res.render('auth/forgot-password', {
         errors: [],
         success: 'If that email is registered, a reset link has been sent.'
@@ -112,7 +128,7 @@ exports.postForgotPassword = async (req, res) => {
     const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
 
     user.resetToken = hashedToken;
-    user.resetTokenExpiry = Date.now() + 15 * 60 * 1000; // 15 minutes
+    user.resetTokenExpiry = Date.now() + 15 * 60 * 1000;
     await user.save();
 
     const resetUrl = `${req.protocol}://${req.get('host')}/auth/reset-password/${rawToken}`;

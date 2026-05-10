@@ -3,6 +3,7 @@ const router = express.Router();
 const { requireAuth } = require('../middleware/auth');
 const PrebuiltBuild = require('../models/PrebuiltBuild');
 const Part = require('../models/Part');
+const Cart = require('../models/Cart');
 
 // GET /builds  — customer browse page
 router.get('/', async (req, res) => {
@@ -91,8 +92,11 @@ router.post('/:id/order', requireAuth, async (req, res) => {
       return res.redirect('/?error=build-unavailable');
     }
 
-    req.session.cart = cart;
-    req.session.pendingBuildName = build.name;
+    await Cart.findOneAndUpdate(
+      { userId: req.user.id },
+      { items: cart, pendingBuildName: build.name },
+      { upsert: true }
+    );
 
     // Track purchase popularity
     await PrebuiltBuild.findByIdAndUpdate(build._id, { $inc: { purchaseCount: 1 } });
