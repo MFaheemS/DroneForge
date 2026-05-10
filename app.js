@@ -55,7 +55,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 30 * 60 * 1000         // 30 min inactivity window (extended to 30d by remember-me)
+    maxAge: 5 * 60 * 1000           // 5 min inactivity window (extended to 30d by remember-me)
   }
 }));
 
@@ -82,6 +82,7 @@ app.use('/parts', require('./routes/parts'));
 app.use('/build', require('./routes/build'));
 app.use('/cart', require('./routes/cart'));
 app.use('/orders', require('./routes/orders'));
+app.use('/profile', require('./routes/profile'));
 app.use('/admin', require('./routes/admin'));
 
 // ── 404 ──

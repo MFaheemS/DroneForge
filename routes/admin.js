@@ -34,7 +34,11 @@ const partValidation = [
 router.use(requireAdmin);
 
 router.get('/', adminController.getDashboard);
+router.get('/profile', adminController.getProfile);
+router.post('/profile', adminController.postProfile);
+
 router.get('/users', adminController.getUsers);
+router.get('/users/:id', adminController.getUserDetail);
 router.patch('/users/:id/toggle-status', adminController.toggleUserStatus);
 router.patch('/users/:id/role', adminController.changeUserRole);
 

@@ -1,0 +1,165 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<main class="admin-page">
+  <div class="grid-bg"></div>
+  <div class="admin-shell">
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div>
+          <p class="section-label">
+            <span class="material-symbols-outlined" style="font-size:.8rem;vertical-align:middle;">shield</span>
+            Admin Account
+          </p>
+          <h1 class="admin-page-title">My <span style="color:var(--cyan)">Profile</span></h1>
+        </div>
+        <a href="/admin" class="btn btn-outline btn-sm">
+          <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+          Dashboard
+        </a>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert" style="background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.25);color:var(--green);border-radius:var(--radius-lg);padding:.85rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.9rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span>
+          Profile updated successfully.
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div class="alert alert-error" style="margin-bottom:1.5rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+          <%= error %>
+        </div>
+      <% } %>
+
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:1.5rem;align-items:start;">
+
+        <!-- Left: Avatar card -->
+        <div class="glass-card" style="padding:2rem;text-align:center;">
+          <div style="position:relative;width:80px;height:80px;margin:0 auto 1rem;">
+            <% if (admin.avatarUrl) { %>
+              <img src="<%= admin.avatarUrl %>" alt="Avatar" id="avatarPreview" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);" />
+            <% } else { %>
+              <div id="avatarPreview" style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--cyan-dim));display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:2rem;font-weight:900;color:var(--on-cyan);"><%= admin.name.charAt(0).toUpperCase() %></div>
+            <% } %>
+            <button type="button" onclick="document.getElementById('avatarPicker').style.display='flex'" style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:var(--cyan);color:var(--on-cyan);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;" title="Change photo">
+              <span class="material-symbols-outlined" style="font-size:.8rem;">edit</span>
+            </button>
+          </div>
+          <h2 style="font-family:var(--font-headline);font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:.25rem;"><%= admin.name %></h2>
+          <span style="font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);background:rgba(180,79,255,.12);border:1px solid rgba(180,79,255,.25);border-radius:2rem;padding:.2rem .7rem;display:inline-block;margin-bottom:1rem;">ADMIN</span>
+          <p style="font-size:.8rem;color:var(--muted);font-family:var(--font-mono);">Member since <%= new Date(admin.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'}) %></p>
+          <% if (admin.phone) { %>
+            <p style="font-size:.8rem;color:var(--text-variant);margin-top:.5rem;">
+              <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">phone</span>
+              <%= admin.phone %>
+            </p>
+          <% } %>
+        </div>
+
+        <!-- Right: Edit form -->
+        <div class="glass-card admin-card">
+          <div class="admin-card-header">
+            <h2 class="admin-card-title">Edit Information</h2>
+          </div>
+          <form action="/admin/profile" method="POST" style="padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;">
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="name" class="form-input" required value="<%= admin.name %>" maxlength="80" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" value="<%= admin.email %>" disabled style="opacity:.5;cursor:not-allowed;" />
+                <span style="font-size:.7rem;color:var(--muted);">Email cannot be changed.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="text" name="phone" class="form-input" value="<%= admin.phone || '' %>" maxlength="20" placeholder="+1 (555) 000-0000" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea name="bio" class="form-textarea" rows="3" maxlength="300" placeholder="Short bio…"><%= admin.bio || '' %></textarea>
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--glass-border);margin:.25rem 0;" />
+            <p style="font-family:var(--font-label);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Change Password (leave blank to keep current)</p>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input type="password" name="currentPassword" class="form-input" autocomplete="current-password" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" name="newPassword" class="form-input" minlength="8" autocomplete="new-password" />
+              </div>
+            </div>
+
+            <input type="hidden" name="avatarUrl" id="avatarUrlInput" value="<%= admin.avatarUrl || '' %>" />
+
+            <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:.5rem;">
+              <a href="/admin" class="btn btn-outline">Cancel</a>
+              <button type="submit" class="btn btn-primary">
+                <span class="material-symbols-outlined" style="font-size:.9rem;">save</span>
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Avatar Picker Overlay -->
+<div id="avatarPicker" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--surface-container);border:1px solid var(--glass-border-hover);border-radius:var(--radius-lg);padding:1.5rem;max-width:520px;width:calc(100% - 2rem);max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+      <h3 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);">Choose Profile Photo</h3>
+      <button onclick="document.getElementById('avatarPicker').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:1.25rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;">
+      <% for(let i=1; i<=20; i++) { %>
+        <img src="/images/avatars/avatar-<%= i %>.jpg" alt="Avatar <%= i %>"
+          onclick="selectAvatar('/images/avatars/avatar-<%= i %>.jpg')"
+          style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;"
+          onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='scale(1.08)'"
+          onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)'" />
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectAvatar(url) {
+  document.getElementById('avatarUrlInput').value = url;
+  const preview = document.getElementById('avatarPreview');
+  if (preview.tagName === 'IMG') {
+    preview.src = url;
+  } else {
+    const img = document.createElement('img');
+    img.src = url; img.alt = 'Avatar'; img.id = 'avatarPreview';
+    img.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);';
+    preview.replaceWith(img);
+  }
+  document.getElementById('avatarPicker').style.display = 'none';
+}
+</script>
+
+<div class="toast-container" id="toastContainer"></div>
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
+
+<style>
+@media (max-width: 768px) {
+  .admin-shell > .admin-main > div[style*="grid-template-columns:280px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

@@ -443,13 +443,37 @@
   });
 
   // ── ORDER BUTTON ──
-  orderBtn?.addEventListener('click', () => {
+  orderBtn?.addEventListener('click', async () => {
     const allParts = [];
     Object.values(SLOTS).forEach(s => s.parts.forEach(p => allParts.push(p)));
     if (allParts.length === 0) return;
-    showToast('Build saved to cart! Proceeding to checkout…', 'success');
-    // Redirect to cart (Module 3)
-    setTimeout(() => { window.location.href = '/cart'; }, 1500);
+
+    // Group duplicate parts (e.g. 4× same motor) into { partId, quantity }
+    const grouped = {};
+    allParts.forEach(p => {
+      if (grouped[p.id]) grouped[p.id].quantity++;
+      else grouped[p.id] = { partId: p.id, quantity: 1 };
+    });
+
+    orderBtn.disabled = true;
+    showToast('Adding build to cart…', 'info');
+
+    try {
+      for (const item of Object.values(grouped)) {
+        const res = await fetch('/cart/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(item)
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Failed to add item');
+      }
+      showToast('Build added to cart! Redirecting…', 'success');
+      setTimeout(() => { window.location.href = '/cart'; }, 1200);
+    } catch (err) {
+      showToast(err.message || 'Could not add to cart. Are you logged in?', 'error');
+      orderBtn.disabled = false;
+    }
   });
 
   // ── TOAST ──

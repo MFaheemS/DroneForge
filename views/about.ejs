@@ -122,17 +122,16 @@
       </h2>
       <div class="team-grid" style="margin-top:3rem;">
         <% [
-          { name:'Zara Nakamura', role:'Co-Founder & CEO', icon:'psychology', color:'var(--cyan)', bio:'FPV racer turned engineer. Flew competitively for 7 years before co-founding DroneForge.' },
-          { name:'Marcus Osei', role:'CTO & Lead Architect', icon:'code', color:'var(--orange)', bio:'Built aerospace software for 10 years. Obsesses over compatibility matrices at 2am.' },
-          { name:'Lena Kovacs', role:'Head of Design', icon:'palette', color:'var(--green)', bio:'Believes good UI feels like a cockpit — every control exactly where you expect it.' },
-          { name:'Tariq Al-Rashid', role:'Head of Hardware', icon:'hardware', color:'var(--cyan)', bio:'Certified drone technician with 200+ builds. Personally tests every new part we stock.' }
+          { name:'M. Faheem', role:'Full-Stack Developer', rollNo:'23i-0728', icon:'code', color:'var(--cyan)', bio:'Built the DroneForge platform end-to-end — from database schemas and REST APIs to UI animations and the 3D builder experience.' },
+          { name:'Humayun Bilal', role:'Full-Stack Developer', rollNo:'23i-0832', icon:'precision_manufacturing', color:'var(--orange)', bio:'Engineered core platform features including cart, orders, and admin management. Focused on performance and clean architecture.' }
         ].forEach(member => { %>
           <div class="glass-card team-card reveal">
-            <div class="team-avatar" style="background:rgba(0,242,255,.08);border:1px solid rgba(0,242,255,.15);">
+            <div class="team-avatar" style="background:rgba(180,79,255,.08);border:1px solid rgba(180,79,255,.15);">
               <span class="material-symbols-outlined" style="font-size:2rem;color:<%= member.color %>;font-variation-settings:'FILL' 1;"><%= member.icon %></span>
             </div>
             <h3 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.25rem;"><%= member.name %></h3>
-            <p style="font-size:.65rem;color:<%= member.color %>;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.75rem;"><%= member.role %></p>
+            <p style="font-size:.65rem;color:<%= member.color %>;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.25rem;"><%= member.role %></p>
+            <p style="font-size:.6rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:.1em;margin-bottom:.75rem;">ROLL: <%= member.rollNo %></p>
             <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;"><%= member.bio %></p>
           </div>
         <% }) %>

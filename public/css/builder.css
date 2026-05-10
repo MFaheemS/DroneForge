@@ -615,8 +615,15 @@
   .builder-body { grid-template-columns: 1fr; }
   .build-summary { position: static; }
 }
+@media (max-width: 768px) {
+  .modal-panel { max-width: calc(100vw - 2rem); margin: 1rem; border-radius: var(--radius-lg); }
+  .modal-header, .modal-footer { padding: .85rem 1rem; }
+  .modal-body { padding: .85rem 1rem; }
+}
 @media (max-width: 600px) {
   .builder-title { font-size: 1.75rem; }
   .slot-status-bar { gap: .25rem; }
   .slot-pill { font-size: .62rem; padding: .25rem .55rem; }
+  .modal-panel { max-width: 100%; margin: 0; border-radius: var(--radius-lg) var(--radius-lg) 0 0; align-self: flex-end; }
+  .modal-overlay { align-items: flex-end; }
 }

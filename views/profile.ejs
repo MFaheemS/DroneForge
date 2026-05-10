@@ -1,0 +1,241 @@
+<%- include('partials/head', { title: title }) %>
+<%- include('partials/navbar') %>
+
+<main style="min-height:100vh;padding-bottom:5rem;">
+  <div class="grid-bg"></div>
+
+  <div style="position:relative;z-index:1;padding:5rem 0 0;">
+    <div class="container">
+      <p class="section-label" style="margin-bottom:.5rem;">
+        <span class="material-symbols-outlined" style="font-size:.85rem;vertical-align:middle;">account_circle</span>
+        My Account
+      </p>
+      <h1 style="font-family:var(--font-headline);font-size:clamp(1.8rem,4vw,2.5rem);font-weight:900;letter-spacing:-.02em;color:var(--text);margin-bottom:2.5rem;">
+        Pilot <span style="color:var(--cyan)">Profile</span>
+      </h1>
+
+      <% if (success) { %>
+        <div style="background:rgba(0,255,65,.08);border:1px solid rgba(0,255,65,.25);color:var(--green);border-radius:var(--radius-lg);padding:.85rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.9rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">check_circle</span>
+          Profile updated successfully.
+        </div>
+      <% } %>
+      <% if (error) { %>
+        <div style="background:rgba(255,180,171,.08);border:1px solid rgba(255,180,171,.25);color:var(--error);border-radius:var(--radius-lg);padding:.85rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem;font-size:.9rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+          <%= error %>
+        </div>
+      <% } %>
+
+      <div class="profile-grid">
+
+        <!-- Left: Avatar + stats -->
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <div class="glass-card" style="padding:2rem;text-align:center;">
+            <div style="position:relative;width:80px;height:80px;margin:0 auto 1rem;">
+              <% if (profileUser.avatarUrl) { %>
+                <img src="<%= profileUser.avatarUrl %>" alt="Avatar" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);" id="avatarPreview" />
+              <% } else { %>
+                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--cyan-dim));display:flex;align-items:center;justify-content:center;font-family:var(--font-headline);font-size:2rem;font-weight:900;color:var(--on-cyan);" id="avatarPreview"><%= profileUser.name.charAt(0).toUpperCase() %></div>
+              <% } %>
+              <button type="button" onclick="document.getElementById('avatarPicker').style.display='block'" style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;background:var(--cyan);color:var(--on-cyan);border:none;display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer;" title="Change photo">
+                <span class="material-symbols-outlined" style="font-size:.8rem;">edit</span>
+              </button>
+            </div>
+            <h2 style="font-family:var(--font-headline);font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:.25rem;"><%= profileUser.name %></h2>
+            <p style="font-size:.8rem;color:var(--muted);font-family:var(--font-mono);margin-bottom:.75rem;"><%= profileUser.email %></p>
+            <span style="font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-variant);background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:2rem;padding:.2rem .7rem;display:inline-block;">PILOT</span>
+            <% if (profileUser.bio) { %>
+              <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;margin-top:1rem;"><%= profileUser.bio %></p>
+            <% } %>
+            <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--glass-border);text-align:left;display:flex;flex-direction:column;gap:.5rem;">
+              <% if (profileUser.phone) { %>
+                <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-variant);">
+                  <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--muted);">phone</span>
+                  <%= profileUser.phone %>
+                </div>
+              <% } %>
+              <div style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-variant);">
+                <span class="material-symbols-outlined" style="font-size:.9rem;color:var(--muted);">calendar_month</span>
+                Member since <%= new Date(profileUser.createdAt).toLocaleDateString('en-US',{month:'long',year:'numeric'}) %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="glass-card" style="padding:1.25rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div style="text-align:center;">
+              <div style="font-family:var(--font-mono);font-size:1.75rem;font-weight:900;color:var(--cyan);"><%= orderCount %></div>
+              <div style="font-size:.7rem;color:var(--muted);font-family:var(--font-label);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;">Orders</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:var(--font-mono);font-size:1.75rem;font-weight:900;color:var(--green);">$<%= totalSpent.toFixed(0) %></div>
+              <div style="font-size:.7rem;color:var(--muted);font-family:var(--font-label);text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem;">Spent</div>
+            </div>
+          </div>
+
+          <a href="/orders" class="btn btn-outline" style="text-align:center;justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:.9rem;">receipt_long</span>
+            View All Orders
+          </a>
+        </div>
+
+        <!-- Right: Edit form + recent orders -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+          <!-- Edit form -->
+          <div class="glass-card" style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:.5rem;">
+              <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">edit</span>
+              <h2 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);">Edit Information</h2>
+            </div>
+            <form action="/profile" method="POST" style="padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;">
+              <div class="profile-form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input type="text" name="name" class="form-input" required value="<%= profileUser.name %>" maxlength="80" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-input" value="<%= profileUser.email %>" disabled style="opacity:.5;cursor:not-allowed;" />
+                  <span style="font-size:.7rem;color:var(--muted);">Email cannot be changed.</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-input" value="<%= profileUser.phone || '' %>" maxlength="20" placeholder="+1 (555) 000-0000" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bio <span style="color:var(--muted);font-weight:400;">(max 300 chars)</span></label>
+                <textarea name="bio" class="form-textarea" rows="3" maxlength="300" placeholder="Tell us about yourself…"><%= profileUser.bio || '' %></textarea>
+              </div>
+
+              <hr style="border:none;border-top:1px solid var(--glass-border);margin:.25rem 0;" />
+              <p style="font-family:var(--font-label);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Change Password (leave blank to keep current)</p>
+
+              <div class="profile-form-row">
+                <div class="form-group">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" name="currentPassword" class="form-input" autocomplete="current-password" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">New Password</label>
+                  <input type="password" name="newPassword" class="form-input" minlength="8" autocomplete="new-password" />
+                </div>
+              </div>
+
+              <input type="hidden" name="avatarUrl" id="avatarUrlInput" value="<%= profileUser.avatarUrl || '' %>" />
+
+              <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:.5rem;">
+                <button type="submit" class="btn btn-primary">
+                  <span class="material-symbols-outlined" style="font-size:.9rem;">save</span>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Recent orders -->
+          <% if (recentOrders.length > 0) { %>
+          <div class="glass-card" style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);overflow:hidden;">
+            <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;align-items:center;gap:.5rem;">
+                <span class="material-symbols-outlined" style="font-size:1rem;color:var(--cyan);">receipt_long</span>
+                <h2 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);">Recent Orders</h2>
+              </div>
+              <a href="/orders" style="font-size:.75rem;color:var(--cyan);font-family:var(--font-label);font-weight:600;letter-spacing:.06em;">View All →</a>
+            </div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--glass-border);">
+                    <th style="padding:.75rem 1.25rem;text-align:left;font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Order</th>
+                    <th style="padding:.75rem 1.25rem;text-align:left;font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Total</th>
+                    <th style="padding:.75rem 1.25rem;text-align:left;font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Status</th>
+                    <th style="padding:.75rem 1.25rem;text-align:left;font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);">Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% recentOrders.forEach((o, i) => { %>
+                    <tr style="border-bottom:<%= i < recentOrders.length-1 ? '1px solid var(--glass-border)' : 'none' %>;">
+                      <td style="padding:.75rem 1.25rem;">
+                        <span style="font-family:var(--font-mono);font-size:.8rem;color:var(--muted);">#<%= o._id.toString().slice(-6).toUpperCase() %></span>
+                        <% if (o.buildName) { %><div style="font-size:.8rem;color:var(--text-variant);"><%= o.buildName %></div><% } %>
+                      </td>
+                      <td style="padding:.75rem 1.25rem;font-family:var(--font-mono);font-size:.88rem;color:var(--cyan);font-weight:700;">$<%= o.totalPrice.toFixed(2) %></td>
+                      <td style="padding:.75rem 1.25rem;"><span class="status-badge status-<%= o.status %>"><%= o.status.toUpperCase() %></span></td>
+                      <td style="padding:.75rem 1.25rem;font-size:.75rem;color:var(--muted);font-family:var(--font-mono);"><%= new Date(o.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <% } %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+
+<!-- Avatar Picker Overlay -->
+<div id="avatarPicker" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:var(--surface-container);border:1px solid var(--glass-border-hover);border-radius:var(--radius-lg);padding:1.5rem;max-width:520px;width:calc(100% - 2rem);max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+      <h3 style="font-family:var(--font-headline);font-size:1rem;font-weight:700;color:var(--text);">Choose Profile Photo</h3>
+      <button onclick="document.getElementById('avatarPicker').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:1.25rem;cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;">
+      <% for(let i=1; i<=20; i++) { %>
+        <img src="/images/avatars/avatar-<%= i %>.jpg" alt="Avatar <%= i %>"
+          onclick="selectAvatar('/images/avatars/avatar-<%= i %>.jpg')"
+          style="width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;"
+          onmouseover="this.style.borderColor='var(--cyan)';this.style.transform='scale(1.08)'"
+          onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)'" />
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+function selectAvatar(url) {
+  document.getElementById('avatarUrlInput').value = url;
+  const preview = document.getElementById('avatarPreview');
+  if (preview.tagName === 'IMG') {
+    preview.src = url;
+  } else {
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'Avatar';
+    img.id = 'avatarPreview';
+    img.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);';
+    preview.replaceWith(img);
+  }
+  document.getElementById('avatarPicker').style.display = 'none';
+}
+document.getElementById('avatarPicker').style.display = 'none';
+</script>
+
+<style>
+.profile-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.profile-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 900px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .profile-form-row { grid-template-columns: 1fr; }
+}
+</style>

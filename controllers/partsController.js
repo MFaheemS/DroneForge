@@ -22,15 +22,16 @@ exports.getCatalog = async (req, res) => {
     const allParts = await Part.find({ isAvailable: true }, 'price weight').lean();
     const prices = allParts.map(p => p.price);
     const priceMin = Math.floor(Math.min(...prices));
-    const priceMax = Math.ceil(Math.max(...prices));
-    const weightMax = Math.ceil(Math.max(...allParts.map(p => p.weight)));
+    const priceMax = Math.min(Math.ceil(Math.max(...prices)), 100);
+    const weightMax = Math.min(Math.ceil(Math.max(...allParts.map(p => p.weight))), 500);
 
+    const weightMin = 0;
     res.render('parts/catalog', {
       title: 'Parts Catalog — DroneForge',
       parts,
       categories: CATEGORIES,
       filters: { category, minPrice, maxPrice, maxWeight, search },
-      priceMin, priceMax, weightMax
+      priceMin, priceMax, weightMin, weightMax
     });
   } catch (err) {
     console.error(err);

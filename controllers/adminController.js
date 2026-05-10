@@ -123,14 +123,14 @@ exports.getParts = async (req, res) => {
 };
 
 exports.getAddPart = (req, res) => {
-  res.render('admin/part-form', { title: 'Add Part — DroneForge Admin', part: null, errors: [] });
+  res.render('admin/part-form', { title: 'Add Part — DroneForge Admin', part: null, errors: [], formData: null });
 };
 
 exports.postAddPart = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     if (req.file) fs.unlinkSync(req.file.path);
-    return res.render('admin/part-form', { title: 'Add Part', part: null, errors: errors.array() });
+    return res.render('admin/part-form', { title: 'Add Part', part: null, errors: errors.array(), formData: null });
   }
   try {
     const { name, category, price, weight, description, stock } = req.body;
@@ -145,17 +145,21 @@ exports.postAddPart = async (req, res) => {
     res.redirect('/admin/parts');
   } catch (err) {
     console.error(err);
-    res.render('admin/part-form', { title: 'Add Part', part: null, errors: [{ msg: 'Server error.' }] });
+    res.render('admin/part-form', { title: 'Add Part', part: null, errors: [{ msg: 'Server error.' }], formData: null });
   }
 };
 
-exports.getEditPart = async (req, res) => {
+exports.getEditPart = async (req, res, next) => {
   try {
-    const part = await Part.findById(req.params.id);
+    const part = await Part.findById(req.params.id).lean();
     if (!part) return res.status(404).render('errors/404');
-    res.render('admin/part-form', { title: 'Edit Part — DroneForge Admin', part, errors: [] });
+    // Convert specs Map (if any) to a plain object for the template
+    if (part.specs && typeof part.specs === 'object' && !Array.isArray(part.specs)) {
+      part.specs = Object.fromEntries(Object.entries(part.specs));
+    }
+    res.render('admin/part-form', { title: 'Edit Part — DroneForge Admin', part, errors: [], formData: null });
   } catch (err) {
-    res.status(404).render('errors/404');
+    next(err); // passes to global error handler which logs err.stack to console
   }
 };
 
@@ -166,7 +170,7 @@ exports.postEditPart = async (req, res) => {
 
   if (!errors.isEmpty()) {
     if (req.file) fs.unlinkSync(req.file.path);
-    return res.render('admin/part-form', { title: 'Edit Part', part, errors: errors.array() });
+    return res.render('admin/part-form', { title: 'Edit Part', part, errors: errors.array(), formData: null });
   }
   try {
     const { name, category, price, weight, description, stock, isAvailable } = req.body;
@@ -188,7 +192,7 @@ exports.postEditPart = async (req, res) => {
     res.redirect('/admin/parts');
   } catch (err) {
     console.error(err);
-    res.render('admin/part-form', { title: 'Edit Part', part, errors: [{ msg: 'Server error.' }] });
+    res.render('admin/part-form', { title: 'Edit Part', part, errors: [{ msg: 'Server error.' }], formData: null });
   }
 };
 
@@ -202,6 +206,79 @@ exports.deletePart = async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+// ── PROFILE ──────────────────────────────────────────────────────────────────────
+exports.getProfile = async (req, res) => {
+  try {
+    const admin = await User.findById(req.session.user.id).lean();
+    if (!admin) return res.redirect('/auth/logout');
+    res.render('admin/profile', { title: 'My Profile — DroneForge Admin', admin, success: req.query.success || '', error: '' });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/admin');
+  }
+};
+
+exports.postProfile = async (req, res) => {
+  try {
+    const { name, phone, bio, currentPassword, newPassword } = req.body;
+    const admin = await User.findById(req.session.user.id);
+    if (!admin) return res.redirect('/auth/logout');
+
+    if (!name || !name.trim()) {
+      return res.render('admin/profile', { title: 'My Profile — DroneForge Admin', admin: admin.toObject(), success: '', error: 'Name is required.' });
+    }
+
+    admin.name = name.trim();
+    admin.phone = (phone || '').trim();
+    admin.bio = (bio || '').trim();
+    if (req.body.avatarUrl) admin.avatarUrl = req.body.avatarUrl;
+    admin.updatedAt = new Date();
+
+    if (newPassword) {
+      const bcrypt = require('bcrypt');
+      const match = await bcrypt.compare(currentPassword || '', admin.passwordHash);
+      if (!match) {
+        return res.render('admin/profile', { title: 'My Profile — DroneForge Admin', admin: admin.toObject(), success: '', error: 'Current password is incorrect.' });
+      }
+      if (newPassword.length < 8) {
+        return res.render('admin/profile', { title: 'My Profile — DroneForge Admin', admin: admin.toObject(), success: '', error: 'New password must be at least 8 characters.' });
+      }
+      admin.passwordHash = await bcrypt.hash(newPassword, 12);
+    }
+
+    await admin.save();
+    req.session.user.name = admin.name;
+    res.redirect('/admin/profile?success=1');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/admin/profile');
+  }
+};
+
+// ── USER DETAIL ──────────────────────────────────────────────────────────────────
+exports.getUserDetail = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).lean();
+    if (!user) return res.status(404).render('errors/404', { message: 'User not found.' });
+    const [orderCount, totalSpent] = await Promise.all([
+      Order.countDocuments({ userId: user._id }),
+      Order.aggregate([{ $match: { userId: user._id, status: { $ne: 'cancelled' } } }, { $group: { _id: null, total: { $sum: '$totalPrice' } } }])
+    ]);
+    const recentOrders = await Order.find({ userId: user._id }).sort({ createdAt: -1 }).limit(5).lean();
+    res.render('admin/user-detail', {
+      title: `${user.name} — DroneForge Admin`,
+      targetUser: user,
+      orderCount,
+      totalSpent: totalSpent[0]?.total || 0,
+      recentOrders,
+      currentUserId: req.session.user.id || ''
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(404).render('errors/404', { message: 'User not found.' });
   }
 };
 

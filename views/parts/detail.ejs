@@ -33,7 +33,7 @@ const specs = part.specs instanceof Map ? Object.fromEntries(part.specs) : (part
 
   <!-- ── MAIN CONTENT ── -->
   <div class="container" style="position:relative;z-index:1;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;align-items:start;">
+    <div class="detail-grid">
 
       <!-- LEFT: Image -->
       <div>
@@ -71,7 +71,7 @@ const specs = part.specs instanceof Map ? Object.fromEntries(part.specs) : (part
         </div>
 
         <!-- Price + Weight -->
-        <div style="display:flex;align-items:center;gap:1.5rem;padding:1.25rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);">
+        <div class="part-price-strip" style="display:flex;align-items:center;gap:1.5rem;padding:1.25rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);backdrop-filter:var(--glass-blur);flex-wrap:wrap;">
           <div>
             <span style="display:block;font-family:var(--font-label);font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem;">Price</span>
             <span style="font-family:var(--font-mono);font-size:2rem;font-weight:900;color:var(--cyan);letter-spacing:-.02em;">$<%= part.price.toFixed(2) %></span>
@@ -209,9 +209,19 @@ const specs = part.specs instanceof Map ? Object.fromEntries(part.specs) : (part
 </script>
 
 <style>
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
 @media (max-width: 768px) {
-  .container > div[style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr !important;
-  }
+  .detail-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .detail-grid > div:first-child { max-height: 60vw; }
+  .part-price-strip { flex-wrap: wrap; gap: .85rem !important; }
+  .part-price-strip > div:last-child { display: none; }
+}
+@media (max-width: 480px) {
+  .detail-grid { gap: 1rem; }
 }
 </style>

@@ -87,11 +87,47 @@
             </div>
           </div>
 
-          <!-- Compatibility Tags -->
-          <div class="form-group">
-            <label class="form-label">Compatible With (comma-separated)</label>
-            <input type="text" name="compatibility" class="form-input" placeholder="e.g. 5 inch frame, 2306 motors"
-                   value="<%= part ? (Array.isArray(part.compatibility) ? part.compatibility.join(', ') : '') : (formData?.compatibility || '') %>" />
+          <!-- Specs -->
+          <div class="form-group" id="specsSection">
+            <label class="form-label">Specifications (key / value pairs)</label>
+            <div id="specRows" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:.5rem;">
+              <%
+                let specPairs = [];
+                if (part && part.specs) {
+                  specPairs = (typeof part.specs.entries === 'function')
+                    ? Array.from(part.specs.entries())
+                    : Object.entries(part.specs);
+                }
+              %>
+              <% if (specPairs.length === 0) { %>
+                <div class="spec-row-input" style="display:flex;gap:.5rem;">
+                  <input type="text" name="specKeys" class="form-input" placeholder="Key (e.g. kv)" style="flex:1;" />
+                  <input type="text" name="specVals" class="form-input" placeholder="Value (e.g. 2400KV)" style="flex:1;" />
+                  <button type="button" class="btn btn-outline btn-sm remove-spec-btn">✕</button>
+                </div>
+              <% } else { %>
+                <% specPairs.forEach(([k, v]) => { %>
+                  <div class="spec-row-input" style="display:flex;gap:.5rem;">
+                    <input type="text" name="specKeys" class="form-input" placeholder="Key" style="flex:1;" value="<%= k %>" />
+                    <input type="text" name="specVals" class="form-input" placeholder="Value" style="flex:1;" value="<%= v %>" />
+                    <button type="button" class="btn btn-outline btn-sm remove-spec-btn">✕</button>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+            <button type="button" id="addSpecRow" class="btn btn-outline btn-sm">
+              <span class="material-symbols-outlined" style="font-size:.85rem;">add</span> Add Spec
+            </button>
+          </div>
+
+          <!-- Availability -->
+          <div class="form-group" style="display:flex;align-items:center;gap:1rem;">
+            <label class="form-label" style="margin:0;">Available in Catalog</label>
+            <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;">
+              <input type="checkbox" name="isAvailable" value="on" style="width:1.1rem;height:1.1rem;accent-color:var(--cyan);"
+                <%= (!part || part.isAvailable !== false) ? 'checked' : '' %> />
+              <span style="font-size:.85rem;color:var(--text-variant);">Show in marketplace</span>
+            </label>
           </div>
 
           <div style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;">
@@ -118,4 +154,19 @@ function previewImage(input) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+function makeSpecRow() {
+  const row = document.createElement('div');
+  row.className = 'spec-row-input';
+  row.style.cssText = 'display:flex;gap:.5rem;';
+  row.innerHTML = '<input type="text" name="specKeys" class="form-input" placeholder="Key" style="flex:1;" /><input type="text" name="specVals" class="form-input" placeholder="Value" style="flex:1;" /><button type="button" class="btn btn-outline btn-sm remove-spec-btn">✕</button>';
+  row.querySelector('.remove-spec-btn').addEventListener('click', () => row.remove());
+  return row;
+}
+document.getElementById('addSpecRow').addEventListener('click', () => {
+  document.getElementById('specRows').appendChild(makeSpecRow());
+});
+document.querySelectorAll('.remove-spec-btn').forEach(btn => {
+  btn.addEventListener('click', () => btn.closest('.spec-row-input').remove());
+});
 </script>

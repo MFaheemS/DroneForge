@@ -21,7 +21,7 @@
           </p>
         </div>
         <div class="catalog-header-gif">
-          <img src="/images/drone-lineal.gif" alt="Drone animation" loading="lazy" width="120" height="120" />
+          <img src="/images/drone-lineal-purple.gif" alt="Drone animation" loading="lazy" width="120" height="120" />
         </div>
       </div>
 
@@ -91,20 +91,52 @@
           </span>
         </div>
         <div class="range-track-wrap">
-          <input type="range" class="range-input" id="priceMin" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.minPrice || priceMin %>" step="1" aria-label="Minimum price" />
-          <input type="range" class="range-input" id="priceMax" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.maxPrice || priceMax %>" step="1" aria-label="Maximum price" />
+          <input type="range" class="range-input" id="priceMin" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.minPrice || priceMin %>" step="5" aria-label="Minimum price" />
+          <input type="range" class="range-input" id="priceMax" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.maxPrice || priceMax %>" step="5" aria-label="Maximum price" />
+        </div>
+        <div class="slider-limits">
+          <span>$<%= priceMin %></span>
+          <span>$<%= priceMax %></span>
+        </div>
+        <div class="range-custom-inputs">
+          <div class="range-custom-field">
+            <label class="range-custom-label">Min $</label>
+            <input type="number" id="priceMinInput" class="range-custom-input" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.minPrice || priceMin %>" step="5" />
+          </div>
+          <div class="range-custom-field">
+            <label class="range-custom-label">Max $</label>
+            <input type="number" id="priceMaxInput" class="range-custom-input" min="<%= priceMin %>" max="<%= priceMax %>" value="<%= filters.maxPrice || priceMax %>" step="5" />
+          </div>
         </div>
       </div>
 
-      <!-- Weight Filter -->
+      <!-- Mass Range -->
       <div class="filter-group">
         <div class="filter-group-label" style="letter-spacing:.15em;">
-          Max Mass (Grams)
+          Mass Range (Grams)
           <span class="filter-range-display" id="weightDisplay">
-            ≤ <span id="weightDisplay-val"><%= filters.maxWeight || weightMax %></span>g
+            <span id="weightMinDisplay"><%= weightMin %></span>g
+            – <span id="weightMaxDisplay"><%= filters.maxWeight || weightMax %></span>g
           </span>
         </div>
-        <input type="range" class="range-input single" id="weightMax" min="0" max="<%= weightMax %>" value="<%= filters.maxWeight || weightMax %>" step="10" aria-label="Maximum weight in grams" />
+        <div class="range-track-wrap">
+          <input type="range" class="range-input" id="weightMin" min="<%= weightMin %>" max="<%= weightMax %>" value="<%= weightMin %>" step="5" aria-label="Minimum weight in grams" />
+          <input type="range" class="range-input" id="weightMax" min="<%= weightMin %>" max="<%= weightMax %>" value="<%= filters.maxWeight || weightMax %>" step="5" aria-label="Maximum weight in grams" />
+        </div>
+        <div class="slider-limits">
+          <span><%= weightMin %>g</span>
+          <span><%= weightMax %>g</span>
+        </div>
+        <div class="range-custom-inputs">
+          <div class="range-custom-field">
+            <label class="range-custom-label">Min g</label>
+            <input type="number" id="weightMinInput" class="range-custom-input" min="<%= weightMin %>" max="<%= weightMax %>" value="<%= weightMin %>" step="5" />
+          </div>
+          <div class="range-custom-field">
+            <label class="range-custom-label">Max g</label>
+            <input type="number" id="weightMaxInput" class="range-custom-input" min="<%= weightMin %>" max="<%= weightMax %>" value="<%= filters.maxWeight || weightMax %>" step="5" />
+          </div>
+        </div>
       </div>
 
       <!-- Mobile apply -->
