@@ -31,6 +31,7 @@
     <% if (!user) { %>
       <%/* ── Guest navigation ── */%>
       <li><a href="/" class="<%= isActive('/') %>">Home</a></li>
+      <li><a href="/builds" class="<%= isActive('/builds') %>">Fleet</a></li>
       <li><a href="/parts" class="<%= isActive('/parts') %>">Marketplace</a></li>
       <li><a href="/auth/login" class="btn-nav <%= isActive('/auth/login') %>">Login</a></li>
       <li><a href="/auth/register" class="btn-nav-solid">Register</a></li>
@@ -52,6 +53,10 @@
       <li><a href="/admin/orders" class="<%= isActive('/admin/orders') %>">
         <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">receipt_long</span>
         Orders
+      </a></li>
+      <li><a href="/admin/builds" class="<%= isActive('/admin/builds') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">rocket_launch</span>
+        Builds
       </a></li>
 
       <%/* Admin user menu */%>
@@ -76,9 +81,13 @@
     <% } else { %>
       <%/* ── Customer navigation ── */%>
       <li><a href="/" class="<%= isActive('/') %>">Home</a></li>
-      <li><a href="/build" class="<%= isActive('/build') %>">
+      <li><a href="/build" class="<%= currentPath === '/build' ? 'nav-active' : '' %>">
         <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">precision_manufacturing</span>
         Builder
+      </a></li>
+      <li><a href="/builds" class="<%= isActive('/builds') %>">
+        <span class="material-symbols-outlined" style="font-size:.9rem;vertical-align:middle;">rocket_launch</span>
+        Fleet
       </a></li>
       <li><a href="/parts" class="<%= isActive('/parts') %>">Marketplace</a></li>
       <li>

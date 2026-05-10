@@ -10,7 +10,9 @@ exports.getCheckout = (req, res) => {
   const cart = getCart(req);
   if (!cart.length) return res.redirect('/cart');
   const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  res.render('checkout', { title: 'Secure Checkout — DroneForge', cart, subtotal, errors: [] });
+  const pendingBuildName = req.session.pendingBuildName || '';
+  req.session.pendingBuildName = null;
+  res.render('checkout', { title: 'Secure Checkout — DroneForge', cart, subtotal, errors: [], pendingBuildName });
 };
 
 exports.postCheckout = async (req, res) => {

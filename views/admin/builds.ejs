@@ -1,0 +1,763 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<style>
+  /* ── Terminal builds page ── */
+  .terminal-page {
+    min-height: calc(100vh - 64px);
+    background: var(--surface-lowest);
+    position: relative;
+    overflow: hidden;
+  }
+  .terminal-grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(180,79,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(180,79,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .terminal-shell {
+    position: relative; z-index: 1;
+    max-width: 1400px; margin: 0 auto;
+    padding: 2.5rem 2rem 3rem;
+  }
+
+  /* Page header */
+  .term-header { margin-bottom: 2.5rem; }
+  .term-eyebrow {
+    display: flex; align-items: center; gap: .5rem;
+    margin-bottom: .6rem;
+  }
+  .term-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    animation: termPulse 2s ease-in-out infinite;
+  }
+  @keyframes termPulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .term-eyebrow-text {
+    font-family: var(--font-label); font-size: .65rem; font-weight: 700;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--cyan);
+  }
+  .term-title {
+    font-family: var(--font-headline); font-size: 2.25rem; font-weight: 700;
+    color: #fff; text-transform: uppercase; letter-spacing: -.01em;
+    line-height: 1.1; margin-bottom: .4rem;
+  }
+  .term-sub { color: var(--text-variant); font-size: .9rem; max-width: 480px; }
+
+  /* Two-column layout */
+  .term-grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  @media (max-width: 1024px) { .term-grid { grid-template-columns: 1fr; } }
+
+  /* Glass panel */
+  .term-panel {
+    background: rgba(20,16,30,0.55);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    box-shadow: 0 0 40px rgba(180,79,255,0.07);
+  }
+  .term-panel-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.025);
+  }
+  .term-panel-title {
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .term-panel-title .material-symbols-outlined { font-size: .95rem; color: var(--cyan); }
+  .term-panel-label {
+    font-family: var(--font-label); font-size: .7rem; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase; color: #fff;
+  }
+  .term-panel-meta {
+    font-family: var(--font-mono); font-size: .65rem; color: rgba(255,255,255,0.2);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+
+  /* ── ADD FORM ── */
+  .term-form { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.4rem; }
+
+  .tf-group { display: flex; flex-direction: column; gap: .4rem; }
+  .tf-label {
+    font-family: var(--font-label); font-size: .6rem; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,0.35);
+  }
+  .tf-input, .tf-textarea, .tf-select {
+    width: 100%; background: rgba(255,255,255,0.04);
+    border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: .65rem 0; color: #fff; font-family: var(--font-body); font-size: .9rem;
+    outline: none; transition: border-color .2s;
+    border-radius: 0;
+  }
+  .tf-input:focus, .tf-textarea:focus, .tf-select:focus { border-color: var(--cyan); }
+  .tf-textarea { resize: vertical; min-height: 72px; }
+  .tf-select { appearance: none; cursor: pointer; background: transparent; }
+  .tf-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* Spec chips */
+  .tf-chips-wrap {
+    display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .4rem;
+  }
+  .tf-chip {
+    display: flex; align-items: center; gap: .25rem;
+    background: rgba(180,79,255,.12); border: 1px solid rgba(180,79,255,.3);
+    border-radius: 20px; padding: .15rem .55rem;
+    font-size: .7rem; color: var(--cyan); font-family: var(--font-label); letter-spacing: .05em;
+  }
+  .tf-chip button { background: none; border: none; color: rgba(255,255,255,.3); cursor: pointer; padding: 0; font-size: .75rem; line-height: 1; }
+  .tf-chip-row { display: flex; gap: .5rem; }
+  .tf-chip-input {
+    flex: 1; background: rgba(255,255,255,.04); border: none;
+    border-bottom: 1px solid rgba(255,255,255,.1); padding: .5rem 0;
+    color: #fff; font-size: .82rem; outline: none; transition: border-color .2s;
+  }
+  .tf-chip-input:focus { border-color: var(--cyan); }
+  .tf-chip-add {
+    padding: .4rem .75rem; background: rgba(180,79,255,.15);
+    border: 1px solid rgba(180,79,255,.3); border-radius: 4px;
+    color: var(--cyan); font-size: .7rem; font-family: var(--font-label);
+    letter-spacing: .08em; text-transform: uppercase; cursor: pointer;
+    transition: background .2s;
+  }
+  .tf-chip-add:hover { background: rgba(180,79,255,.25); }
+
+  /* Image presets */
+  .tf-presets { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .tf-preset-thumb {
+    width: 80px; height: 52px; object-fit: cover; border-radius: 4px;
+    border: 2px solid transparent; cursor: pointer; opacity: .55;
+    transition: border-color .2s, opacity .2s;
+  }
+  .tf-preset-thumb.selected { border-color: var(--cyan); opacity: 1; box-shadow: 0 0 12px rgba(180,79,255,.4); }
+
+  /* Upload box */
+  .tf-upload {
+    width: 100%; aspect-ratio: 16/7;
+    border: 2px dashed rgba(255,255,255,.08); border-radius: 4px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: .5rem; cursor: pointer; transition: border-color .2s, background .2s;
+  }
+  .tf-upload:hover { border-color: rgba(180,79,255,.4); background: rgba(180,79,255,.04); }
+  .tf-upload .material-symbols-outlined { font-size: 2rem; color: rgba(255,255,255,.2); transition: color .2s; }
+  .tf-upload:hover .material-symbols-outlined { color: var(--cyan); }
+  .tf-upload-label { font-family: var(--font-label); font-size: .6rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.25); }
+  .tf-upload input[type=file] { display: none; }
+
+  /* Parts section */
+  .tf-parts { display: flex; flex-direction: column; gap: .5rem; max-height: 220px; overflow-y: auto; padding-right: .25rem; }
+  .tf-parts::-webkit-scrollbar { width: 3px; }
+  .tf-parts::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
+
+  .tf-part-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .65rem .85rem; background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.05); border-radius: 4px;
+    cursor: pointer; transition: border-color .2s, background .2s;
+  }
+  .tf-part-row:hover { border-color: rgba(180,79,255,.4); }
+  .tf-part-row.picked { border-color: var(--cyan); background: rgba(180,79,255,.07); }
+  .tf-part-left { display: flex; align-items: center; gap: .65rem; }
+  .tf-part-icon { font-size: 1.1rem; color: rgba(255,255,255,.25); transition: color .2s; }
+  .tf-part-row.picked .tf-part-icon { color: var(--cyan); }
+  .tf-part-name { font-size: .73rem; font-weight: 700; color: rgba(255,255,255,.85); text-transform: uppercase; letter-spacing: .04em; }
+  .tf-part-sub { font-size: .6rem; color: rgba(255,255,255,.3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .04em; margin-top: 1px; }
+  .tf-part-check { font-size: .9rem; color: rgba(255,255,255,.2); }
+  .tf-part-row.picked .tf-part-check { color: var(--cyan); }
+
+  /* Submit */
+  .tf-submit {
+    width: 100%; padding: .9rem; border-radius: 4px; border: none;
+    background: linear-gradient(135deg, var(--cyan) 0%, #7b00cc 100%);
+    color: #fff; font-family: var(--font-label); font-size: .7rem; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    box-shadow: 0 0 30px rgba(180,79,255,.2);
+    transition: opacity .2s, transform .1s;
+  }
+  .tf-submit:hover { opacity: .9; }
+  .tf-submit:active { transform: scale(.98); }
+
+  /* ── DEPLOYMENTS LIST ── */
+  .term-list { }
+  .term-list-rows { }
+
+  .term-build-row {
+    display: flex; align-items: center; gap: 1.25rem;
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+    transition: background .2s;
+  }
+  .term-build-row:last-child { border-bottom: none; }
+  .term-build-row:hover { background: rgba(255,255,255,.025); }
+
+  .term-build-thumb {
+    position: relative; width: 120px; flex-shrink: 0;
+    aspect-ratio: 16/10; border-radius: 4px; overflow: hidden;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    transition: border-color .3s;
+  }
+  .term-build-row:hover .term-build-thumb { border-color: rgba(180,79,255,.35); }
+  .term-build-thumb img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: grayscale(1); opacity: .5;
+    transition: filter .5s, opacity .5s;
+  }
+  .term-build-row:hover .term-build-thumb img { filter: grayscale(0); opacity: 1; }
+  .term-build-thumb-grad {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,12,.7) 0%, transparent 60%);
+  }
+  .term-build-thumb-empty {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  }
+  .term-build-thumb-empty .material-symbols-outlined { font-size: 1.5rem; color: rgba(255,255,255,.12); }
+
+  .term-build-info { flex: 1; min-width: 0; }
+  .term-build-name-row { display: flex; align-items: center; gap: .6rem; margin-bottom: .45rem; flex-wrap: wrap; }
+  .term-build-name {
+    font-family: var(--font-headline); font-size: .82rem; font-weight: 700;
+    color: #fff; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .term-badge-active {
+    padding: .15rem .5rem; border-radius: 20px;
+    background: rgba(180,79,255,.18); color: var(--cyan);
+    font-size: .55rem; font-weight: 800; font-family: var(--font-label);
+    border: 1px solid rgba(180,79,255,.35); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .term-badge-inactive {
+    padding: .15rem .5rem; border-radius: 20px;
+    background: rgba(255,255,255,.05); color: rgba(255,255,255,.3);
+    font-size: .55rem; font-weight: 800; font-family: var(--font-label);
+    border: 1px solid rgba(255,255,255,.07); letter-spacing: .08em; text-transform: uppercase;
+  }
+  .term-build-stats { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+  .term-stat { display: flex; align-items: center; gap: .35rem; }
+  .term-stat-key {
+    font-family: var(--font-label); font-size: .58rem; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.25);
+  }
+  .term-stat-val {
+    font-family: var(--font-mono); font-size: .7rem; font-weight: 500; color: #fff;
+  }
+  .term-stat-val.accent { color: var(--cyan); }
+
+  .term-build-actions { display: flex; gap: .35rem; flex-shrink: 0; }
+  .term-act-btn {
+    padding: .45rem; border-radius: 4px; border: none; background: transparent;
+    color: rgba(255,255,255,.3); cursor: pointer; display: flex; align-items: center;
+    transition: color .2s, background .2s;
+  }
+  .term-act-btn:hover { color: #fff; background: rgba(255,255,255,.08); }
+  .term-act-btn.danger:hover { color: #ff453a; background: rgba(255,69,58,.1); }
+  .term-act-btn .material-symbols-outlined { font-size: 1.05rem; }
+
+  /* Toggle switch styled for terminal */
+  .term-toggle { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+  .term-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .term-toggle-track {
+    width: 32px; height: 18px; border-radius: 9px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.1);
+    transition: background .2s, border-color .2s;
+    position: relative;
+  }
+  .term-toggle input:checked ~ .term-toggle-track {
+    background: rgba(180,79,255,.35); border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(180,79,255,.4);
+  }
+  .term-toggle-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: rgba(255,255,255,.4); transition: transform .2s, background .2s;
+  }
+  .term-toggle input:checked ~ .term-toggle-track .term-toggle-thumb {
+    transform: translateX(14px); background: var(--cyan);
+  }
+
+  /* Search-based part picker */
+  .tf-cat-group { margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid rgba(255,255,255,.04); }
+  .tf-cat-group:last-child { border-bottom:none;margin-bottom:0; }
+  .tf-cat-header { font-family:var(--font-label);font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem; }
+  .tf-cat-search-wrap { position:relative; }
+  .tf-cat-search { width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:.5rem 0;color:#fff;font-family:var(--font-body);font-size:.82rem;outline:none;transition:border-color .2s;border-radius:0; }
+  .tf-cat-search:focus { border-color:var(--cyan); }
+  .tf-cat-search::placeholder { color:rgba(255,255,255,.2); }
+  .tf-cat-dropdown { position:absolute;left:0;right:0;top:100%;z-index:20;background:rgba(18,14,28,.98);border:1px solid rgba(255,255,255,.12);border-top:none;border-radius:0 0 4px 4px;max-height:160px;overflow-y:auto;display:none; }
+  .tf-cat-dropdown.open { display:block; }
+  .tf-drop-item { padding:.45rem .75rem;cursor:pointer;font-size:.76rem;color:rgba(255,255,255,.7);display:flex;justify-content:space-between;align-items:center;transition:background .15s; }
+  .tf-drop-item:hover { background:rgba(180,79,255,.12);color:#fff; }
+  .tf-drop-item .drop-price { font-family:var(--font-mono);font-size:.68rem;color:var(--cyan); }
+  .tf-selected-chip { display:flex;align-items:center;gap:.5rem;background:rgba(180,79,255,.1);border:1px solid rgba(180,79,255,.3);border-radius:4px;padding:.3rem .55rem;font-size:.75rem;color:#fff;margin-bottom:.35rem;transition:border-color .2s,background .2s; }
+  .tf-selected-chip .chip-name { flex:1;font-family:var(--font-label);font-size:.68rem;letter-spacing:.04em; }
+  .tf-selected-chip .chip-price { font-family:var(--font-mono);font-size:.65rem;color:var(--cyan); }
+  .tf-selected-chip .chip-remove { background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:.85rem;line-height:1;padding:0;transition:color .2s; }
+  .tf-selected-chip .chip-remove:hover { color:#ff453a; }
+  .tf-cat-group.incompatible .tf-cat-search { border-color:rgba(255,69,58,.5)!important; }
+  .tf-cat-group.incompatible .tf-selected-chip { border-color:rgba(255,69,58,.4);background:rgba(255,69,58,.08); }
+  /* Compat banner */
+  .tf-compat-banner { border-radius:4px;padding:.65rem .85rem;font-size:.78rem;display:none;align-items:center;gap:.6rem; }
+  .tf-compat-banner.show { display:flex; }
+  .tf-compat-banner.warning { background:rgba(255,138,0,.08);border:1px solid rgba(255,138,0,.3);color:#ff8a00; }
+  .tf-compat-banner.error { background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.25);color:#ff6b63; }
+  .tf-compat-banner .material-symbols-outlined { font-size:.95rem;flex-shrink:0; }
+
+  /* Empty state */
+  .term-empty {
+    padding: 3.5rem 2rem; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  }
+  .term-empty .material-symbols-outlined { font-size: 2.5rem; color: rgba(180,79,255,.3); }
+  .term-empty-text { color: rgba(255,255,255,.25); font-size: .85rem; max-width: 280px; line-height: 1.6; }
+
+  /* List footer */
+  .term-list-footer {
+    padding: .85rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,.05);
+    background: rgba(255,255,255,.02);
+    text-align: center;
+  }
+  .term-list-footer span {
+    font-family: var(--font-label); font-size: .6rem; letter-spacing: .25em;
+    text-transform: uppercase; color: rgba(255,255,255,.2);
+  }
+</style>
+
+<div class="terminal-page">
+  <div class="terminal-grid-bg"></div>
+
+  <div class="terminal-shell">
+
+    <!-- Page header -->
+    <div class="term-header">
+      <div class="term-eyebrow">
+        <div class="term-dot"></div>
+        <span class="term-eyebrow-text">Secure Terminal Connection: Active</span>
+      </div>
+      <h1 class="term-title">Featured Build Management</h1>
+      <p class="term-sub">Configure elite aerodynamic configurations for global deployment.</p>
+    </div>
+
+    <div class="term-grid">
+
+      <!-- ── LEFT: NEW CONFIGURATION FORM ── -->
+      <div class="term-panel">
+        <div class="term-panel-header">
+          <div class="term-panel-title">
+            <span class="material-symbols-outlined">terminal</span>
+            <span class="term-panel-label">New Configuration</span>
+          </div>
+          <span class="term-panel-meta">DF-SECURE-[BUILD_UUID]</span>
+        </div>
+
+        <form action="/admin/builds/add" method="POST" enctype="multipart/form-data" class="term-form" id="buildForm">
+
+          <!-- Name -->
+          <div class="tf-group">
+            <label class="tf-label">Codenaming</label>
+            <input type="text" name="name" class="tf-input" required maxlength="100" placeholder="e.g. AMETHYST STALKER V2" />
+          </div>
+
+          <!-- Description -->
+          <div class="tf-group">
+            <label class="tf-label">Mission Brief</label>
+            <textarea name="description" class="tf-textarea" required maxlength="600" placeholder="Short description of this build's purpose and capabilities…"></textarea>
+          </div>
+
+          <!-- Tier + Price row -->
+          <div class="tf-row-2">
+            <div class="tf-group">
+              <label class="tf-label">Active</label>
+              <div style="display:flex;align-items:center;gap:.6rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);">
+                <label class="term-toggle">
+                  <input type="checkbox" name="isActive" checked />
+                  <div class="term-toggle-track"><div class="term-toggle-thumb"></div></div>
+                </label>
+                <span style="font-size:.78rem;color:rgba(255,255,255,.4);">Show on homepage</span>
+              </div>
+            </div>
+            <div class="tf-group" style="display:none;">
+              <!-- hidden placeholder for grid alignment -->
+            </div>
+          </div>
+
+          <!-- Spec Chips -->
+          <div class="tf-group">
+            <label class="tf-label">Spec Tags <span style="opacity:.4;font-weight:400;text-transform:none;letter-spacing:0;">(e.g. 5" Frame)</span></label>
+            <div class="tf-chips-wrap" id="tfChipsWrap"></div>
+            <div class="tf-chip-row">
+              <input type="text" class="tf-chip-input" id="tfChipInput" placeholder='Add tag and press Enter…' />
+              <button type="button" class="tf-chip-add" id="tfChipAdd">Add</button>
+            </div>
+          </div>
+
+          <!-- Image presets -->
+          <div class="tf-group">
+            <label class="tf-label">Visual Asset — Preset</label>
+            <div class="tf-presets" id="tfPresets">
+              <% ['/images/models/model1.png','/images/models/model2.png','/images/models/model3.png','/images/models/model4.png'].forEach((src, i) => { %>
+                <img src="<%= src %>" class="tf-preset-thumb <%= i===0?'selected':'' %>" data-src="<%= src %>" alt="Model <%= i+1 %>" />
+              <% }) %>
+            </div>
+            <input type="hidden" name="presetImage" id="tfPresetInput" value="/images/models/model1.png" />
+          </div>
+
+          <!-- Upload override -->
+          <div class="tf-group">
+            <label class="tf-label">Or Upload Custom Image</label>
+            <label class="tf-upload" id="tfUploadArea">
+              <span class="material-symbols-outlined">upload_file</span>
+              <span class="tf-upload-label" id="tfUploadLabel">Initialize Hero Image Upload</span>
+              <input type="file" name="image" accept="image/*" id="tfImageInput" />
+            </label>
+          </div>
+
+          <!-- Parts selection — search-based -->
+          <div class="tf-group">
+            <label class="tf-label">Core Components</label>
+            <div id="tfParts">
+              <div style="text-align:center;padding:1rem;color:rgba(255,255,255,.2);font-size:.78rem;">Loading components…</div>
+            </div>
+          </div>
+
+          <!-- Compatibility warning -->
+          <div class="tf-compat-banner" id="tfCompatBanner">
+            <span class="material-symbols-outlined" id="tfCompatIcon">warning</span>
+            <span id="tfCompatMsg"></span>
+          </div>
+
+          <button type="submit" class="tf-submit">
+            <span class="material-symbols-outlined" style="font-size:1rem;">rocket_launch</span>
+            Finalize Configuration
+          </button>
+        </form>
+      </div>
+
+      <!-- ── RIGHT: ACTIVE DEPLOYMENTS ── -->
+      <div class="term-panel term-list">
+        <div class="term-panel-header">
+          <div class="term-panel-title">
+            <div class="term-dot" style="width:5px;height:5px;flex-shrink:0;"></div>
+            <span class="term-panel-label">Active Deployments</span>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:center;">
+            <span style="font-family:var(--font-mono);font-size:.65rem;color:rgba(255,255,255,.25);">
+              <%= builds.length %> TOTAL
+            </span>
+          </div>
+        </div>
+
+        <div class="term-list-rows" id="deploymentList">
+          <% if (!builds.length) { %>
+            <div class="term-empty">
+              <span class="material-symbols-outlined">rocket_launch</span>
+              <p class="term-empty-text">No deployments active. Configure and finalize your first build to see it here.</p>
+            </div>
+          <% } %>
+
+          <% builds.forEach(b => { %>
+            <div class="term-build-row" id="build-row-<%= b._id %>">
+
+              <!-- Thumbnail -->
+              <div class="term-build-thumb">
+                <% if (b.imageUrl) { %>
+                  <img src="<%= b.imageUrl %>" alt="<%= b.name %>" />
+                  <div class="term-build-thumb-grad"></div>
+                <% } else { %>
+                  <div class="term-build-thumb-empty">
+                    <span class="material-symbols-outlined">image</span>
+                  </div>
+                <% } %>
+              </div>
+
+              <!-- Info -->
+              <div class="term-build-info">
+                <div class="term-build-name-row">
+                  <span class="term-build-name"><%= b.name %></span>
+                  <% if (b.isActive) { %>
+                    <span class="term-badge-active">Featured</span>
+                  <% } else { %>
+                    <span class="term-badge-inactive">Archived</span>
+                  <% } %>
+                </div>
+                <div class="term-build-stats">
+                  <div class="term-stat">
+                    <span class="term-stat-key">Utilization</span>
+                    <span class="term-stat-val"><%= (b.purchaseCount || 0).toLocaleString() %> UNITS</span>
+                  </div>
+                  <div class="term-stat">
+                    <span class="term-stat-key">Market</span>
+                    <span class="term-stat-val accent">$<%= b.totalPrice.toFixed(2) %></span>
+                  </div>
+                  <div class="term-stat">
+                    <span class="term-stat-key">Parts</span>
+                    <span class="term-stat-val"><%= b.parts.length %></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="term-build-actions">
+                <!-- Toggle active -->
+                <label class="term-toggle" title="<%= b.isActive ? 'Active — click to archive' : 'Archived — click to activate' %>">
+                  <input type="checkbox" class="build-toggle" data-id="<%= b._id %>" <%= b.isActive ? 'checked' : '' %> />
+                  <div class="term-toggle-track"><div class="term-toggle-thumb"></div></div>
+                </label>
+
+                <a href="/admin/builds/<%= b._id %>/edit" class="term-act-btn" title="Edit">
+                  <span class="material-symbols-outlined">edit</span>
+                </a>
+                <button class="term-act-btn danger delete-build-btn" data-id="<%= b._id %>" title="Delete">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </div>
+
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="term-list-footer">
+          <span>End of Deployment Registry — <%= new Date().getFullYear() %> DroneForge Tactical</span>
+        </div>
+      </div>
+
+    </div><!-- /term-grid -->
+  </div><!-- /terminal-shell -->
+</div><!-- /terminal-page -->
+
+<%- include('../partials/scripts') %>
+<script>
+(function () {
+  // ── SPEC CHIPS ──
+  const chipsWrap = document.getElementById('tfChipsWrap');
+  const chipInput = document.getElementById('tfChipInput');
+  const chipAdd   = document.getElementById('tfChipAdd');
+
+  function addChip(val) {
+    val = val.trim();
+    if (!val) return;
+    const div = document.createElement('div');
+    div.className = 'tf-chip';
+    div.innerHTML = `<span>${val}</span><input type="hidden" name="specChips" value="${val}" /><button type="button">✕</button>`;
+    div.querySelector('button').addEventListener('click', () => div.remove());
+    chipsWrap.appendChild(div);
+  }
+  chipAdd.addEventListener('click', () => { addChip(chipInput.value); chipInput.value = ''; });
+  chipInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); chipAdd.click(); } });
+
+  // ── IMAGE PRESETS ──
+  const presetInput = document.getElementById('tfPresetInput');
+  document.querySelectorAll('.tf-preset-thumb').forEach(img => {
+    img.addEventListener('click', () => {
+      document.querySelectorAll('.tf-preset-thumb').forEach(i => i.classList.remove('selected'));
+      img.classList.add('selected');
+      presetInput.value = img.dataset.src;
+      document.getElementById('tfImageInput').value = '';
+      document.getElementById('tfUploadLabel').textContent = 'Initialize Hero Image Upload';
+    });
+  });
+  document.getElementById('tfImageInput').addEventListener('change', function () {
+    if (this.files[0]) {
+      document.querySelectorAll('.tf-preset-thumb').forEach(i => i.classList.remove('selected'));
+      presetInput.value = '';
+      document.getElementById('tfUploadLabel').textContent = this.files[0].name;
+    }
+  });
+
+  // ── PARTS: search-based picker + compatibility ──
+  const CATS = [
+    { key: 'frame',            label: 'Frame',             icon: 'hexagon',                   max: 1 },
+    { key: 'motors',           label: 'Motors ×4',         icon: 'settings_input_component',  max: 4 },
+    { key: 'propellers',       label: 'Propellers',        icon: 'rotate_right',              max: 1 },
+    { key: 'battery',          label: 'Battery',           icon: 'battery_charging_full',     max: 1 },
+    { key: 'flightController', label: 'Flight Controller', icon: 'developer_board',           max: 1 },
+    { key: 'camera',           label: 'Camera',            icon: 'photo_camera',              max: 1 },
+    { key: 'ESC',              label: 'ESC',               icon: 'electric_bolt',             max: 1 },
+    { key: 'transmitter',      label: 'Transmitter',       icon: 'settings_remote',           max: 1 }
+  ];
+
+  const tfPartsEl    = document.getElementById('tfParts');
+  const compatBanner = document.getElementById('tfCompatBanner');
+  const compatIcon   = document.getElementById('tfCompatIcon');
+  const compatMsg    = document.getElementById('tfCompatMsg');
+
+  const selectedParts = {};
+  const allPartsData  = {};
+  CATS.forEach(c => { selectedParts[c.key] = null; allPartsData[c.key] = []; });
+
+  async function loadAllParts() {
+    tfPartsEl.innerHTML = '';
+    for (const cat of CATS) {
+      try {
+        const res  = await fetch(`/parts/api/category/${cat.key}`);
+        const data = await res.json();
+        allPartsData[cat.key] = data.parts || [];
+      } catch (_) { allPartsData[cat.key] = []; }
+      renderCatSearch(cat);
+    }
+  }
+
+  function renderCatSearch(cat) {
+    const group = document.createElement('div');
+    group.className = 'tf-cat-group';
+    group.dataset.cat = cat.key;
+    group.innerHTML = `
+      <div class="tf-cat-header">
+        <span class="material-symbols-outlined" style="font-size:.75rem;">${cat.icon}</span>
+        ${cat.label}
+      </div>
+      <div id="chip-${cat.key}"></div>
+      <div class="tf-cat-search-wrap">
+        <input type="text" class="tf-cat-search" placeholder="Search ${cat.label.toLowerCase()}…" />
+        <div class="tf-cat-dropdown" id="drop-${cat.key}"></div>
+      </div>
+    `;
+    tfPartsEl.appendChild(group);
+
+    const input    = group.querySelector('.tf-cat-search');
+    const dropdown = group.querySelector('.tf-cat-dropdown');
+
+    function filterItems(q) {
+      const parts    = allPartsData[cat.key] || [];
+      const filtered = q ? parts.filter(p => p.name.toLowerCase().includes(q.toLowerCase())) : parts;
+      dropdown.innerHTML = '';
+      if (!filtered.length) {
+        dropdown.innerHTML = '<div class="tf-drop-item" style="color:rgba(255,255,255,.2);cursor:default;">No results</div>';
+      } else {
+        filtered.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'tf-drop-item';
+          item.innerHTML = `<span>${p.name}</span><span class="drop-price">$${p.price.toFixed(2)}</span>`;
+          item.addEventListener('mousedown', e => { e.preventDefault(); selectPart(cat, p); input.value = ''; dropdown.classList.remove('open'); });
+          dropdown.appendChild(item);
+        });
+      }
+    }
+
+    input.addEventListener('focus', () => { filterItems(input.value); dropdown.classList.add('open'); });
+    input.addEventListener('input', () => { filterItems(input.value); dropdown.classList.add('open'); });
+    input.addEventListener('blur',  () => setTimeout(() => dropdown.classList.remove('open'), 150));
+  }
+
+  function selectPart(cat, part) {
+    selectedParts[cat.key] = part;
+    const chipWrap = document.getElementById(`chip-${cat.key}`);
+    chipWrap.innerHTML = '';
+    const chip = document.createElement('div');
+    chip.className = 'tf-selected-chip';
+    chip.innerHTML = `<span class="chip-name">${part.name}</span><span class="chip-price">$${part.price.toFixed(2)}</span><button class="chip-remove" type="button">✕</button>`;
+    chip.querySelector('.chip-remove').addEventListener('click', () => {
+      selectedParts[cat.key] = null;
+      chipWrap.innerHTML = '';
+      syncHiddenInputs(cat);
+      checkCompatibility();
+    });
+    chipWrap.appendChild(chip);
+    syncHiddenInputs(cat);
+    checkCompatibility();
+  }
+
+  function syncHiddenInputs(cat) {
+    const form = document.getElementById('buildForm');
+    form.querySelectorAll(`input[name="partId_${cat.key}"],input[name="qty_${cat.key}"]`).forEach(el => el.remove());
+    const part = selectedParts[cat.key];
+    if (!part) return;
+    const a = document.createElement('input'); a.type='hidden'; a.name=`partId_${cat.key}`; a.value=part._id; form.appendChild(a);
+    const b = document.createElement('input'); b.type='hidden'; b.name=`qty_${cat.key}`; b.value=cat.key==='motors'?cat.max:1; form.appendChild(b);
+  }
+
+  function checkCompatibility() {
+    const issues = [], problemCats = new Set();
+    const frame=selectedParts.frame, motors=selectedParts.motors, battery=selectedParts.battery, esc=selectedParts.ESC;
+
+    if (frame && motors) {
+      if (frame.weight > 200) {
+        const n = motors.name.toLowerCase();
+        if (n.includes('nano') || n.includes('micro') || n.includes('ultralight')) {
+          issues.push('Heavy frame with micro motors — insufficient thrust for liftoff.');
+          problemCats.add('frame'); problemCats.add('motors');
+        }
+      }
+    }
+    if (battery) {
+      const others = Object.entries(selectedParts).filter(([k,p])=>k!=='battery'&&p).reduce((s,[,p])=>s+(p.weight||0),0);
+      if (others > 0 && battery.weight > others * 1.5) {
+        issues.push('Battery is very heavy relative to the build — consider a lighter pack.');
+        problemCats.add('battery');
+      }
+    }
+    if (motors && !esc) {
+      issues.push('Motors selected but no ESC — motors cannot run without an ESC.');
+      problemCats.add('ESC'); problemCats.add('motors');
+    }
+
+    document.querySelectorAll('#tfParts .tf-cat-group').forEach(g => g.classList.remove('incompatible'));
+    problemCats.forEach(c => { const g = document.querySelector(`#tfParts .tf-cat-group[data-cat="${c}"]`); if (g) g.classList.add('incompatible'); });
+
+    if (!issues.length) {
+      compatBanner.className = 'tf-compat-banner';
+    } else {
+      const w = issues.length === 1;
+      compatBanner.className = `tf-compat-banner show ${w ? 'warning' : 'error'}`;
+      compatIcon.textContent = w ? 'warning' : 'error';
+      compatMsg.textContent  = issues[0];
+    }
+  }
+
+  loadAllParts();
+
+  // ── TOGGLE ACTIVE ──
+  document.querySelectorAll('.build-toggle').forEach(chk => {
+    chk.addEventListener('change', async () => {
+      const id = chk.dataset.id;
+      const res  = await fetch(`/admin/builds/${id}/toggle`, { method: 'PATCH', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      const data = await res.json();
+      if (data.success) {
+        // Update badge in same row
+        const row   = document.getElementById(`build-row-${id}`);
+        const badge = row?.querySelector('.term-badge-active, .term-badge-inactive');
+        if (badge) {
+          badge.className = data.isActive ? 'term-badge-active' : 'term-badge-inactive';
+          badge.textContent = data.isActive ? 'Featured' : 'Archived';
+        }
+      } else {
+        chk.checked = !chk.checked;
+        alert('Failed to update status.');
+      }
+    });
+  });
+
+  // ── DELETE ──
+  document.querySelectorAll('.delete-build-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Purge this deployment? This action is irreversible.')) return;
+      const id  = btn.dataset.id;
+      const res  = await fetch(`/admin/builds/${id}`, { method: 'DELETE', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      const data = await res.json();
+      if (data.success) {
+        const row = document.getElementById(`build-row-${id}`);
+        row?.remove();
+        // Show empty state if no rows left
+        if (!document.querySelector('.term-build-row')) {
+          document.getElementById('deploymentList').innerHTML = `
+            <div class="term-empty">
+              <span class="material-symbols-outlined">rocket_launch</span>
+              <p class="term-empty-text">All deployments purged. Configure a new build to reactivate this terminal.</p>
+            </div>`;
+        }
+      } else {
+        alert('Failed to delete build.');
+      }
+    });
+  });
+
+})();
+</script>
+<%- include('../partials/footer') %>

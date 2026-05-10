@@ -64,7 +64,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">Build Name (Drone Designation)</label>
-              <input type="text" id="buildNameInput" class="form-input" placeholder="e.g. Vanguard Interceptor Mk.I" maxlength="80" value="Custom Drone Build" />
+              <input type="text" id="buildNameInput" class="form-input" placeholder="e.g. Vanguard Interceptor Mk.I" maxlength="80" value="<%= pendingBuildName || 'Custom Drone Build' %>" />
               <span class="form-error hidden" id="err-buildName"></span>
             </div>
             <div class="review-parts-list">

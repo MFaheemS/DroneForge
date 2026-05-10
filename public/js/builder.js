@@ -63,6 +63,40 @@
     renderAll();
   }
 
+  // ── CLONE FROM PREBUILT BUILD (?clone=<id>) ──
+  async function maybeCloneBuild() {
+    const params = new URLSearchParams(window.location.search);
+    const buildId = params.get('clone');
+    if (!buildId) { loadBuild(); return; }
+
+    // Clear existing build
+    Object.values(SLOTS).forEach(s => s.parts = []);
+
+    try {
+      const res = await fetch(`/builds/${buildId}/parts`);
+      const data = await res.json();
+      if (!data.parts) { loadBuild(); return; }
+
+      data.parts.forEach(part => {
+        const slot = SLOTS[part.category];
+        if (!slot) return;
+        const qty = Math.min(part.quantity || 1, slot.max);
+        for (let i = 0; i < qty && slot.parts.length < slot.max; i++) {
+          slot.parts.push({ id: part.id, name: part.name, category: part.category, price: part.price, weight: part.weight, imageUrl: part.imageUrl });
+        }
+      });
+
+      saveBuild();
+      renderAll();
+      showToast(`Build "${data.buildName}" loaded into builder.`, 'success');
+    } catch (_) {
+      loadBuild();
+    }
+
+    // Clean the URL without reloading
+    history.replaceState(null, '', '/build');
+  }
+
   function saveBuild() {
     const all = [];
     Object.values(SLOTS).forEach(s => s.parts.forEach(p => all.push(p)));
@@ -257,7 +291,7 @@
 
     summaryParts.innerHTML = allParts.map(p => `
       <div class="summary-part-item">
-        <img src="${p.image || ''}" alt="${p.name}" class="summary-part-thumb"
+        <img src="${p.imageUrl || ''}" alt="${p.name}" class="summary-part-thumb"
              onerror="this.src='';this.style.background='var(--surface-container)'" loading="lazy"/>
         <div class="summary-part-info">
           <div class="summary-part-name">${p.name}</div>
@@ -512,6 +546,6 @@
   document.head.appendChild(style);
 
   // ── INIT ──
-  loadBuild();
+  maybeCloneBuild();
 
 })();

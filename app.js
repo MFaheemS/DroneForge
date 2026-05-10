@@ -83,6 +83,7 @@ app.use('/build', require('./routes/build'));
 app.use('/cart', require('./routes/cart'));
 app.use('/orders', require('./routes/orders'));
 app.use('/profile', require('./routes/profile'));
+app.use('/builds', require('./routes/builds'));
 app.use('/admin', require('./routes/admin'));
 
 // ── 404 ──

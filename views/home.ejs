@@ -229,7 +229,8 @@
     </div>
   </section>
 
-  <!-- ── FEATURED DRONES ── -->
+  <!-- ── FEATURED DRONES (hidden when no active builds exist) ── -->
+  <% if (builds && builds.length > 0) { %>
   <section class="section" style="background:rgba(21,29,30,0.5);border-top:1px solid var(--glass-border);">
     <div class="container">
       <p class="section-label reveal">Pre-Built Configs</p>
@@ -238,51 +239,58 @@
         <span class="cyan-bar"></span>
       </h2>
       <div class="featured-grid">
-        <div class="glass-card featured-card reveal" data-tilt>
-          <img src="/images/drone-fly.gif" alt="Ghost Recon Mk.II" class="featured-card-img" loading="lazy" />
-          <div class="featured-card-body">
-            <p class="featured-card-name">Ghost Recon Mk.II</p>
-            <div class="featured-card-specs">
-              <span class="spec-chip">5" Frame</span>
-              <span class="spec-chip">2306 Motors</span>
-              <span class="spec-chip">4S LiPo</span>
-              <span class="spec-chip">~28 min</span>
+        <% builds.forEach((b, idx) => { %>
+          <div class="glass-card featured-card reveal" style="transition-delay:<%= (idx * 0.1).toFixed(1) %>s" data-tilt>
+            <% if (b.imageUrl) { %>
+              <img src="<%= b.imageUrl %>" alt="<%= b.name %>" class="featured-card-img" loading="lazy" />
+            <% } else { %>
+              <div class="featured-card-img" style="display:flex;align-items:center;justify-content:center;background:var(--surface-container);">
+                <span class="material-symbols-outlined" style="font-size:3rem;color:var(--muted);">precision_manufacturing</span>
+              </div>
+            <% } %>
+            <div class="featured-card-body">
+              <p class="featured-card-name"><%= b.name %></p>
+              <% if (b.specChips && b.specChips.length) { %>
+                <div class="featured-card-specs">
+                  <% b.specChips.forEach(chip => { %><span class="spec-chip"><%= chip %></span><% }) %>
+                </div>
+              <% } %>
+              <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;margin-bottom:1rem;"><%= b.description %></p>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+                <span style="font-family:var(--font-label);font-size:1rem;font-weight:700;color:var(--cyan);">$<%= b.totalPrice.toFixed(2) %></span>
+                <% if (b.purchaseCount > 0) { %>
+                  <span style="font-size:.75rem;color:var(--muted);font-family:var(--font-label);">
+                    <span class="material-symbols-outlined" style="font-size:.75rem;vertical-align:middle;">local_fire_department</span>
+                    <%= b.purchaseCount %> ordered
+                  </span>
+                <% } %>
+              </div>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                <% if (user) { %>
+                  <a href="/builds/<%= b._id %>/clone" class="btn btn-outline btn-sm" title="Copy all parts into the builder">
+                    <span class="material-symbols-outlined" style="font-size:.8rem;">content_copy</span>
+                    Clone to Builder
+                  </a>
+                  <form action="/builds/<%= b._id %>/order" method="POST" style="margin:0;">
+                    <button type="submit" class="btn btn-primary btn-sm" title="Order this exact build now">
+                      <span class="material-symbols-outlined" style="font-size:.8rem;">shopping_cart</span>
+                      Order Now
+                    </button>
+                  </form>
+                <% } else { %>
+                  <a href="/auth/register" class="btn btn-outline btn-sm">
+                    <span class="material-symbols-outlined" style="font-size:.8rem;">login</span>
+                    Sign in to Order
+                  </a>
+                <% } %>
+              </div>
             </div>
-            <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;margin-bottom:1.25rem;">Long-range reconnaissance build. Whisper-quiet motors, encrypted FPV link, and a 4K stabilised gimbal.</p>
-            <a href="/build" class="btn btn-outline btn-sm">Clone this Build</a>
           </div>
-        </div>
-        <div class="glass-card featured-card reveal" style="transition-delay:.1s" data-tilt>
-          <img src="/images/drone-gif.gif" alt="Vanguard Interceptor" class="featured-card-img" loading="lazy" />
-          <div class="featured-card-body">
-            <p class="featured-card-name">Vanguard Interceptor</p>
-            <div class="featured-card-specs">
-              <span class="spec-chip">3" Micro</span>
-              <span class="spec-chip">1404 Motors</span>
-              <span class="spec-chip">3S LiHV</span>
-              <span class="spec-chip">~18 min</span>
-            </div>
-            <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;margin-bottom:1.25rem;">Agile indoor interceptor. Screams through gates at 140 km/h with sub-30ms latency video.</p>
-            <a href="/build" class="btn btn-outline btn-sm">Clone this Build</a>
-          </div>
-        </div>
-        <div class="glass-card featured-card reveal" style="transition-delay:.2s" data-tilt>
-          <img src="/images/drone-small.gif" alt="Titan Hauler X" class="featured-card-img" loading="lazy" />
-          <div class="featured-card-body">
-            <p class="featured-card-name">Titan Hauler X</p>
-            <div class="featured-card-specs">
-              <span class="spec-chip">7" Frame</span>
-              <span class="spec-chip">2812 Motors</span>
-              <span class="spec-chip">6S LiPo</span>
-              <span class="spec-chip">~35 min</span>
-            </div>
-            <p style="font-size:.85rem;color:var(--text-variant);line-height:1.7;margin-bottom:1.25rem;">Heavy-lift platform. Carries payloads up to 2kg with rock-solid stability in 40 km/h crosswinds.</p>
-            <a href="/build" class="btn btn-outline btn-sm">Clone this Build</a>
-          </div>
-        </div>
+        <% }) %>
       </div>
     </div>
   </section>
+  <% } %>
 
   <!-- ── TESTIMONIALS ── -->
   <section class="section">

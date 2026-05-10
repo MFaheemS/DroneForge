@@ -52,4 +52,18 @@ router.delete('/parts/:id', adminController.deletePart);
 router.get('/orders', adminController.getOrders);
 router.patch('/orders/:id/status', adminController.updateOrderStatus);
 
+// ── PREBUILT BUILDS ────────────────────────────────────────────────────────────
+const buildValidation = [
+  body('name').trim().notEmpty().withMessage('Build name is required.').isLength({ max: 100 }),
+  body('description').trim().notEmpty().withMessage('Description is required.').isLength({ max: 600 })
+];
+
+router.get('/builds', adminController.getBuilds);
+router.get('/builds/add', adminController.getAddBuild);
+router.post('/builds/add', upload.single('image'), buildValidation, adminController.postAddBuild);
+router.get('/builds/:id/edit', adminController.getEditBuild);
+router.post('/builds/:id/edit', upload.single('image'), buildValidation, adminController.postEditBuild);
+router.delete('/builds/:id', adminController.deleteBuild);
+router.patch('/builds/:id/toggle', adminController.toggleBuildStatus);
+
 module.exports = router;

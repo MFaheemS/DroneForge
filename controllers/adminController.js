@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const Part = require('../models/Part');
 const Order = require('../models/Order');
+const PrebuiltBuild = require('../models/PrebuiltBuild');
 const path = require('path');
 const fs = require('fs');
 
@@ -316,6 +317,150 @@ exports.updateOrderStatus = async (req, res) => {
     const order = await Order.findByIdAndUpdate(req.params.id, { status }, { new: true });
     if (!order) return res.status(404).json({ success: false, message: 'Order not found.' });
     res.json({ success: true, status: order.status });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+// ── PREBUILT BUILDS ────────────────────────────────────────────────────────────
+exports.getBuilds = async (req, res) => {
+  try {
+    const builds = await PrebuiltBuild.find().sort({ createdAt: -1 }).populate('parts.partId', 'name category price').lean();
+    res.render('admin/builds', { title: 'Prebuilt Builds — DroneForge Admin', builds });
+  } catch (err) {
+    console.error(err);
+    res.render('admin/builds', { title: 'Prebuilt Builds — DroneForge Admin', builds: [] });
+  }
+};
+
+exports.getAddBuild = async (req, res) => {
+  const allParts = await Part.find({ isAvailable: true }).sort({ category: 1, name: 1 }).lean();
+  res.render('admin/build-form', { title: 'Add Build — DroneForge Admin', build: null, allParts, errors: [] });
+};
+
+exports.postAddBuild = async (req, res) => {
+  const errors = validationResult(req);
+  const allParts = await Part.find({ isAvailable: true }).sort({ category: 1, name: 1 }).lean();
+  if (!errors.isEmpty()) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.render('admin/build-form', { title: 'Add Build', build: null, allParts, errors: errors.array() });
+  }
+  try {
+    const { name, description, specChips, presetImage } = req.body;
+    const imageUrl = req.file ? `/uploads/parts/${req.file.filename}` : (presetImage || '');
+
+    const chips = [].concat(specChips || []).map(s => s.trim()).filter(Boolean);
+
+    // Build parts array from form: partId_<category> and qty_<category>
+    const CATS = ['frame','motors','propellers','battery','flightController','camera','ESC','transmitter'];
+    const parts = [];
+    CATS.forEach(cat => {
+      const ids = [].concat(req.body[`partId_${cat}`] || []).filter(Boolean);
+      const qtys = [].concat(req.body[`qty_${cat}`] || []);
+      ids.forEach((id, i) => {
+        parts.push({ partId: id, quantity: parseInt(qtys[i]) || 1 });
+      });
+    });
+
+    // Compute total price from DB
+    const partIds = parts.map(p => p.partId);
+    const dbParts = await Part.find({ _id: { $in: partIds } }).lean();
+    const priceMap = {};
+    dbParts.forEach(p => { priceMap[p._id.toString()] = p.price; });
+    const totalPrice = parts.reduce((sum, p) => sum + (priceMap[p.partId.toString()] || 0) * p.quantity, 0);
+
+    await PrebuiltBuild.create({ name, description, imageUrl, specChips: chips, parts, totalPrice });
+    res.redirect('/admin/builds');
+  } catch (err) {
+    console.error(err);
+    res.render('admin/build-form', { title: 'Add Build', build: null, allParts, errors: [{ msg: 'Server error.' }] });
+  }
+};
+
+exports.getEditBuild = async (req, res) => {
+  try {
+    const [build, allParts] = await Promise.all([
+      PrebuiltBuild.findById(req.params.id).lean(),
+      Part.find({ isAvailable: true }).sort({ category: 1, name: 1 }).lean()
+    ]);
+    if (!build) return res.status(404).render('errors/404');
+    res.render('admin/build-form', { title: 'Edit Build — DroneForge Admin', build, allParts, errors: [] });
+  } catch (err) {
+    res.status(404).render('errors/404');
+  }
+};
+
+exports.postEditBuild = async (req, res) => {
+  const errors = validationResult(req);
+  const [build, allParts] = await Promise.all([
+    PrebuiltBuild.findById(req.params.id),
+    Part.find({ isAvailable: true }).sort({ category: 1, name: 1 }).lean()
+  ]);
+  if (!build) return res.status(404).render('errors/404');
+
+  if (!errors.isEmpty()) {
+    if (req.file) fs.unlinkSync(req.file.path);
+    return res.render('admin/build-form', { title: 'Edit Build', build: build.toObject(), allParts, errors: errors.array() });
+  }
+  try {
+    const { name, description, specChips, presetImage, isActive } = req.body;
+    if (req.file) {
+      if (build.imageUrl && build.imageUrl.startsWith('/uploads/')) {
+        const old = path.join(__dirname, '../public', build.imageUrl);
+        if (fs.existsSync(old)) fs.unlinkSync(old);
+      }
+      build.imageUrl = `/uploads/parts/${req.file.filename}`;
+    } else if (presetImage) {
+      build.imageUrl = presetImage;
+    }
+
+    const chips = [].concat(specChips || []).map(s => s.trim()).filter(Boolean);
+
+    const CATS = ['frame','motors','propellers','battery','flightController','camera','ESC','transmitter'];
+    const parts = [];
+    CATS.forEach(cat => {
+      const ids = [].concat(req.body[`partId_${cat}`] || []).filter(Boolean);
+      const qtys = [].concat(req.body[`qty_${cat}`] || []);
+      ids.forEach((id, i) => {
+        parts.push({ partId: id, quantity: parseInt(qtys[i]) || 1 });
+      });
+    });
+
+    const partIds = parts.map(p => p.partId);
+    const dbParts = await Part.find({ _id: { $in: partIds } }).lean();
+    const priceMap = {};
+    dbParts.forEach(p => { priceMap[p._id.toString()] = p.price; });
+    const totalPrice = parts.reduce((sum, p) => sum + (priceMap[p.partId.toString()] || 0) * p.quantity, 0);
+
+    Object.assign(build, { name, description, specChips: chips, parts, totalPrice, isActive: isActive === 'on' });
+    await build.save();
+    res.redirect('/admin/builds');
+  } catch (err) {
+    console.error(err);
+    res.render('admin/build-form', { title: 'Edit Build', build: build.toObject(), allParts, errors: [{ msg: 'Server error.' }] });
+  }
+};
+
+exports.deleteBuild = async (req, res) => {
+  try {
+    const build = await PrebuiltBuild.findByIdAndDelete(req.params.id);
+    if (build?.imageUrl?.startsWith('/uploads/')) {
+      const old = path.join(__dirname, '../public', build.imageUrl);
+      if (fs.existsSync(old)) fs.unlinkSync(old);
+    }
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+exports.toggleBuildStatus = async (req, res) => {
+  try {
+    const build = await PrebuiltBuild.findById(req.params.id);
+    if (!build) return res.status(404).json({ success: false, message: 'Build not found.' });
+    build.isActive = !build.isActive;
+    await build.save();
+    res.json({ success: true, isActive: build.isActive });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server error.' });
   }

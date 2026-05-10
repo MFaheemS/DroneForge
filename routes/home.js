@@ -1,9 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+const PrebuiltBuild = require('../models/PrebuiltBuild');
 
-router.get('/', (req, res) => {
-  res.render('home', { title: 'DroneForge — Build Your Beast' });
+router.get('/', async (req, res) => {
+  try {
+    const builds = await PrebuiltBuild.find({ isActive: true })
+      .sort({ purchaseCount: -1, createdAt: -1 })
+      .limit(3)
+      .lean();
+    res.render('home', { title: 'DroneForge — Build Your Beast', builds });
+  } catch (err) {
+    res.render('home', { title: 'DroneForge — Build Your Beast', builds: [] });
+  }
 });
 
 router.get('/about', (req, res) => {

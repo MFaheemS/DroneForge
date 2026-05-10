@@ -1,0 +1,415 @@
+<%- include('../partials/head', { title: title }) %>
+<%- include('../partials/navbar') %>
+
+<style>
+  .terminal-page { min-height:calc(100vh - 64px); background:var(--surface-lowest); position:relative; }
+  .terminal-grid-bg { position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(180,79,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(180,79,255,.04) 1px,transparent 1px);background-size:40px 40px; }
+  .terminal-shell { position:relative;z-index:1;max-width:860px;margin:0 auto;padding:2.5rem 2rem 3rem; }
+  .term-eyebrow { display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem; }
+  .term-dot { width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:termPulse 2s ease-in-out infinite; }
+  @keyframes termPulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .term-eyebrow-text { font-family:var(--font-label);font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan); }
+  .term-title { font-family:var(--font-headline);font-size:2rem;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:-.01em;line-height:1.1;margin-bottom:.3rem; }
+  .term-panel { background:rgba(20,16,30,.55);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:6px;box-shadow:0 0 40px rgba(180,79,255,.07); }
+  .term-panel-header { display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.025); }
+  .term-panel-label { font-family:var(--font-label);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#fff; }
+  .tf-group { display:flex;flex-direction:column;gap:.4rem; }
+  .tf-label { font-family:var(--font-label);font-size:.6rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35); }
+  .tf-input,.tf-textarea,.tf-select { width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:.65rem 0;color:#fff;font-family:var(--font-body);font-size:.9rem;outline:none;transition:border-color .2s;border-radius:0; }
+  .tf-input:focus,.tf-textarea:focus,.tf-select:focus { border-color:var(--cyan); }
+  .tf-textarea { resize:vertical;min-height:80px; }
+  .tf-select { appearance:none;cursor:pointer;background:transparent; }
+  .tf-row-2 { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+  .tf-chips-wrap { display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.4rem; }
+  .tf-chip { display:flex;align-items:center;gap:.25rem;background:rgba(180,79,255,.12);border:1px solid rgba(180,79,255,.3);border-radius:20px;padding:.15rem .55rem;font-size:.7rem;color:var(--cyan);font-family:var(--font-label);letter-spacing:.05em; }
+  .tf-chip button { background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;padding:0;font-size:.75rem;line-height:1; }
+  .tf-chip-row { display:flex;gap:.5rem; }
+  .tf-chip-input { flex:1;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:.5rem 0;color:#fff;font-size:.82rem;outline:none;transition:border-color .2s; }
+  .tf-chip-input:focus { border-color:var(--cyan); }
+  .tf-chip-add { padding:.4rem .75rem;background:rgba(180,79,255,.15);border:1px solid rgba(180,79,255,.3);border-radius:4px;color:var(--cyan);font-size:.7rem;font-family:var(--font-label);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s; }
+  .tf-chip-add:hover { background:rgba(180,79,255,.25); }
+  .tf-presets { display:flex;gap:.5rem;flex-wrap:wrap; }
+  .tf-preset-thumb { width:90px;height:58px;object-fit:cover;border-radius:4px;border:2px solid transparent;cursor:pointer;opacity:.55;transition:border-color .2s,opacity .2s; }
+  .tf-preset-thumb.selected { border-color:var(--cyan);opacity:1;box-shadow:0 0 12px rgba(180,79,255,.4); }
+  .tf-upload { width:100%;aspect-ratio:16/7;border:2px dashed rgba(255,255,255,.08);border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;cursor:pointer;transition:border-color .2s,background .2s; }
+  .tf-upload:hover { border-color:rgba(180,79,255,.4);background:rgba(180,79,255,.04); }
+  .tf-upload .material-symbols-outlined { font-size:2rem;color:rgba(255,255,255,.2);transition:color .2s; }
+  .tf-upload:hover .material-symbols-outlined { color:var(--cyan); }
+  .tf-upload-lbl { font-family:var(--font-label);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25); }
+  .tf-upload input[type=file] { display:none; }
+  .part-pick-label { display:flex;align-items:center;gap:.5rem;border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:.45rem .75rem;font-size:.78rem;color:rgba(255,255,255,.5);cursor:pointer;transition:border-color .2s,background .2s; }
+  .part-pick-label.part-picked { border-color:var(--cyan);background:rgba(180,79,255,.08);color:#fff; }
+  .part-pick-label .material-symbols-outlined { font-size:.9rem;color:rgba(255,255,255,.2); }
+  .part-pick-label.part-picked .material-symbols-outlined { color:var(--cyan); }
+  .tf-submit { width:100%;padding:.9rem;border-radius:4px;border:none;background:linear-gradient(135deg,var(--cyan) 0%,#7b00cc 100%);color:#fff;font-family:var(--font-label);font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;box-shadow:0 0 30px rgba(180,79,255,.2);transition:opacity .2s,transform .1s; }
+  .tf-submit:hover { opacity:.9; }
+  .tf-submit:active { transform:scale(.98); }
+  .tf-back { display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-label);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:.45rem .9rem;transition:color .2s,border-color .2s;text-decoration:none; }
+  .tf-back:hover { color:#fff;border-color:rgba(255,255,255,.3); }
+  /* Search-based part picker */
+  .tf-cat-group { margin-bottom:.7rem;padding-bottom:.7rem;border-bottom:1px solid rgba(255,255,255,.04); }
+  .tf-cat-group:last-child { border-bottom:none;margin-bottom:0; }
+  .tf-cat-header { font-family:var(--font-label);font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem; }
+  .tf-cat-search-wrap { position:relative; }
+  .tf-cat-search { width:100%;background:rgba(255,255,255,.04);border:none;border-bottom:1px solid rgba(255,255,255,.1);padding:.5rem 0;color:#fff;font-family:var(--font-body);font-size:.82rem;outline:none;transition:border-color .2s;border-radius:0; }
+  .tf-cat-search:focus { border-color:var(--cyan); }
+  .tf-cat-search::placeholder { color:rgba(255,255,255,.2); }
+  .tf-cat-dropdown { position:absolute;left:0;right:0;top:100%;z-index:20;background:rgba(18,14,28,.98);border:1px solid rgba(255,255,255,.12);border-top:none;border-radius:0 0 4px 4px;max-height:160px;overflow-y:auto;display:none; }
+  .tf-cat-dropdown.open { display:block; }
+  .tf-drop-item { padding:.45rem .75rem;cursor:pointer;font-size:.76rem;color:rgba(255,255,255,.7);display:flex;justify-content:space-between;align-items:center;transition:background .15s; }
+  .tf-drop-item:hover { background:rgba(180,79,255,.12);color:#fff; }
+  .tf-drop-item .drop-price { font-family:var(--font-mono);font-size:.68rem;color:var(--cyan); }
+  .tf-selected-chip { display:flex;align-items:center;gap:.5rem;background:rgba(180,79,255,.1);border:1px solid rgba(180,79,255,.3);border-radius:4px;padding:.3rem .55rem;font-size:.75rem;color:#fff;margin-bottom:.35rem; }
+  .tf-selected-chip .chip-name { flex:1;font-family:var(--font-label);font-size:.68rem;letter-spacing:.04em; }
+  .tf-selected-chip .chip-price { font-family:var(--font-mono);font-size:.65rem;color:var(--cyan); }
+  .tf-selected-chip .chip-remove { background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:.85rem;line-height:1;padding:0; }
+  .tf-selected-chip .chip-remove:hover { color:#ff453a; }
+  .tf-cat-group.incompatible .tf-cat-search { border-color:rgba(255,69,58,.5)!important; }
+  .tf-cat-group.incompatible .tf-selected-chip { border-color:rgba(255,69,58,.4);background:rgba(255,69,58,.08); }
+  .tf-compat-banner { border-radius:4px;padding:.65rem .85rem;font-size:.78rem;display:none;align-items:center;gap:.6rem; }
+  .tf-compat-banner.show { display:flex; }
+  .tf-compat-banner.warning { background:rgba(255,138,0,.08);border:1px solid rgba(255,138,0,.3);color:#ff8a00; }
+  .tf-compat-banner.error { background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.25);color:#ff6b63; }
+  .tf-compat-banner .material-symbols-outlined { font-size:.95rem;flex-shrink:0; }
+  .tf-err { background:rgba(255,69,58,.1);border:1px solid rgba(255,69,58,.25);border-radius:4px;padding:.75rem 1rem;color:#ff6b63;font-size:.82rem; }
+  .term-toggle { position:relative;display:inline-flex;align-items:center;cursor:pointer; }
+  .term-toggle input { position:absolute;opacity:0;width:0;height:0; }
+  .term-toggle-track { width:32px;height:18px;border-radius:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);transition:background .2s,border-color .2s;position:relative; }
+  .term-toggle input:checked ~ .term-toggle-track { background:rgba(180,79,255,.35);border-color:var(--cyan);box-shadow:0 0 8px rgba(180,79,255,.4); }
+  .term-toggle-thumb { position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.4);transition:transform .2s,background .2s; }
+  .term-toggle input:checked ~ .term-toggle-track .term-toggle-thumb { transform:translateX(14px);background:var(--cyan); }
+</style>
+
+<div class="terminal-page">
+  <div class="terminal-grid-bg"></div>
+  <div class="terminal-shell">
+
+    <!-- Header -->
+    <div style="margin-bottom:2rem;">
+      <div class="term-eyebrow">
+        <div class="term-dot"></div>
+        <span class="term-eyebrow-text"><%= build ? 'Modify Deployment' : 'New Configuration' %></span>
+      </div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+        <h1 class="term-title"><%= build ? 'Edit' : 'New' %> <span style="color:var(--cyan)"><%= build ? build.name : 'Build' %></span></h1>
+        <a href="/admin/builds" class="tf-back">
+          <span class="material-symbols-outlined" style="font-size:.85rem;">arrow_back</span>
+          Back to Terminal
+        </a>
+      </div>
+    </div>
+
+    <% if (errors && errors.length > 0) { %>
+      <div class="tf-err" style="margin-bottom:1.5rem;">
+        <% errors.forEach(e => { %><p style="margin:0;"><%= e.msg %></p><% }) %>
+      </div>
+    <% } %>
+
+    <div class="term-panel">
+      <div class="term-panel-header">
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <span class="material-symbols-outlined" style="font-size:.95rem;color:var(--cyan);">terminal</span>
+          <span class="term-panel-label"><%= build ? 'Modify Configuration' : 'New Configuration' %></span>
+        </div>
+      </div>
+      <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1.4rem;">
+
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-error" style="margin-bottom:1.5rem;">
+          <span class="material-symbols-outlined" style="font-size:1rem;">error</span>
+          <div><% errors.forEach(e => { %><p style="margin:0;font-size:.9rem;"><%= e.msg %></p><% }) %></div>
+        </div>
+      <% } %>
+
+      <form id="editBuildForm" action="<%= build ? '/admin/builds/'+build._id+'/edit' : '/admin/builds/add' %>" method="POST" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1.4rem;">
+
+          <!-- Name + Active -->
+          <div class="tf-row-2">
+            <div class="tf-group">
+              <label class="tf-label">Codenaming *</label>
+              <input type="text" name="name" class="tf-input" required maxlength="100" value="<%= build ? build.name : '' %>" placeholder="e.g. Ghost Recon Mk.II" />
+            </div>
+            <div class="tf-group">
+              <label class="tf-label">Active — Show on Homepage</label>
+              <div style="display:flex;align-items:center;gap:.6rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.1);">
+                <label class="term-toggle">
+                  <input type="checkbox" name="isActive" <%= !build || build.isActive ? 'checked' : '' %> />
+                  <div class="term-toggle-track"><div class="term-toggle-thumb"></div></div>
+                </label>
+                <span style="font-size:.78rem;color:rgba(255,255,255,.4);">Featured on homepage</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="tf-group">
+            <label class="tf-label">Mission Brief *</label>
+            <textarea name="description" class="tf-textarea" required maxlength="600" placeholder="Short description shown on the homepage card…"><%= build ? build.description : '' %></textarea>
+          </div>
+
+          <!-- Spec chips -->
+          <div class="tf-group">
+            <label class="tf-label">Spec Tags <span style="opacity:.4;font-weight:400;text-transform:none;letter-spacing:0;">(e.g. 5" Frame)</span></label>
+            <div class="tf-chips-wrap" id="chips-wrap">
+              <% const existingChips = build ? build.specChips : []; %>
+              <% existingChips.forEach(chip => { %>
+                <div class="tf-chip">
+                  <span><%= chip %></span>
+                  <input type="hidden" name="specChips" value="<%= chip %>" />
+                  <button type="button" onclick="this.parentElement.remove()">✕</button>
+                </div>
+              <% }) %>
+            </div>
+            <div class="tf-chip-row">
+              <input type="text" id="chipInput" class="tf-chip-input" placeholder='Add tag and press Enter…' />
+              <button type="button" id="addChipBtn" class="tf-chip-add">Add</button>
+            </div>
+          </div>
+
+          <!-- Image presets -->
+          <div class="tf-group">
+            <label class="tf-label">Visual Asset — Preset</label>
+            <% const presets = ['/images/models/model1.png','/images/models/model2.png','/images/models/model3.png','/images/models/model4.png']; %>
+            <div class="tf-presets" id="presetWrap">
+              <% presets.forEach((src, i) => { %>
+                <img src="<%= src %>" alt="Model <%= i+1 %>"
+                     class="tf-preset-thumb preset-thumb <%= (build && build.imageUrl === src) ? 'selected' : (!build && i===0 ? 'selected' : '') %>"
+                     data-src="<%= src %>" />
+                <input type="radio" name="presetImage" value="<%= src %>" class="preset-radio"
+                       style="display:none;" <%= (build && build.imageUrl === src) ? 'checked' : (!build && i===0 ? 'checked' : '') %> />
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Custom upload -->
+          <div class="tf-group">
+            <label class="tf-label">Or Upload Custom Image</label>
+            <label class="tf-upload">
+              <span class="material-symbols-outlined">upload_file</span>
+              <span class="tf-upload-lbl" id="uploadLbl">Initialize Hero Image Upload</span>
+              <input type="file" name="image" accept="image/*" id="imageUpload" />
+            </label>
+            <% if (build && build.imageUrl && !presets.includes(build.imageUrl)) { %>
+              <div style="margin-top:.6rem;display:flex;align-items:center;gap:.6rem;">
+                <img src="<%= build.imageUrl %>" alt="Current" style="height:48px;border-radius:4px;object-fit:cover;" />
+                <span style="color:rgba(255,255,255,.25);font-size:.75rem;">Current image</span>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Parts selection — search-based (JS-rendered) -->
+          <div class="tf-group">
+            <label class="tf-label">Core Components</label>
+            <p style="font-size:.75rem;color:rgba(255,255,255,.25);margin-bottom:.75rem;">One per category — motors auto-set to qty 4.</p>
+            <div id="tfParts">
+              <div style="text-align:center;padding:1rem;color:rgba(255,255,255,.2);font-size:.78rem;">Loading components…</div>
+            </div>
+          </div>
+
+          <!-- Compatibility warning -->
+          <div class="tf-compat-banner" id="tfCompatBanner">
+            <span class="material-symbols-outlined" id="tfCompatIcon">warning</span>
+            <span id="tfCompatMsg"></span>
+          </div>
+
+        <div style="display:flex;gap:1rem;">
+          <button type="submit" class="tf-submit" style="flex:1;">
+            <span class="material-symbols-outlined" style="font-size:1rem;">save</span>
+            <%= build ? 'Save Changes' : 'Create Build' %>
+          </button>
+          <a href="/admin/builds" class="tf-back">Cancel</a>
+        </div>
+      </form>
+    </div><!-- /panel body -->
+  </div><!-- /term-panel -->
+  </div><!-- /terminal-shell -->
+</div><!-- /terminal-page -->
+
+<%- include('../partials/scripts') %>
+<script>
+  // ── Preset image thumbnails ──
+  document.querySelectorAll('.preset-thumb').forEach(img => {
+    img.addEventListener('click', () => {
+      document.querySelectorAll('.preset-thumb').forEach(i => i.classList.remove('selected'));
+      img.classList.add('selected');
+      // check the matching radio
+      document.querySelectorAll('.preset-radio').forEach(r => { r.checked = r.value === img.dataset.src; });
+      document.getElementById('imageUpload').value = '';
+      document.getElementById('uploadLbl').textContent = 'Initialize Hero Image Upload';
+    });
+  });
+  document.getElementById('imageUpload').addEventListener('change', function () {
+    if (this.files[0]) {
+      document.querySelectorAll('.preset-thumb').forEach(i => i.classList.remove('selected'));
+      document.querySelectorAll('.preset-radio').forEach(r => r.checked = false);
+      document.getElementById('uploadLbl').textContent = this.files[0].name;
+    }
+  });
+
+  // ── Spec chips ──
+  function addChip(val) {
+    val = val.trim(); if (!val) return;
+    const wrap = document.getElementById('chips-wrap');
+    const div = document.createElement('div');
+    div.className = 'tf-chip';
+    div.innerHTML = `<span>${val}</span><input type="hidden" name="specChips" value="${val}" /><button type="button">✕</button>`;
+    div.querySelector('button').addEventListener('click', () => div.remove());
+    wrap.appendChild(div);
+  }
+  document.getElementById('addChipBtn').addEventListener('click', () => {
+    const inp = document.getElementById('chipInput'); addChip(inp.value); inp.value = '';
+  });
+  document.getElementById('chipInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addChipBtn').click(); }
+  });
+
+  // ── Parts: search-based picker + compatibility ──
+  const ALL_PARTS_RAW = <%- JSON.stringify(allParts.map(p => ({ _id: p._id.toString(), name: p.name, category: p.category, price: p.price, weight: p.weight || 0 }))) %>;
+  const EXISTING_IDS  = new Set(<%- JSON.stringify(build ? build.parts.map(bp => { const id = bp.partId; return id ? (id._id || id).toString() : ''; }).filter(Boolean) : []) %>);
+
+  const CATS = [
+    { key: 'frame',            label: 'Frame',             icon: 'hexagon',                   max: 1 },
+    { key: 'motors',           label: 'Motors ×4',         icon: 'settings_input_component',  max: 4 },
+    { key: 'propellers',       label: 'Propellers',        icon: 'rotate_right',              max: 1 },
+    { key: 'battery',          label: 'Battery',           icon: 'battery_charging_full',     max: 1 },
+    { key: 'flightController', label: 'Flight Controller', icon: 'developer_board',           max: 1 },
+    { key: 'camera',           label: 'Camera',            icon: 'photo_camera',              max: 1 },
+    { key: 'ESC',              label: 'ESC',               icon: 'electric_bolt',             max: 1 },
+    { key: 'transmitter',      label: 'Transmitter',       icon: 'settings_remote',           max: 1 }
+  ];
+
+  const allPartsData  = {};
+  const selectedParts = {};
+  CATS.forEach(c => {
+    allPartsData[c.key]  = ALL_PARTS_RAW.filter(p => p.category === c.key);
+    selectedParts[c.key] = null;
+  });
+
+  const tfPartsEl    = document.getElementById('tfParts');
+  const compatBanner = document.getElementById('tfCompatBanner');
+  const compatIcon   = document.getElementById('tfCompatIcon');
+  const compatMsg    = document.getElementById('tfCompatMsg');
+
+  function buildUI() {
+    tfPartsEl.innerHTML = '';
+    CATS.forEach(cat => renderCatSearch(cat));
+    // Pre-select existing parts
+    EXISTING_IDS.forEach(pid => {
+      const part = ALL_PARTS_RAW.find(p => p._id === pid);
+      if (!part) return;
+      const cat = CATS.find(c => c.key === part.category);
+      if (cat) selectPart(cat, part, true);
+    });
+  }
+
+  function renderCatSearch(cat) {
+    const group = document.createElement('div');
+    group.className = 'tf-cat-group';
+    group.dataset.cat = cat.key;
+    group.innerHTML = `
+      <div class="tf-cat-header">
+        <span class="material-symbols-outlined" style="font-size:.75rem;">${cat.icon}</span>
+        ${cat.label}
+      </div>
+      <div id="chip-${cat.key}"></div>
+      <div class="tf-cat-search-wrap">
+        <input type="text" class="tf-cat-search" placeholder="Search ${cat.label.toLowerCase()}…" />
+        <div class="tf-cat-dropdown" id="drop-${cat.key}"></div>
+      </div>
+    `;
+    tfPartsEl.appendChild(group);
+
+    const input    = group.querySelector('.tf-cat-search');
+    const dropdown = group.querySelector('.tf-cat-dropdown');
+
+    function filterItems(q) {
+      const parts    = allPartsData[cat.key] || [];
+      const filtered = q ? parts.filter(p => p.name.toLowerCase().includes(q.toLowerCase())) : parts;
+      dropdown.innerHTML = '';
+      if (!filtered.length) {
+        dropdown.innerHTML = '<div class="tf-drop-item" style="color:rgba(255,255,255,.2);cursor:default;">No results</div>';
+      } else {
+        filtered.forEach(p => {
+          const item = document.createElement('div');
+          item.className = 'tf-drop-item';
+          item.innerHTML = `<span>${p.name}</span><span class="drop-price">$${p.price.toFixed(2)}</span>`;
+          item.addEventListener('mousedown', e => { e.preventDefault(); selectPart(cat, p); input.value = ''; dropdown.classList.remove('open'); });
+          dropdown.appendChild(item);
+        });
+      }
+    }
+
+    input.addEventListener('focus', () => { filterItems(input.value); dropdown.classList.add('open'); });
+    input.addEventListener('input', () => { filterItems(input.value); dropdown.classList.add('open'); });
+    input.addEventListener('blur',  () => setTimeout(() => dropdown.classList.remove('open'), 150));
+  }
+
+  function selectPart(cat, part, silent) {
+    selectedParts[cat.key] = part;
+    const chipWrap = document.getElementById(`chip-${cat.key}`);
+    chipWrap.innerHTML = '';
+    const chip = document.createElement('div');
+    chip.className = 'tf-selected-chip';
+    chip.innerHTML = `<span class="chip-name">${part.name}</span><span class="chip-price">$${part.price.toFixed(2)}</span><button class="chip-remove" type="button">✕</button>`;
+    chip.querySelector('.chip-remove').addEventListener('click', () => {
+      selectedParts[cat.key] = null;
+      chipWrap.innerHTML = '';
+      syncHiddenInputs(cat);
+      checkCompatibility();
+    });
+    chipWrap.appendChild(chip);
+    syncHiddenInputs(cat);
+    if (!silent) checkCompatibility();
+  }
+
+  function syncHiddenInputs(cat) {
+    const form = document.getElementById('editBuildForm');
+    form.querySelectorAll(`input[name="partId_${cat.key}"],input[name="qty_${cat.key}"]`).forEach(el => el.remove());
+    const part = selectedParts[cat.key];
+    if (!part) return;
+    const a = document.createElement('input'); a.type='hidden'; a.name=`partId_${cat.key}`; a.value=part._id; form.appendChild(a);
+    const b = document.createElement('input'); b.type='hidden'; b.name=`qty_${cat.key}`; b.value=cat.key==='motors'?cat.max:1; form.appendChild(b);
+  }
+
+  function checkCompatibility() {
+    const issues = [], problemCats = new Set();
+    const frame=selectedParts.frame, motors=selectedParts.motors, battery=selectedParts.battery, esc=selectedParts.ESC;
+
+    if (frame && motors) {
+      if (frame.weight > 200) {
+        const n = motors.name.toLowerCase();
+        if (n.includes('nano') || n.includes('micro') || n.includes('ultralight')) {
+          issues.push('Heavy frame with micro motors — insufficient thrust for liftoff.');
+          problemCats.add('frame'); problemCats.add('motors');
+        }
+      }
+    }
+    if (battery) {
+      const others = Object.entries(selectedParts).filter(([k,p])=>k!=='battery'&&p).reduce((s,[,p])=>s+(p.weight||0),0);
+      if (others > 0 && battery.weight > others * 1.5) {
+        issues.push('Battery is very heavy relative to the build — consider a lighter pack.');
+        problemCats.add('battery');
+      }
+    }
+    if (motors && !esc) {
+      issues.push('Motors selected but no ESC — motors cannot run without an ESC.');
+      problemCats.add('ESC'); problemCats.add('motors');
+    }
+
+    document.querySelectorAll('#tfParts .tf-cat-group').forEach(g => g.classList.remove('incompatible'));
+    problemCats.forEach(c => { const g = document.querySelector(`#tfParts .tf-cat-group[data-cat="${c}"]`); if (g) g.classList.add('incompatible'); });
+
+    if (!issues.length) {
+      compatBanner.className = 'tf-compat-banner';
+    } else {
+      const w = issues.length === 1;
+      compatBanner.className = `tf-compat-banner show ${w ? 'warning' : 'error'}`;
+      compatIcon.textContent = w ? 'warning' : 'error';
+      compatMsg.textContent  = issues[0];
+    }
+  }
+
+  buildUI();
+  checkCompatibility();
+</script>
+<%- include('../partials/footer') %>
