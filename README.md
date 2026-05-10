@@ -12,7 +12,7 @@ A full-stack drone e-commerce and custom build platform. Customers can browse pa
 - **Interactive Builder** — Part selector across 8 categories (Frame, Motors, Propellers, Battery, Flight Controller, Camera, ESC, Transmitter) with real-time compatibility checking, weight/price summary, and estimated flight time
 - **Clone a Build** — Loads all parts from a prebuilt build directly into the builder for customization
 - **Marketplace** — Browse and filter individual parts by category, search, and sort
-- **Cart** — Session-based cart with quantity management
+- **Cart** — Persistent per-user cart stored in MongoDB with quantity management
 - **Checkout** — Place orders with build name and delivery details
 - **Order History** — View past orders and their status
 - **User Profile** — Update name, email, and password
@@ -25,7 +25,7 @@ A full-stack drone e-commerce and custom build platform. Customers can browse pa
 - **Order Management** — View all orders and update order status
 
 ### Security
-- Session-based authentication with `express-session` + MongoDB session store
+- **JWT-based authentication** — signed tokens stored in `httpOnly` cookies (no server-side session store)
 - Passwords hashed with `bcrypt`
 - Role-based access control (admin / customer)
 - Input validation and sanitization with `express-validator`
@@ -43,7 +43,7 @@ A full-stack drone e-commerce and custom build platform. Customers can browse pa
 | Framework | Express.js v5 |
 | Templating | EJS |
 | Database | MongoDB + Mongoose |
-| Auth | express-session + bcrypt |
+| Auth | JWT (`jsonwebtoken`) + `bcrypt` |
 | File Storage | Cloudinary |
 | CSS | Custom CSS with CSS variables |
 | Deployment | Vercel + MongoDB Atlas |
@@ -56,13 +56,18 @@ A full-stack drone e-commerce and custom build platform. Customers can browse pa
 DroneForge/
 ├── controllers/
 │   ├── adminController.js
-│   └── orderController.js
+│   ├── authController.js
+│   ├── cartController.js
+│   ├── orderController.js
+│   ├── partsController.js
+│   └── profileController.js
 ├── middleware/
 │   └── auth.js
 ├── models/
 │   ├── User.js
 │   ├── Part.js
 │   ├── Order.js
+│   ├── Cart.js
 │   └── PrebuiltBuild.js
 ├── public/
 │   ├── css/
@@ -119,7 +124,7 @@ Create a `.env` file in the root:
 ```env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/droneforge
-SESSION_SECRET=your_long_random_secret_here
+JWT_SECRET=your_long_random_secret_here
 NODE_ENV=development
 BCRYPT_SALT_ROUNDS=12
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -165,7 +170,7 @@ App runs at `http://localhost:3000`
 | Key | Value |
 |-----|-------|
 | `MONGODB_URI` | Your Atlas connection string |
-| `SESSION_SECRET` | A long random string |
+| `JWT_SECRET` | A long random string |
 | `NODE_ENV` | `production` |
 | `CLOUDINARY_CLOUD_NAME` | From Cloudinary |
 | `CLOUDINARY_API_KEY` | From Cloudinary |
