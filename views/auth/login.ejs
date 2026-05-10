@@ -160,15 +160,11 @@
 <%- include('../partials/scripts') %>
 <script>
   function fillCreds(email, password) {
-    document.getElementById('email').value = email;
-    document.getElementById('password').value = password;
-    document.getElementById('password').type = 'password';
-    // brief flash on the inputs to confirm fill
-    [document.getElementById('email'), document.getElementById('password')].forEach(el => {
-      el.style.transition = 'box-shadow .2s';
-      el.style.boxShadow = '0 0 0 2px rgba(180,79,255,.4)';
-      setTimeout(() => { el.style.boxShadow = ''; }, 600);
-    });
+    const emailEl = document.getElementById('email');
+    emailEl.value = email;
+    emailEl.style.transition = 'box-shadow .2s';
+    emailEl.style.boxShadow = '0 0 0 2px rgba(180,79,255,.4)';
+    setTimeout(() => { emailEl.style.boxShadow = ''; }, 600);
   }
 
   document.querySelectorAll('.si-toggle').forEach(btn => {
