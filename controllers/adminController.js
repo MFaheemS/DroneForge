@@ -3,8 +3,7 @@ const User = require('../models/User');
 const Part = require('../models/Part');
 const Order = require('../models/Order');
 const PrebuiltBuild = require('../models/PrebuiltBuild');
-const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
 // ── DASHBOARD ──────────────────────────────────────────────────────────────────
 exports.getDashboard = async (req, res) => {
@@ -130,12 +129,11 @@ exports.getAddPart = (req, res) => {
 exports.postAddPart = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    if (req.file) fs.unlinkSync(req.file.path);
     return res.render('admin/part-form', { title: 'Add Part', part: null, errors: errors.array(), formData: null });
   }
   try {
     const { name, category, price, weight, description, stock } = req.body;
-    const imageUrl = req.file ? `/uploads/parts/${req.file.filename}` : '';
+    const imageUrl = req.file ? req.file.path : '';
     const specs = {};
     if (req.body.specKeys && req.body.specVals) {
       const keys = [].concat(req.body.specKeys);
@@ -170,17 +168,16 @@ exports.postEditPart = async (req, res) => {
   if (!part) return res.status(404).render('errors/404');
 
   if (!errors.isEmpty()) {
-    if (req.file) fs.unlinkSync(req.file.path);
     return res.render('admin/part-form', { title: 'Edit Part', part, errors: errors.array(), formData: null });
   }
   try {
     const { name, category, price, weight, description, stock, isAvailable } = req.body;
     if (req.file) {
-      if (part.imageUrl && part.imageUrl.startsWith('/uploads/')) {
-        const old = path.join(__dirname, '../public', part.imageUrl);
-        if (fs.existsSync(old)) fs.unlinkSync(old);
+      if (part.imageUrl) {
+        const pid = part.imageUrl.split('/').pop().split('.')[0];
+        cloudinary.uploader.destroy(`droneforge/${pid}`).catch(() => {});
       }
-      part.imageUrl = `/uploads/parts/${req.file.filename}`;
+      part.imageUrl = req.file.path;
     }
     const specs = {};
     if (req.body.specKeys && req.body.specVals) {
@@ -342,12 +339,11 @@ exports.postAddBuild = async (req, res) => {
   const errors = validationResult(req);
   const allParts = await Part.find({ isAvailable: true }).sort({ category: 1, name: 1 }).lean();
   if (!errors.isEmpty()) {
-    if (req.file) fs.unlinkSync(req.file.path);
     return res.render('admin/build-form', { title: 'Add Build', build: null, allParts, errors: errors.array() });
   }
   try {
     const { name, description, specChips, presetImage } = req.body;
-    const imageUrl = req.file ? `/uploads/parts/${req.file.filename}` : (presetImage || '');
+    const imageUrl = req.file ? req.file.path : (presetImage || '');
 
     const chips = [].concat(specChips || []).map(s => s.trim()).filter(Boolean);
 
@@ -399,17 +395,12 @@ exports.postEditBuild = async (req, res) => {
   if (!build) return res.status(404).render('errors/404');
 
   if (!errors.isEmpty()) {
-    if (req.file) fs.unlinkSync(req.file.path);
     return res.render('admin/build-form', { title: 'Edit Build', build: build.toObject(), allParts, errors: errors.array() });
   }
   try {
     const { name, description, specChips, presetImage, isActive } = req.body;
     if (req.file) {
-      if (build.imageUrl && build.imageUrl.startsWith('/uploads/')) {
-        const old = path.join(__dirname, '../public', build.imageUrl);
-        if (fs.existsSync(old)) fs.unlinkSync(old);
-      }
-      build.imageUrl = `/uploads/parts/${req.file.filename}`;
+      build.imageUrl = req.file.path;
     } else if (presetImage) {
       build.imageUrl = presetImage;
     }
