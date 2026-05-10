@@ -1,149 +1,182 @@
-# DroneForge 🚁
+# DroneForge
 
-> The ultimate custom drone builder platform — configure, order, and track your custom drone build end-to-end.
-
-## Overview
-
-DroneForge is a full-stack drone e-commerce and builder platform. Users assemble custom drones part-by-part using a visual builder, add components to a cart, checkout with a multi-step form, and track their orders. Admins manage users, parts inventory, and order statuses from a dedicated dashboard.
-
-**Live aesthetic:** Dark glassmorphism, electric cyan accents, animated UI — think cyberpunk engineering workshop.
+A full-stack drone e-commerce and custom build platform. Customers can browse parts, assemble custom drone builds using an interactive builder, order prebuilt configurations, and manage their orders. Admins have a full control panel to manage parts, builds, users, and orders.
 
 ---
 
 ## Features
 
-- **Drone Builder** — visual slot-based builder with compatibility checks, weight/flight-time estimates, live build summary
-- **Parts Catalog** — 40+ parts across 8 categories with search, filter, and "Add to Cart"
-- **Shopping Cart** — session-based cart with quantity controls and live totals
-- **Multi-Step Checkout** — 3-step flow (Build Review → Shipping → Payment) with client + server validation
-- **Order Tracking** — order history with expandable accordion, status badges, and fabrication timeline
-- **Admin Dashboard** — stat cards, recent orders, user management, parts CRUD with image upload, order status updates
-- **Authentication** — register/login with bcrypt, session management, password reset via email token
-- **Role-Based Navigation** — separate navbar for admin vs customer vs guest
-- **Security** — Helmet headers, rate limiting on auth routes, MongoDB query sanitization
+### Customer
+- **Home Page** — Showcases top 3 featured builds sorted by purchase popularity
+- **Fleet / Browse Builds** — Bento-grid gallery of all active prebuilt builds with Clone and Order actions
+- **Interactive Builder** — Part selector across 8 categories (Frame, Motors, Propellers, Battery, Flight Controller, Camera, ESC, Transmitter) with real-time compatibility checking, weight/price summary, and estimated flight time
+- **Clone a Build** — Loads all parts from a prebuilt build directly into the builder for customization
+- **Marketplace** — Browse and filter individual parts by category, search, and sort
+- **Cart** — Session-based cart with quantity management
+- **Checkout** — Place orders with build name and delivery details
+- **Order History** — View past orders and their status
+- **User Profile** — Update name, email, and password
+
+### Admin
+- **Dashboard** — Overview stats: total users, orders, revenue, low stock alerts, recent orders
+- **Parts Management** — Add, edit, delete parts with image upload (Cloudinary), specs, stock, and pricing
+- **Prebuilt Builds Management** — Create and manage featured builds with part selection, spec tags, images, and active/archive toggle. Includes the same compatibility constraint checking as the customer builder
+- **User Management** — View and manage all registered users
+- **Order Management** — View all orders and update order status
+
+### Security
+- Session-based authentication with `express-session` + MongoDB session store
+- Passwords hashed with `bcrypt`
+- Role-based access control (admin / customer)
+- Input validation and sanitization with `express-validator`
+- MongoDB query sanitization against injection attacks
+- Rate limiting on auth routes
+- Security headers via `helmet`
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
-| Runtime | Node.js 20+ |
-| Framework | Express 5 |
-| Database | MongoDB + Mongoose |
-| Auth | bcrypt + express-session + connect-mongo |
+|-------|-----------|
+| Runtime | Node.js |
+| Framework | Express.js v5 |
 | Templating | EJS |
-| File Uploads | Multer |
-| Email | Nodemailer + Mailtrap (dev) |
-| Security | helmet, express-rate-limit, express-mongo-sanitize |
-| CSS | Custom glassmorphism design system (CSS variables) |
+| Database | MongoDB + Mongoose |
+| Auth | express-session + bcrypt |
+| File Storage | Cloudinary |
+| CSS | Custom CSS with CSS variables |
+| Deployment | Vercel + MongoDB Atlas |
 
 ---
 
-## Setup & Installation
-
-### Prerequisites
-- Node.js 18+
-- MongoDB running locally or a MongoDB Atlas URI
-
-### Steps
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/MFaheemS/DroneForge.git
-cd DroneForge
-
-# 2. Install dependencies
-npm install
-
-# 3. Configure environment
-cp .env.example .env
-# Edit .env with your MongoDB URI, session secret, and email credentials
-
-# 4. Seed the database (optional but recommended)
-node scripts/seedDemo.js
-
-# 5. Start the server
-node app.js
-# or with auto-restart:
-npx nodemon app.js
-```
-
-Server runs at `http://localhost:3000`
-
----
-
-## Environment Variables
-
-Copy `.env.example` to `.env` and fill in:
-
-| Variable | Description |
-|---|---|
-| `PORT` | Server port (default 3000) |
-| `MONGODB_URI` | MongoDB connection string |
-| `SESSION_SECRET` | Long random string for session signing |
-| `BCRYPT_SALT_ROUNDS` | bcrypt cost factor (12 recommended) |
-| `EMAIL_HOST` | SMTP host (Mailtrap for dev) |
-| `EMAIL_PORT` | SMTP port |
-| `EMAIL_USER` | SMTP username |
-| `EMAIL_PASS` | SMTP password |
-| `EMAIL_FROM` | From address for password reset emails |
-| `NODE_ENV` | `development` or `production` |
-
----
-
-## Admin Setup
-
-Run the demo seed script which creates the default admin account:
-
-```bash
-node scripts/seedDemo.js
-```
-
-**Admin credentials:** `admin@droneforge.io` / `Admin@1234`  
-**Customer credentials:** `pilot@droneforge.io` / `Pilot@1234`
-
-Or use the quick-fill buttons on the login page.
-
----
-
-## Module Breakdown
-
-| Module | Description |
-|---|---|
-| Module 1 | Auth (register/login/logout/password reset), roles, navbar, layout |
-| Module 2 | Parts catalog, drone builder with visual slots |
-| Module 3 | Cart, multi-step checkout, order confirmation, order history |
-| Module 4 | Admin dashboard, user management, parts CRUD, order management |
-| Module 5 | Home page polish, About page, Contact page, custom cursor, testimonials |
-| Module 6 | Security hardening, README, demo seed, .env.example |
-
----
-
-## Folder Structure
+## Project Structure
 
 ```
 DroneForge/
-├── controllers/       # Route handlers
-├── middleware/        # requireAuth, requireAdmin
-├── models/            # Mongoose schemas (User, Part, Order)
-├── public/            # Static assets
-│   ├── css/           # Design system CSS
-│   ├── js/            # Client-side JS
-│   └── images/        # Drone GIFs and illustrations
-├── routes/            # Express routers
-├── scripts/           # Seed scripts
-├── views/             # EJS templates
-│   ├── admin/         # Admin panel views
-│   ├── auth/          # Login, register, password reset
-│   ├── errors/        # 404, 403
-│   ├── orders/        # Confirmation, order list
-│   ├── parts/         # Catalog
-│   └── partials/      # head, navbar, footer, scripts
-├── app.js             # Express app entry point
-└── .env.example       # Environment variable template
+├── controllers/
+│   ├── adminController.js
+│   └── orderController.js
+├── middleware/
+│   └── auth.js
+├── models/
+│   ├── User.js
+│   ├── Part.js
+│   ├── Order.js
+│   └── PrebuiltBuild.js
+├── public/
+│   ├── css/
+│   ├── js/
+│   └── images/
+├── routes/
+│   ├── home.js
+│   ├── auth.js
+│   ├── parts.js
+│   ├── build.js
+│   ├── builds.js
+│   ├── cart.js
+│   ├── orders.js
+│   ├── profile.js
+│   └── admin.js
+├── scripts/
+│   └── seed-builds.js
+├── views/
+│   ├── auth/
+│   ├── admin/
+│   ├── partials/
+│   └── *.ejs
+├── app.js
+├── vercel.json
+└── .env
 ```
 
 ---
 
-*DroneForge Aerospace — All Systems Nominal.*
+## Local Setup
+
+### Prerequisites
+- Node.js v18+
+- MongoDB (local) or MongoDB Atlas URI
+- Cloudinary account (free tier)
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/MFaheemS/DroneForge.git
+cd DroneForge
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure environment variables
+
+Create a `.env` file in the root:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/droneforge
+SESSION_SECRET=your_long_random_secret_here
+NODE_ENV=development
+BCRYPT_SALT_ROUNDS=12
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+### 4. Seed the database (optional)
+
+Populates 4 default prebuilt builds (requires parts to already exist in DB):
+
+```bash
+node scripts/seed-builds.js
+```
+
+### 5. Run the app
+
+```bash
+npm run dev
+```
+
+App runs at `http://localhost:3000`
+
+---
+
+## Deployment (Vercel + MongoDB Atlas)
+
+### 1. MongoDB Atlas
+- Create a free cluster at [cloud.mongodb.com](https://cloud.mongodb.com)
+- Create a database user and get the connection string
+- Under **Network Access**, allow `0.0.0.0/0`
+
+### 2. Cloudinary
+- Sign up at [cloudinary.com](https://cloudinary.com)
+- Get your Cloud Name, API Key, and API Secret from the dashboard
+
+### 3. Vercel
+- Push your code to GitHub
+- Import the repo at [vercel.com](https://vercel.com)
+- Set **Framework Preset** to `Other`
+- Add environment variables:
+
+| Key | Value |
+|-----|-------|
+| `MONGODB_URI` | Your Atlas connection string |
+| `SESSION_SECRET` | A long random string |
+| `NODE_ENV` | `production` |
+| `CLOUDINARY_CLOUD_NAME` | From Cloudinary |
+| `CLOUDINARY_API_KEY` | From Cloudinary |
+| `CLOUDINARY_API_SECRET` | From Cloudinary |
+
+- Click **Deploy**
+
+Every `git push` to `master` auto-redeploys.
+
+---
+
+## License
+
+ISC
