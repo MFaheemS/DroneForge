@@ -182,6 +182,88 @@ document.querySelectorAll('[data-tilt]').forEach(card => {
 });
 
 /* ─────────────────────────────────
+   INACTIVITY SESSION TIMEOUT (JWT)
+   30 min idle → warning modal → 60s countdown → auto-logout
+   Activity resets the timer and silently refreshes the JWT.
+   ───────────────────────────────── */
+(function () {
+  // Only active when a user is logged in (navbar shows logout link)
+  if (!document.querySelector('a[href="/auth/logout"]')) return;
+
+  const IDLE_MS        = 30 * 60 * 1000; // 30 minutes before warning
+  const COUNTDOWN_SEC  = 60;             // seconds to act before auto-logout
+  const REFRESH_EVERY  = 10 * 60 * 1000; // silently refresh JWT every 10 min of activity
+
+  let idleTimer, countdownInterval, countdownLeft;
+  let lastActivity = Date.now();
+
+  /* ── Silent JWT refresh ── */
+  function refreshJwt() {
+    fetch('/auth/refresh-token', { method: 'POST', credentials: 'same-origin' })
+      .catch(() => {});
+  }
+  setInterval(() => {
+    if (Date.now() - lastActivity < REFRESH_EVERY) refreshJwt();
+  }, REFRESH_EVERY);
+
+  /* ── Modal markup ── */
+  const modal = document.createElement('div');
+  modal.id = 'inactivity-modal';
+  modal.innerHTML = `
+    <div class="inactivity-backdrop"></div>
+    <div class="inactivity-box">
+      <div class="inactivity-icon">⏱</div>
+      <h2>Still there?</h2>
+      <p>You'll be logged out due to inactivity in <strong id="inactivity-count">${COUNTDOWN_SEC}</strong>s.</p>
+      <div class="inactivity-actions">
+        <button id="inactivity-stay" class="btn-primary-sm">Stay logged in</button>
+        <a href="/auth/logout" class="btn-ghost-sm">Log out now</a>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+
+  /* ── Show / hide ── */
+  function showWarning() {
+    countdownLeft = COUNTDOWN_SEC;
+    document.getElementById('inactivity-count').textContent = countdownLeft;
+    modal.classList.add('active');
+    countdownInterval = setInterval(() => {
+      countdownLeft--;
+      const el = document.getElementById('inactivity-count');
+      if (el) el.textContent = countdownLeft;
+      if (countdownLeft <= 0) {
+        clearInterval(countdownInterval);
+        window.location.href = '/auth/logout?reason=idle';
+      }
+    }, 1000);
+  }
+
+  function dismissWarning() {
+    clearInterval(countdownInterval);
+    modal.classList.remove('active');
+    refreshJwt();
+    resetIdle();
+  }
+
+  document.getElementById('inactivity-stay').addEventListener('click', dismissWarning);
+
+  /* ── Idle timer ── */
+  function resetIdle() {
+    lastActivity = Date.now();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(showWarning, IDLE_MS);
+  }
+
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      if (!modal.classList.contains('active')) resetIdle();
+    }, { passive: true });
+  });
+
+  resetIdle(); // start the clock
+})();
+
+/* ─────────────────────────────────
    TESTIMONIALS CAROUSEL
    ───────────────────────────────── */
 (function () {

@@ -1414,3 +1414,95 @@ footer::before {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .grid-bg { display: none; }
 }
+
+/* ───────────────────────────────────────
+   INACTIVITY TIMEOUT MODAL
+   ─────────────────────────────────────── */
+#inactivity-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+#inactivity-modal.active { display: flex; }
+
+.inactivity-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 6, 14, 0.75);
+  backdrop-filter: blur(6px);
+}
+
+.inactivity-box {
+  position: relative;
+  background: var(--surface-container);
+  border: 1px solid var(--cyan-dim);
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(180, 79, 255, 0.25);
+  animation: modalSlideIn .25s ease;
+}
+
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(-16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.inactivity-icon { font-size: 2.5rem; margin-bottom: .5rem; }
+
+.inactivity-box h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.4rem;
+  color: var(--text);
+  margin: 0 0 .6rem;
+}
+
+.inactivity-box p {
+  color: var(--text-variant);
+  font-size: .95rem;
+  margin: 0 0 1.5rem;
+}
+
+.inactivity-box p strong {
+  color: var(--cyan);
+  font-size: 1.1rem;
+}
+
+.inactivity-actions {
+  display: flex;
+  gap: .75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary-sm {
+  background: var(--cyan);
+  color: var(--on-cyan);
+  border: none;
+  border-radius: .5rem;
+  padding: .55rem 1.25rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.btn-primary-sm:hover { opacity: .85; }
+
+.btn-ghost-sm {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--outline-variant);
+  border-radius: .5rem;
+  padding: .55rem 1.25rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .9rem;
+  text-decoration: none;
+  transition: color .2s, border-color .2s;
+}
+.btn-ghost-sm:hover { color: var(--text); border-color: var(--outline); }

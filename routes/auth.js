@@ -37,6 +37,7 @@ router.get('/login', ctrl.getLogin);
 router.post('/login', loginRules, ctrl.postLogin);
 
 router.get('/logout', ctrl.logout);
+router.post('/refresh-token', ctrl.refreshToken);
 
 router.get('/forgot-password', ctrl.getForgotPassword);
 router.post('/forgot-password', forgotRules, ctrl.postForgotPassword);

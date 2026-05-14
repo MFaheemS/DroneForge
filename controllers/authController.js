@@ -57,6 +57,21 @@ exports.postRegister = async (req, res) => {
   }
 };
 
+// Refresh JWT to extend inactivity window — requires a valid existing token
+exports.refreshToken = (req, res) => {
+  const token = req.cookies?.token;
+  if (!token) return res.status(401).json({ ok: false });
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const rememberMe = payload.exp - payload.iat > 7 * 24 * 60 * 60; // >7d means rememberMe
+    const newToken = signToken({ _id: payload.id, name: payload.name, email: payload.email, role: payload.role }, rememberMe);
+    setTokenCookie(res, newToken, rememberMe);
+    return res.json({ ok: true });
+  } catch {
+    return res.status(401).json({ ok: false });
+  }
+};
+
 exports.getLogin = (req, res) => {
   if (req.user) return res.redirect('/');
   res.render('auth/login', { errors: [], old: {}, query: req.query });

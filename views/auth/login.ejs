@@ -34,6 +34,13 @@
         <p style="font-family:var(--font-mono);font-size:.8rem;color:var(--muted);letter-spacing:.04em;">Initialize clandestine flight protocols.</p>
       </div>
 
+      <% if (query && query.reason === 'idle') { %>
+        <div class="alert alert-error">
+          <span class="material-symbols-outlined" style="font-size:1rem;flex-shrink:0;">timer_off</span>
+          You were logged out due to inactivity. Please log in again.
+        </div>
+      <% } %>
+
       <% if (query && query.reset === 'success') { %>
         <div class="alert alert-success">
           <span class="material-symbols-outlined" style="font-size:1rem;flex-shrink:0;">check_circle</span>
