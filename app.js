@@ -35,18 +35,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
   etag: true,
 }));
 
-// ── DB Connection (serverless-safe: reuse existing connection) ──
-let mongoConnected = false;
-async function connectDB() {
-  if (mongoConnected || mongoose.connection.readyState === 1) return;
-  await mongoose.connect(process.env.MONGODB_URI);
-  mongoConnected = true;
-  console.log('MongoDB connected');
-}
-app.use(async (req, res, next) => {
-  try { await connectDB(); next(); }
-  catch (err) { console.error('MongoDB error:', err); next(err); }
-});
+// ── DB Connection ──
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err));
 
 // ── View Engine ──
 app.set('view engine', 'ejs');
@@ -99,8 +91,6 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3000;
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => console.log(`DroneForge running on http://localhost:${PORT}`));
-}
+app.listen(PORT, () => console.log(`DroneForge running on http://localhost:${PORT}`));
 
 module.exports = app;
